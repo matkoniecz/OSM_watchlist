@@ -17,7 +17,6 @@ require 'fileutils'
 #TODO w renderowaniu miejsc przeskocz nad tymi gdzie miejsce jest znane a plik jest nadal do pobrania - oznacza to iż jest on wileki, został skasowany przy czyszczeniu nadmiaru a będzie się 
 
 module CartoCSSHelper
-
   def test_low_zoom(branch, zlevels)
     zlevels.each{|z|
       puts z
@@ -29,73 +28,44 @@ module CartoCSSHelper
   end
 
   def main
-    CartoCSSHelper.probe({'natural' => 'wetland'}, 'unify', 'master')
-    CartoCSSHelper.probe({'natural' => 'marsh'}, 'unify', 'master')
-    CartoCSSHelper.probe({'natural' => 'mud'}, 'unify', 'master')
-    CartoCSSHelper.probe({'leisure' => 'park'}, 'unify', 'master')
-    CartoCSSHelper.probe({'leisure' => 'recreation_ground'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'recreation_ground'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'village_green'}, 'unify', 'master')
-    CartoCSSHelper.probe({'leisure' => 'common'}, 'unify', 'master')
-    CartoCSSHelper.probe({'leisure' => 'garden'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'quarry'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'vineyard'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'orchard'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'cemetery'}, 'unify', 'master')
-    CartoCSSHelper.probe({'amenity' => 'grave_yard'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'residential'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'garages'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'meadow'}, 'unify', 'master')
-    CartoCSSHelper.probe({'natural' => 'grassland'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'grass'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'allotments'}, 'unify', 'master')
-    CartoCSSHelper.probe({'natural' => 'wood'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'forest'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'farmyard'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'farm'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'farmland'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'greenhouse_horticulture'}, 'unify', 'master')
-    CartoCSSHelper.probe({'shop' => 'mall'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'retail'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'industrial'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'railway'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'commercial'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'brownfield'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'landfill'}, 'unify', 'master')
-    CartoCSSHelper.probe({'landuse' => 'construction'}, 'unify', 'master')
-    CartoCSSHelper.probe({'tourism' => 'caravan_site'}, 'unify', 'master')
-    CartoCSSHelper.probe({'tourism' => 'theme_park'}, 'unify', 'master')
-    CartoCSSHelper.probe({'tourism' => 'zoo'}, 'unify', 'master')
-    CartoCSSHelper.probe({'tourism' => 'attraction'}, 'unify', 'master')
-    CartoCSSHelper.probe({'amenity' => 'kindergarten'}, 'unify', 'master')
-    CartoCSSHelper.probe({'amenity' => 'school'}, 'unify', 'master')
-    CartoCSSHelper.probe({'amenity' => 'college'}, 'unify', 'master')
-    CartoCSSHelper.probe({'amenity' => 'university'}, 'unify', 'master')
-    CartoCSSHelper.probe({'natural' => 'heath'}, 'unify', 'master')
-    CartoCSSHelper.probe({'natural' => 'scrub'}, 'unify', 'master')
-    CartoCSSHelper.probe({'natural' => 'beach'}, 'unify', 'master')
-    CartoCSSHelper.probe({'leisure' => 'sports_centre'}, 'unify', 'master')
-    CartoCSSHelper.probe({'leisure' => 'stadium'}, 'unify', 'master')
-    CartoCSSHelper.probe({'leisure' => 'track'}, 'unify', 'master')
-    CartoCSSHelper.probe({'leisure' => 'pitch'}, 'unify', 'master')
-    #before_after_from_loaded_databases({'landuse' => :any_value, 'name' => :any_value}, 'unify', 'master', 8..22, 1000)
-    #before_after_from_loaded_databases({'natural' => :any_value, 'name' => :any_value}, 'unify', 'master', 12..22, 1000)
-    #before_after_from_loaded_databases({'leisure' => :any_value, 'name' => :any_value}, 'unify', 'master', 12..22, 1000)
-    #before_after_from_loaded_databases({'tourism' => :any_value, 'name' => :any_value}, 'unify', 'master', 12..22, 1000)
-    #before_after_from_loaded_databases({'tourism' => 'attraction', 'name' => :any_value}, 'unify', 'master', 12..22, 1000)
-    #before_after_from_loaded_databases({'shop' => 'mall', 'name' => :any_value}, 'unify', 'master', 12..22, 1000)
+    branch = 'master'
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'highway' => 'turning_circle'}, branch, 'master', 15..18, 'node', 2)
+    before_after_from_loaded_databases({'highway' => 'turning_circle'}, branch, 'master', 15..18, 300, 1)
+    #test_tag_on_real_data_pair_for_this_type({'highway'=>'turning_circle'}, {'highway' => 'service'}, branch, 'master', 15..18, 'way', 1, 0, 375)
+    #test_tag_on_real_data_pair_for_this_type({'highway'=>'turning_circle'}, {'highway' => 'service', 'service' => 'driveway'}, branch, 'master', 15..18, 'way', 1, 0, 375)
+    #test_tag_on_real_data_pair_for_this_type({'highway'=>'turning_circle'}, {'highway' => 'living_street'}, branch, 'master', 15..18, 'way', 1, 0, 375)
+    #test_tag_on_real_data_pair_for_this_type({'highway'=>'turning_circle'}, {'highway' => 'service', 'service' => 'parking_aisle'}, branch, 'master', 15..18, 'way', 1, 0, 375)
+
+   #switch_databases('gis_test', 'new_york')
+   #final
+   #generate_preview(['master'])
+
+
+	#create_new_gis_database('new_gis')
+   #load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/new-york_new-york.osm.pbf', true)
+   #switch_databases('new_york', 'gis_test')
+
+   #final
+
+    #reload_databases
+    #final
+
+    #switch_databases('gis_test', 'krakow')
+    #final
+
+    #before_after_from_loaded_databases({'leisure' => 'marina'}, 'math/marina-label', 'master', 15..19, 300, 10)
+    #before_after_from_loaded_databases({'amenity' => 'taxi'}, 'math/taxi-zoomlevel', 'master', 15..19, 300, 10)
+
     final
 
 
-    #dashes not visible enough
-    #before_after_from_loaded_databases({'access' => 'destination', 'highway' => 'track'}, 'destination', 'master', 15..19)
-    #before_after_from_loaded_databases({'access' => 'private', 'highway' => 'track'}, 'destination', 'master', 15..19)
-    #final
-    #CartoCSSHelper.probe({'access' => 'destination', 'highway' => 'track'}, 'destination', 'master', 19..19)
-    #CartoCSSHelper.probe({'highway' => 'track'}, 'destination', 'master', 19..19)
-    #CartoCSSHelper.probe({'access' => 'destination', 'highway' => 'track'}, 'destination', 'master')
-    #CartoCSSHelper.probe({'highway' => 'track'}, 'destination', 'master')
-    #before_after_from_loaded_databases({'highway' => 'track'}, 'destination', 'master', 10..17)
+    #before_after_from_loaded_databases({'name' => 'Rondo Ofiar Katynia'}, 'nebulon/road-shields', 'master', 13..13, 300, 1)
+
+	get_all_road_types.each{|highway|
+		puts highway
+        before_after_from_loaded_databases({'highway' => highway, 'ref' => :any_value}, 'nebulon/road-shields', 'master', 13..22, 1000, 5)
+	}
+
 
     #PR puiblished
     #CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 18..18, 'barrier_way', 'master', 'tourism_way', 0.1)
@@ -124,37 +94,12 @@ module CartoCSSHelper
 =end
 
 
-    CartoCSSHelper.probe({'tourism' => 'attraction'}, 'tourism_way', 'master', 19..19)
-    CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 18..18, 'tourism_way', 'master', 'tourism_way', 0.1)
-    CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 13..22, 'tourism_way', 'master', 'tourism_way', 0.1)
-
-    CartoCSSHelper.test({'access' => 'destination', 'highway' => 'track'}, 'destination', 'master')
-    CartoCSSHelper.test({'highway' => 'track'}, 'destination', 'master')
-    CartoCSSHelper.test({'access' => 'private', 'highway' => 'track'}, 'destination', 'master')
+    #CartoCSSHelper.probe({'tourism' => 'attraction'}, 'tourism_way', 'master', 19..19)
+    #CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 18..18, 'tourism_way', 'master', 'tourism_way', 0.1)
+    #CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 13..22, 'tourism_way', 'master', 'tourism_way', 0.1)
 
     final
     
-
-
-    #final
-    #reload_databases
-    
-  
-    #before_after_from_loaded_databases({'name' => 'Rondo Ofiar Katynia'}, 'nebulon/road-shields', 'master', 13..13, 300, 1)
-    #before_after_from_loaded_databases({'oneway' => 'yes'}, 'nebulon/road-shields', 'master', 13..13, 1000, 1)
-    #before_after_from_loaded_databases({'oneway' => 'yes'}, 'nebulon/road-shields', 'master', 13..13, 1000, 2)
-    #before_after_from_loaded_databases({'oneway' => 'yes'}, 'nebulon/road-shields', 'master', 13..15, 1000, 10)
-
-	get_all_road_types.each{|highway|
-	    if highway == "trunk_link"
-            next
-        end
-        #before_after_from_loaded_databases({'oneway' => 'yes', 'highway' => highway}, 'nebulon/oneway-arrows', 'master', 16..19, 1000, 1)
-	}
-
-
-    #final
-
     #https://github.com/gravitystorm/openstreetmap-carto/issues/1781
     #TODO - from world database
     #before_after_from_loaded_databases({'waterway' => 'river'}, 'water', 'master', 9..19, 1000)
@@ -175,8 +120,7 @@ module CartoCSSHelper
     #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'barrier' => 'lift_gate', 'name' => 'a'}, 'closed_way', false, 22..22, 'master', 'master')
     #catcha-all for areas
 
-
-
+    #missing label
     #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'tourism' => 'viewpoint', 'name' => 'a'}, 'closed_way', false, 22..22, 'master', 'master')
 
 #TODO watchlist
@@ -189,53 +133,19 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
     CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'parking', 'access'=>'public'}, 'public', 'master', 13..19, 'way', 2)
     CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'parking', 'access'=>'private'}, 'public', 'master', 13..19, 'way', 2)
     CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'parking', 'access'=>'yes'}, 'public', 'master', 13..19, 'way', 2)
-http://wiki.openstreetmap.org/w/index.php?title=Talk:Proposed_features/*%3Ddepot&diff=1204124&oldid=1204114&rcid=&curid=147803
-utworzyć obserwowane i dodać tam http://overpass-turbo.eu/s/aBE
-https://github.com/gravitystorm/openstreetmap-carto/pull/1692 - report Carto bug
-http://overpass-turbo.eu/s/avc highway=track w Krakowie
-+{"power_source"=>"wind", "power"=>"generator"} + wiatrak w Polsce
-#TODO reduce saturation of grass and fields
-
 =end
 
-    #todo - try reduce glow on footways
-    #make tracks wider at high zooms
     
-    #see also https://github.com/mapzen/metroextractor-cities/issues/308
-    #final
-
-    #https://github.com/gravitystorm/openstreetmap-carto/pull/1804#issuecomment-140301711
-    #before_after_from_loaded_databases({'amenity' => 'fountain'}, 'kocio/fountain', 'master', 16..22, 375)
-
-    #WIP
-    #before_after_from_loaded_databases({'name' => 'Las Wolski'}, 'track', 'master', 13..22, 1000, 1)
-    #before_after_from_loaded_databases({'highway' => 'track'}, 'track', 'v2.34.0', 13..22, 1000, 1)
-    #before_after_from_loaded_databases({'highway' => 'track'}, 'track', 'v2.34.0', 13..22, 375, 5)
-
-    #https://github.com/gravitystorm/openstreetmap-carto/issues/1100
-    #zlevels = 4..22
-    #size = 375
-    #from = 'master'
-    #to = 'denode'
-    #CartoCSSHelper.test ({'landuse' => 'forest', 'name' => :any_value}), to, from, 16..22, ['node']
-    #CartoCSSHelper.test ({'landuse' => 'forest', 'name' => :any_value}), to, from, 16..22
-    #before_after_directly_from_database('world', 50, 20, to, from, zlevels, size, 'denode [50,20]')
-
-
+    
     #CartoCSSHelper::Validator.run_tests('v2.34.0')
 
     #merged
     #before_after_from_loaded_databases({'amenity' => 'car_wash'}, 'kocio/car_wash', 'master', 14..22, 375, 5)
     #CartoCSSHelper.test ({'amenity' => 'car_wash'}), 'kocio/car_wash', 'master', 14..22
 
-
-    #kocio - neither opposing nor merging
-    #before_after_from_loaded_databases({'shop' => 'sports'}, 'kocio/sports-icon', 'v2.34.0', 17..19, 375, 3, 1)
-
-
     z = 14..18
 
-
+    #missing name
     #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'natural' => 'peak', 'ele' => '4'}, 'node', false, 22..22, 'v2.31.0', 'v2.30.0') # 24, 29 - 34
     #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'natural' => 'peak', 'ele' => '4', 'name' => 'name'}, 'node', false, 22..22, 'v2.34.0', 'v2.34.0')
 
@@ -243,9 +153,6 @@ http://overpass-turbo.eu/s/avc highway=track w Krakowie
     #before_after_from_loaded_databases({'aeroway' => 'gate', 'ref' => :any_value}, 'v2.31.0', 'v2.30.0', 22..22, 100, 2)
     #CartoCSSHelper.test_tag_on_real_data({'aeroway' => 'gate', 'ref' => :any_value}, 'v2.31.0', 'v2.30.0', 22..22, ['way'], 2)
 
-
-    #CartoCSSHelper.probe ({'amenity' => 'nightclub'}), 'v2.30.0', 'v2.29.0', 22..22 #24, 29 - 32, 34
-    #CartoCSSHelper.probe ({'amenity' => 'nightclub'}), 'dy_again', 'v2.30.0', 22..22 #24, 29 - 32, 34
 
     final
 
@@ -356,8 +263,6 @@ http://overpass-turbo.eu/s/avc highway=track w Krakowie
       CartoCSSHelper::Grid.new(zlevel, branch, road_set(true, true), areas_set)
     }
 
-    #CartoCSSHelper.test_tag_on_real_data_for_this_type({'highway' => :any_value, 'oneway' => 'yes'}, 'blue-oneway', branch, 14..19, 'way', 10)
-
     test_all_road_types(branch)
 
     CartoCSSHelper::VisualDiff.run_jobs
@@ -368,18 +273,22 @@ http://overpass-turbo.eu/s/avc highway=track w Krakowie
 
     CartoCSSHelper::Validator.run_tests('v2.32.0')
   end
+
+   def test_destination_change
+   #dashes not visible enough
+   before_after_from_loaded_databases({'access' => 'destination', 'highway' => 'track'}, 'destination', 'master', 15..19)
+   before_after_from_loaded_databases({'access' => 'private', 'highway' => 'track'}, 'destination', 'master', 15..19)
+   #final
+   CartoCSSHelper.probe({'access' => 'destination', 'highway' => 'track'}, 'destination', 'master', 19..19)
+   CartoCSSHelper.probe({'highway' => 'track'}, 'destination', 'master', 19..19)
+   CartoCSSHelper.probe({'access' => 'destination', 'highway' => 'track'}, 'destination', 'master')
+   CartoCSSHelper.probe({'highway' => 'track'}, 'destination', 'master')
+   before_after_from_loaded_databases({'highway' => 'track'}, 'destination', 'master', 10..17)
+   CartoCSSHelper.test({'access' => 'destination', 'highway' => 'track'}, 'destination', 'master')
+   CartoCSSHelper.test({'highway' => 'track'}, 'destination', 'master')
+   CartoCSSHelper.test({'access' => 'private', 'highway' => 'track'}, 'destination', 'master')        
+  end
 end
-
-#for imports
-#https://s3.amazonaws.com/metro-extracts.mapzen.com/trinidad-tobago.osm.pbf
-#https://s3.amazonaws.com/metro-extracts.mapzen.com/montevideo_uruguay.osm.pbf
-#https://s3.amazonaws.com/metro-extracts.mapzen.com/temuco_chile.osm.pbf
-#https://s3.amazonaws.com/metro-extracts.mapzen.com/antananarivo_madagascar.osm.pbf
-
-
-#CartoCSSHelper.probe({'aeroway' => 'aerodrome'}, 'airport-unify', 'master', 10..14)
-#CartoCSSHelper.probe({'aeroway' => 'aerodrome'}, 'airport-unify', 'dbfcce0', 10..14)
-#CartoCSSHelper.probe({'aeroway' => 'aerodrome'}, 'dbfcce0', '4af711b', 10..14)
 
 #    additional_test_unpaved('master', 'master')
 #not great, not terrribe
@@ -427,4 +336,4 @@ rescue => e
 end
 
 
-#TODO detect good moment to remove waterway=wadi railway=preserved power=sub_station building=no power=station
+#poszukać carto w efektywność
