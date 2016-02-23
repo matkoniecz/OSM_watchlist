@@ -28,6 +28,41 @@ module CartoCSSHelper
   end
 
   def main
+    #CartoCSSHelper::test_tag_on_sythetic_data({'barrier' => 'swing_gate'}, 'swing')
+    #CartoCSSHelper::test_tag_on_sythetic_data({'barrier' => 'lift_gate'}, 'swing')
+
+    #CartoCSSHelper::test_tag_on_sythetic_data({'amenity' => 'library'}, 'kocio/library-icon')
+    #CartoCSSHelper::test_tag_on_sythetic_data({'amenity' => 'shelter'}, 'kocio/shelter-svg')
+    #CartoCSSHelper::test_tag_on_sythetic_data({'tourism' => 'information'}, 'kocio/information-icon')
+    #CartoCSSHelper::test_tag_on_sythetic_data({'natural' => 'cave_entrance'}, 'kocio/cave-icon')
+
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'oneway' => 'yes', 'highway' => 'path', 'bicycle' => 'designated'}, 'nebulon/oneway-bicycle-designated', 'master', 13..22, 'way', 2)
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'oneway' => 'yes', 'highway' => 'path', 'horse' => 'designated'}, 'nebulon/oneway-bicycle-designated', 'master', 13..22, 'way', 2)
+
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'oneway' => 'yes', 'highway' => 'path'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'oneway' => 'yes', 'highway' => 'path', 'bicycle' => 'designated'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'oneway' => 'yes', 'highway' => 'path', 'horse' => 'designated'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'highway' => 'path', 'horse' => 'designated'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'highway' => 'path', 'horse' => 'designated', 'surface' => 'unpaved'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'highway' => 'path', 'horse' => 'designated', 'surface' => 'paved'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
+    CartoCSSHelper::test_tag_on_sythetic_data({'amenity' => 'bus_station'}, 'kocio/bus_station-icon')
+
+    final
+
+    reload_databases()
+    #create_databases
+
+
+
+    before_after_from_loaded_databases({'amenity' => 'library'}, 'kocio/library-icon', 'master', 15..18, 300, 1)
+    before_after_from_loaded_databases({'amenity' => 'bus_station'}, 'kocio/bus_station-icon', 'master', 15..18, 300, 1)
+    before_after_from_loaded_databases({'amenity' => 'shelter'}, 'kocio/shelter-svg', 'master', 15..18, 300, 1)
+    before_after_from_loaded_databases({'tourism' => 'information'}, 'kocio/information-icon', 'master', 15..18, 300, 1)
+    before_after_from_loaded_databases({'natural' => 'cave_entrance'}, 'kocio/cave-icon', 'master', 15..18, 300, 1)
+    before_after_from_loaded_databases({'oneway' => 'yes', 'highway' => 'path', 'bicycle' => 'designated'}, 'nebulon/oneway-bicycle-designated', 'master', 15..18, 300, 1)
+    before_after_from_loaded_databases({'oneway' => 'yes', 'highway' => 'path', 'horse' => 'designated'}, 'nebulon/oneway-bicycle-designated', 'master', 15..18, 300, 1)
+    final
+
     branch = 'master'
     CartoCSSHelper.test_tag_on_real_data_for_this_type({'highway' => 'turning_circle'}, branch, 'master', 15..18, 'node', 2)
     before_after_from_loaded_databases({'highway' => 'turning_circle'}, branch, 'master', 15..18, 300, 1)
@@ -40,26 +75,11 @@ module CartoCSSHelper
    #final
    #generate_preview(['master'])
 
-
-	#create_new_gis_database('new_gis')
-   #load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/new-york_new-york.osm.pbf', true)
-   #switch_databases('new_york', 'gis_test')
-
-   #final
-
-    #reload_databases
-    #final
-
     #switch_databases('gis_test', 'krakow')
     #final
 
     #before_after_from_loaded_databases({'leisure' => 'marina'}, 'math/marina-label', 'master', 15..19, 300, 10)
     #before_after_from_loaded_databases({'amenity' => 'taxi'}, 'math/taxi-zoomlevel', 'master', 15..19, 300, 10)
-
-    final
-
-
-    #before_after_from_loaded_databases({'name' => 'Rondo Ofiar Katynia'}, 'nebulon/road-shields', 'master', 13..13, 300, 1)
 
 	get_all_road_types.each{|highway|
 		puts highway
