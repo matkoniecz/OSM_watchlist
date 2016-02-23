@@ -94,11 +94,17 @@ module CartoCSSHelper
     switch_databases('gis_test', 'new_york')
     load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/new_york_new_york.osm.pbf', true)
     switch_databases('new_york', 'gis_test')
-    #create_new_gis_database('new_gis') #needed on creating rather than reloading
   end
 
-  def before_after_from_loaded_databases(tags, to, from, zlevels, image_size = 375, count = 3, skip = 0)
-    databases = []
+  def create_databases()
+    create_new_gis_database('gis_test')
+    get_list_of_databases.each {|database|
+	    create_new_gis_database(database[:name])
+    }
+  end
+
+  def get_list_of_databases()
+	 databases = []
     #https://github.com/mapzen/metroextractor-cities/blob/master/cities.json
     databases << {:top => 50.240, :left => 19.594, :bottom => 49.850, :right => 20.275, :name => 'krakow'}
     databases << {:top => 48.06673, :left => 11.82377, :bottom => 47.06673, :right => 12.82377, :name => 'well_mapped_rocky_mountains'}
@@ -121,8 +127,11 @@ module CartoCSSHelper
     databases << {:top => 52.623, :left => 20.341, :bottom => 51.845, :right => 21.692, :name => 'warsaw'}
 =begin
     databases << {:top => , :left => , :bottom => , :right => , :name => ''}
-=end
-    databases.each {|database|
+=end    return databases
+	end
+
+  def before_after_from_loaded_databases(tags, to, from, zlevels, image_size = 375, count = 3, skip = 0)
+    get_list_of_databases.each {|database|
       if count <= 0
         return true
       end
