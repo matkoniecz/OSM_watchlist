@@ -91,6 +91,9 @@ module CartoCSSHelper
     load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/warsaw_poland.osm.pbf', true)
     switch_databases('warsaw', 'gis_test')
 
+    switch_databases('gis_test', 'new_york')
+    load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/new_york_new_york.osm.pbf', true)
+    switch_databases('new_york', 'gis_test')
     #create_new_gis_database('new_gis') #needed on creating rather than reloading
   end
 
@@ -114,6 +117,7 @@ module CartoCSSHelper
     databases << {:top => 48.48499, :left => 7.24856, :bottom => 47.68499, :right => 8.04856, :name => 'vineyards'}
     databases << {:top => 45.6952, :left => 11.2215, :bottom => 44.8952, :right => 12.0215, :name => 'monte_lozzo'}
     databases << {:top => 48.4337, :left => 8.2667, :bottom => 47.4337, :right => 9.2667, :name => 'danube_sinkhole'}
+    databases << {:top => 41.097, :left => -74.501, :bottom => 40.345, :right => -73.226, :name => 'new_york'}
     databases << {:top => 52.623, :left => 20.341, :bottom => 51.845, :right => 21.692, :name => 'warsaw'}
 =begin
     databases << {:top => , :left => , :bottom => , :right => , :name => ''}

@@ -54,7 +54,7 @@ def working_on_wrong_database
   #TODO load it from database list for the freaking freak
   databases = ['krakow', 'vienna', 'london', 'rome', 'world', 'reykjavik', 'accra_ghana', 'abuja_nigeria', 'abidjan_ivory_coast', 
     'well_mapped_rocky_mountains', 'rosenheim', 'south_mountain', 'tokyo', 'market', 'bridleway', 'vineyards', 'monte_lozzo', 
-    'danube_sinkhole', 'warsaw']
+    'danube_sinkhole', 'warsaw', 'new_york']
   databases.each{|name|
     working_on_wrong_database_check(name)
   }
