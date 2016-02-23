@@ -19,6 +19,11 @@ module CartoCSSHelper
   end
 
   def reload_databases
+    #create_new_gis_database('for_tests')
+    #switch_databases('gis_test', 'for_tests')
+    #CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=47.56673&mlon=12.32377#map=19/47.56673/12.32377', 19..19, 'master', 'master', 'footways on natural=bare_rock', 0.001, 10)
+    #switch_databases('for_tests', 'gis_test')
+
     switch_databases('gis_test', 'krakow')
     load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/krakow_poland.osm.pbf', true)
     switch_databases('krakow', 'gis_test')
@@ -40,6 +45,7 @@ module CartoCSSHelper
     switch_databases('vienna', 'gis_test')
 
     switch_databases('gis_test', 'well_mapped_rocky_mountains')
+    #TODO - is it really flushing cache?
     CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=47.56673&mlon=12.32377#map=19/47.56673/12.32377', 19..19, 'master', 'master', 'footways on natural=bare_rock', 1, 10)
     switch_databases('well_mapped_rocky_mountains', 'gis_test')
 
@@ -97,7 +103,8 @@ module CartoCSSHelper
   end
 
   def create_databases()
-    create_new_gis_database('gis_test')
+    create_new_gis_database('gis')
+    create_new_gis_database('for_tests')
     get_list_of_databases.each {|database|
 	    create_new_gis_database(database[:name])
     }
