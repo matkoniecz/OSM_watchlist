@@ -17,16 +17,6 @@ require 'fileutils'
 #TODO w renderowaniu miejsc przeskocz nad tymi gdzie miejsce jest znane a plik jest nadal do pobrania - oznacza to iż jest on wileki, został skasowany przy czyszczeniu nadmiaru a będzie się 
 
 module CartoCSSHelper
-  def test_low_zoom(branch, zlevels)
-    zlevels.each{|z|
-      puts z
-      get_single_image_from_database('world', branch, 50.8288, 4.3684, z, 750, 'Brussels')
-      get_single_image_from_database('world', branch, -36.84870, 174.76135, z, 750, 'Auckland')
-      get_single_image_from_database('world', branch, 39.9530, -75.1858, z, 750, 'New Jersey')
-      get_single_image_from_database('world', branch, 55.39276, 13.29790, z, 750, 'Malmo - fields')
-    }
-  end
-
   def main
     #CartoCSSHelper::test_tag_on_sythetic_data({'barrier' => 'swing_gate'}, 'swing')
     #CartoCSSHelper::test_tag_on_sythetic_data({'barrier' => 'lift_gate'}, 'swing')
@@ -36,17 +26,25 @@ module CartoCSSHelper
     #CartoCSSHelper::test_tag_on_sythetic_data({'tourism' => 'information'}, 'kocio/information-icon')
     #CartoCSSHelper::test_tag_on_sythetic_data({'natural' => 'cave_entrance'}, 'kocio/cave-icon')
 
-    CartoCSSHelper.test_tag_on_real_data_for_this_type({'oneway' => 'yes', 'highway' => 'path', 'bicycle' => 'designated'}, 'nebulon/oneway-bicycle-designated', 'master', 13..22, 'way', 2)
-    CartoCSSHelper.test_tag_on_real_data_for_this_type({'oneway' => 'yes', 'highway' => 'path', 'horse' => 'designated'}, 'nebulon/oneway-bicycle-designated', 'master', 13..22, 'way', 2)
+    #CartoCSSHelper.test_tag_on_real_data_for_this_type({'oneway' => 'yes', 'highway' => 'path', 'bicycle' => 'designated'}, 'nebulon/oneway-bicycle-designated', 'master', 13..22, 'way', 2)
+    #CartoCSSHelper.test_tag_on_real_data_for_this_type({'oneway' => 'yes', 'highway' => 'path', 'horse' => 'designated'}, 'nebulon/oneway-bicycle-designated', 'master', 13..22, 'way', 2)
+    #CartoCSSHelper.test_tag_on_real_data_for_this_type({'oneway' => 'yes', 'highway' => 'path', 'horse' => 'designated'}, 'nebulon/oneway-bicycle-designated', 'master', 22..22, 'way', 2)
+    #CartoCSSHelper.test_tag_on_real_data_for_this_type({'oneway' => 'yes', 'highway' => 'bridleway'}, 'nebulon/oneway-bicycle-designated', 'master', 22..22, 'way', 2)
 
-    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'oneway' => 'yes', 'highway' => 'path'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
-    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'oneway' => 'yes', 'highway' => 'path', 'bicycle' => 'designated'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
-    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'oneway' => 'yes', 'highway' => 'path', 'horse' => 'designated'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
-    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'highway' => 'path', 'horse' => 'designated'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
-    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'highway' => 'path', 'horse' => 'designated', 'surface' => 'unpaved'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
-    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'highway' => 'path', 'horse' => 'designated', 'surface' => 'paved'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
-    CartoCSSHelper::test_tag_on_sythetic_data({'amenity' => 'bus_station'}, 'kocio/bus_station-icon')
+    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'highway' => 'path', 'horse' => 'designated', 'oneway' => 'yes'}, 'way', false, 22..22, 'nebulon/oneway-bicycle-designated', 'master')
+    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'highway' => 'bridleway', 'oneway' => 'yes'}, 'way', false, 22..22, 'nebulon/oneway-bicycle-designated', 'master')
 
+    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'oneway' => 'yes', 'highway' => 'path'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
+    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'oneway' => 'yes', 'highway' => 'path', 'bicycle' => 'designated'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
+    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'oneway' => 'yes', 'highway' => 'path', 'horse' => 'designated'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
+    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'highway' => 'path', 'horse' => 'designated'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
+    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'highway' => 'path', 'horse' => 'designated', 'surface' => 'unpaved'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
+    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'highway' => 'path', 'horse' => 'designated', 'surface' => 'paved'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
+    #CartoCSSHelper::test_tag_on_sythetic_data({'amenity' => 'bus_station'}, 'kocio/bus_station-icon')
+    #CartoCSSHelper.test_tag_on_real_data_for_this_type({'barrier' => 'swing_gate'}, 'swing', 'master', 14..22, 'node', 10)
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'natural' => 'cave_entrance'}, 'kocio/cave-icon', 'master', 14..22, 'node', 10)
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'shelter'}, 'kocio/shelter-svg', 'master', 14..22, 'node', 10)
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'tourism' => 'information'}, 'kocio/information-icon', 'master', 14..22, 'node', 10)
     final
 
     reload_databases()
@@ -59,8 +57,6 @@ module CartoCSSHelper
     before_after_from_loaded_databases({'amenity' => 'shelter'}, 'kocio/shelter-svg', 'master', 15..18, 300, 1)
     before_after_from_loaded_databases({'tourism' => 'information'}, 'kocio/information-icon', 'master', 15..18, 300, 1)
     before_after_from_loaded_databases({'natural' => 'cave_entrance'}, 'kocio/cave-icon', 'master', 15..18, 300, 1)
-    before_after_from_loaded_databases({'oneway' => 'yes', 'highway' => 'path', 'bicycle' => 'designated'}, 'nebulon/oneway-bicycle-designated', 'master', 15..18, 300, 1)
-    before_after_from_loaded_databases({'oneway' => 'yes', 'highway' => 'path', 'horse' => 'designated'}, 'nebulon/oneway-bicycle-designated', 'master', 15..18, 300, 1)
     final
 
     branch = 'master'
