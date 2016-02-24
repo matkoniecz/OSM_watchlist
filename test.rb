@@ -19,32 +19,17 @@ require 'fileutils'
 module CartoCSSHelper
   def main
     #CartoCSSHelper::test_tag_on_sythetic_data({'barrier' => 'swing_gate'}, 'swing')
-    #CartoCSSHelper::test_tag_on_sythetic_data({'barrier' => 'lift_gate'}, 'swing')
-
-    #CartoCSSHelper::test_tag_on_sythetic_data({'amenity' => 'library'}, 'kocio/library-icon')
-    #CartoCSSHelper::test_tag_on_sythetic_data({'amenity' => 'shelter'}, 'kocio/shelter-svg')
-    #CartoCSSHelper::test_tag_on_sythetic_data({'tourism' => 'information'}, 'kocio/information-icon')
-    #CartoCSSHelper::test_tag_on_sythetic_data({'natural' => 'cave_entrance'}, 'kocio/cave-icon')
-
-    #CartoCSSHelper.test_tag_on_real_data_for_this_type({'oneway' => 'yes', 'highway' => 'path', 'bicycle' => 'designated'}, 'nebulon/oneway-bicycle-designated', 'master', 13..22, 'way', 2)
-    #CartoCSSHelper.test_tag_on_real_data_for_this_type({'oneway' => 'yes', 'highway' => 'path', 'horse' => 'designated'}, 'nebulon/oneway-bicycle-designated', 'master', 13..22, 'way', 2)
-    #CartoCSSHelper.test_tag_on_real_data_for_this_type({'oneway' => 'yes', 'highway' => 'path', 'horse' => 'designated'}, 'nebulon/oneway-bicycle-designated', 'master', 22..22, 'way', 2)
-    #CartoCSSHelper.test_tag_on_real_data_for_this_type({'oneway' => 'yes', 'highway' => 'bridleway'}, 'nebulon/oneway-bicycle-designated', 'master', 22..22, 'way', 2)
-
-    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'highway' => 'path', 'horse' => 'designated', 'oneway' => 'yes'}, 'way', false, 22..22, 'nebulon/oneway-bicycle-designated', 'master')
-    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'highway' => 'bridleway', 'oneway' => 'yes'}, 'way', false, 22..22, 'nebulon/oneway-bicycle-designated', 'master')
-
     #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'oneway' => 'yes', 'highway' => 'path'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
-    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'oneway' => 'yes', 'highway' => 'path', 'bicycle' => 'designated'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
-    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'oneway' => 'yes', 'highway' => 'path', 'horse' => 'designated'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
-    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'highway' => 'path', 'horse' => 'designated'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
-    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'highway' => 'path', 'horse' => 'designated', 'surface' => 'unpaved'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
-    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'highway' => 'path', 'horse' => 'designated', 'surface' => 'paved'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
-    #CartoCSSHelper::test_tag_on_sythetic_data({'amenity' => 'bus_station'}, 'kocio/bus_station-icon')
-    #CartoCSSHelper.test_tag_on_real_data_for_this_type({'barrier' => 'swing_gate'}, 'swing', 'master', 14..22, 'node', 10)
-    CartoCSSHelper.test_tag_on_real_data_for_this_type({'natural' => 'cave_entrance'}, 'kocio/cave-icon', 'master', 14..22, 'node', 10)
-    CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'shelter'}, 'kocio/shelter-svg', 'master', 14..22, 'node', 10)
-    CartoCSSHelper.test_tag_on_real_data_for_this_type({'tourism' => 'information'}, 'kocio/information-icon', 'master', 14..22, 'node', 10)
+
+    #CartoCSSHelper.test_tag_on_real_data_for_this_type({'tourism' => 'information'}, 'kocio/information-icon', 'master', 14..22, 'node', 5)
+    #CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'bus_station'}, 'kocio/bus_station-icon', 'master', 14..22, 'node', 5)
+    CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/#map=17/51.71219/10.51618', 18..18, 'kocio/information-icon', 'master', 'tourism_way', 0.1)
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'railway' => 'station'}, 'math/drop-disused', 'master', 14..22, 'node', 3)
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'railway' => 'station', 'disused' => :any_value}, 'math/drop-disused', 'master', 14..22, 'node', 3)
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'railway' => 'station'}, 'math/drop-disused', 'master', 14..22, 'way', 3)
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'railway' => 'station', 'disused' => :any_value}, 'math/drop-disused', 'master', 14..22, 'way', 3)
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'railway' => 'rail', 'disused' => :any_value}, 'math/drop-disused', 'master', 14..22, 'way', 1)
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'railway' => 'disused'}, 'math/drop-disused', 'master', 14..22, 'way', 1)
     final
 
     reload_databases()
@@ -54,14 +39,13 @@ module CartoCSSHelper
 
     before_after_from_loaded_databases({'amenity' => 'library'}, 'kocio/library-icon', 'master', 15..18, 300, 1)
     before_after_from_loaded_databases({'amenity' => 'bus_station'}, 'kocio/bus_station-icon', 'master', 15..18, 300, 1)
-    before_after_from_loaded_databases({'amenity' => 'shelter'}, 'kocio/shelter-svg', 'master', 15..18, 300, 1)
     before_after_from_loaded_databases({'tourism' => 'information'}, 'kocio/information-icon', 'master', 15..18, 300, 1)
-    before_after_from_loaded_databases({'natural' => 'cave_entrance'}, 'kocio/cave-icon', 'master', 15..18, 300, 1)
     final
 
     branch = 'master'
     CartoCSSHelper.test_tag_on_real_data_for_this_type({'highway' => 'turning_circle'}, branch, 'master', 15..18, 'node', 2)
     before_after_from_loaded_databases({'highway' => 'turning_circle'}, branch, 'master', 15..18, 300, 1)
+    
     #test_tag_on_real_data_pair_for_this_type({'highway'=>'turning_circle'}, {'highway' => 'service'}, branch, 'master', 15..18, 'way', 1, 0, 375)
     #test_tag_on_real_data_pair_for_this_type({'highway'=>'turning_circle'}, {'highway' => 'service', 'service' => 'driveway'}, branch, 'master', 15..18, 'way', 1, 0, 375)
     #test_tag_on_real_data_pair_for_this_type({'highway'=>'turning_circle'}, {'highway' => 'living_street'}, branch, 'master', 15..18, 'way', 1, 0, 375)
