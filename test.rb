@@ -24,12 +24,8 @@ module CartoCSSHelper
     #CartoCSSHelper.test_tag_on_real_data_for_this_type({'tourism' => 'information'}, 'kocio/information-icon', 'master', 14..22, 'node', 5)
     #CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'bus_station'}, 'kocio/bus_station-icon', 'master', 14..22, 'node', 5)
     CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/#map=17/51.71219/10.51618', 18..18, 'kocio/information-icon', 'master', 'tourism_way', 0.1)
-    CartoCSSHelper.test_tag_on_real_data_for_this_type({'railway' => 'station'}, 'math/drop-disused', 'master', 14..22, 'node', 3)
-    CartoCSSHelper.test_tag_on_real_data_for_this_type({'railway' => 'station', 'disused' => :any_value}, 'math/drop-disused', 'master', 14..22, 'node', 3)
-    CartoCSSHelper.test_tag_on_real_data_for_this_type({'railway' => 'station'}, 'math/drop-disused', 'master', 14..22, 'way', 3)
-    CartoCSSHelper.test_tag_on_real_data_for_this_type({'railway' => 'station', 'disused' => :any_value}, 'math/drop-disused', 'master', 14..22, 'way', 3)
-    CartoCSSHelper.test_tag_on_real_data_for_this_type({'railway' => 'rail', 'disused' => :any_value}, 'math/drop-disused', 'master', 14..22, 'way', 1)
-    CartoCSSHelper.test_tag_on_real_data_for_this_type({'railway' => 'disused'}, 'math/drop-disused', 'master', 14..22, 'way', 1)
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'library'}, 'kocio/library-icon-open', 'master', 14..22, 'node', 5)
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'library'}, 'kocio/library-icon-open', 'master', 14..22, 'closed_way', 5)
     final
 
     reload_databases()
