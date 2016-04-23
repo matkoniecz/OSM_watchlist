@@ -104,7 +104,7 @@ module CartoCSSHelper
 
   def create_databases()
     create_new_gis_database('gis')
-    create_new_gis_database('for_tests')
+    create_new_gis_database('gis_test')
     get_list_of_databases.each {|database|
 	    create_new_gis_database(database[:name])
     }
