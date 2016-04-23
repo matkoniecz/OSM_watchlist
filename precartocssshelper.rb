@@ -212,6 +212,7 @@ module CartoCSSHelper
   end
 
   def create_new_gis_database(name)
+    puts "Creating gis dayabase <#{name}>"
     command = "createdb #{name}"
     system command
     command = "psql -d #{name} -c 'CREATE EXTENSION hstore; CREATE EXTENSION postgis;'"
