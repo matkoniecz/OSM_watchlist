@@ -321,7 +321,8 @@ def final
 end
 
 begin
-  init
+  make_copy_of_repository = true
+  init(make_copy_of_repository)
   #CartoCSSHelper::Configuration.set_known_alternative_overpass_url
   main
 rescue => e
