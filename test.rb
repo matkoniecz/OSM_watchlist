@@ -47,13 +47,9 @@ module CartoCSSHelper
 
    #switch_databases('gis_test', 'new_york')
    #final
-   #generate_preview(['master'])
 
     #switch_databases('gis_test', 'krakow')
     #final
-
-    #before_after_from_loaded_databases({'leisure' => 'marina'}, 'math/marina-label', 'master', 15..19, 300, 10)
-    #before_after_from_loaded_databases({'amenity' => 'taxi'}, 'math/taxi-zoomlevel', 'master', 15..19, 300, 10)
 
 	get_all_road_types.each{|highway|
 		puts highway
@@ -154,22 +150,8 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
     final
 
     CartoCSSHelper::VisualDiff.enable_job_pooling
-    gsoc_places(frozen_trunk, frozen_trunk, 10..18)
     CartoCSSHelper::VisualDiff.shuffle_jobs(8)
     final
-
-
-
-=begin
-    branch = frozen_trunk
-    [11..19].each {|zlevels| #19..19, 15..15, 11..11,
-        get_all_road_types.each { |tag|
-        before_after_from_loaded_databases({'highway' => tag, 'bridge' => 'yes'}, branch, branch, zlevels)
-        before_after_from_loaded_databases({'highway' => tag, 'tunnel' => 'yes'}, branch, branch, zlevels)
-        before_after_from_loaded_databases({'highway' => tag}, branch, branch, zlevels)
-      }
-    }
-=end
 
 
     [11,10,9,8].each{|z|
@@ -215,14 +197,9 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
         before_after_directly_from_database('world', 64.1173, -21.8688, branch, branch, z..z, image_size, "Iceland, Reykjavik #{branch}")
       }
     }
-    gsoc_places('trunk', 'gsoc', 9..18)
     CartoCSSHelper::VisualDiff.shuffle_jobs(8)
-    #show_fixed_bugs('gsoc')
     final
 
-
-
-    test_low_invisible(branch, branch)
 
     CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=53.149497&mlon=-6.3292126', 16..16, branch, 'master', 'bog', 0.1)
     test_tag_on_real_data_pair_for_this_type({'highway'=>'pedestrian'}, {'highway' => 'living_street'}, branch, 'master', 17..17, 'way', 2, 5, 375)
