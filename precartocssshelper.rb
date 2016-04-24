@@ -18,52 +18,37 @@ module CartoCSSHelper
 
   end
 
+  def reload_database_using_mapzen_extract(database_name, mapzen_extract_name)
+    switch_databases('gis_test', database_name)
+    load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/#{mapzen_extract_name}.osm.pbf', true)
+    switch_databases(database_name, 'gis_test')
+  end
+
+  end
+
   def reload_databases
     #create_new_gis_database('for_tests')
     #switch_databases('gis_test', 'for_tests')
     #CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=47.56673&mlon=12.32377#map=19/47.56673/12.32377', 19..19, 'master', 'master', 'footways on natural=bare_rock', 0.001, 10)
     #switch_databases('for_tests', 'gis_test')
 
-    switch_databases('gis_test', 'krakow')
-    load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/krakow_poland.osm.pbf', true)
-    switch_databases('krakow', 'gis_test')
+    reload_database_using_mapzen_extract('krakow', 'krakow_poland')
+    reload_database_using_mapzen_extract('london', 'london_england')
+    reload_database_using_mapzen_extract('rome', 'rome_italy')
+    reload_database_using_mapzen_extract('reykjavik', 'reykjavik_iceland')
 
-    switch_databases('gis_test', 'london')
-    load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/london_england.osm.pbf', true)
-    switch_databases('london', 'gis_test')
+    reload_database_using_mapzen_extract('vienna', 'vienna_austria')
 
-    switch_databases('gis_test', 'rome')
-    load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/rome_italy.osm.pbf', true)
-    switch_databases('rome', 'gis_test')
-
-    switch_databases('gis_test', 'reykjavik')
-    load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/reykjavik_iceland.osm.pbf', true)
-    switch_databases('reykjavik', 'gis_test')
-
-    switch_databases('gis_test', 'vienna')
-    load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/vienna-bratislava_austria.osm.pbf', true)
-    switch_databases('vienna', 'gis_test')
 
     switch_databases('gis_test', 'well_mapped_rocky_mountains')
     #TODO - is it really flushing cache?
     CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=47.56673&mlon=12.32377#map=19/47.56673/12.32377', 19..19, 'master', 'master', 'footways on natural=bare_rock', 1, 10)
     switch_databases('well_mapped_rocky_mountains', 'gis_test')
 
-    switch_databases('gis_test', 'abidjan_ivory_coast')
-    load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/abidjan_ivory-coast.osm.pbf', true)
-    switch_databases('abidjan_ivory_coast', 'gis_test')
-
-    switch_databases('gis_test', 'accra_ghana')
-    load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/accra_ghana.osm.pbf', true)
-    switch_databases('accra_ghana', 'gis_test')
-
-    switch_databases('gis_test', 'abuja_nigeria')
-    load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/abuja_nigeria.osm.pbf', true)
-    switch_databases('abuja_nigeria', 'gis_test')
-
-    switch_databases('gis_test', 'tokyo')
-    load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/tokyo_japan.osm.pbf', true)
-    switch_databases('tokyo', 'gis_test')
+    reload_database_using_mapzen_extract('abidjan_ivory_coast', 'abidjan_ivory-coast')
+    reload_database_using_mapzen_extract('accra_ghana', 'accra_ghana')
+    reload_database_using_mapzen_extract('abuja_nigeria', 'abuja_nigeria')
+    reload_database_using_mapzen_extract('tokyo', 'tokyo_japan')
 
     switch_databases('gis_test', 'market')
     CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/#map=19/53.86360/-0.66369', 9..9, 'master', 'master', 'x3', 0.4, 100)
@@ -93,13 +78,8 @@ module CartoCSSHelper
     CartoCSSHelper.visualise_place_by_url('https://www.openstreetmap.org/?mlat=47.932173&mlon=8.763528&zoom=16#map=16/47.9337/8.7667', 9..16, 'water', 'master', 'Danube test', 1, 1000)
     switch_databases('danube_sinkhole', 'gis_test')
 
-    switch_databases('gis_test', 'warsaw')
-    load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/warsaw_poland.osm.pbf', true)
-    switch_databases('warsaw', 'gis_test')
-
-    switch_databases('gis_test', 'new_york')
-    load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/new_york_new_york.osm.pbf', true)
-    switch_databases('new_york', 'gis_test')
+    reload_database_using_mapzen_extract('warsaw', 'warsaw_poland')
+    reload_database_using_mapzen_extract('new_york', 'new_york_new_york')
   end
 
   def create_databases()
@@ -113,10 +93,12 @@ module CartoCSSHelper
   def get_list_of_databases()
 	 databases = []
     #https://github.com/mapzen/metroextractor-cities/blob/master/cities.json
+    #TODO - it is quickly bitrotting as result of changes, including ones that affect existing extract names/ranges
+    #this should be generated from this file
     databases << {:top => 50.240, :left => 19.594, :bottom => 49.850, :right => 20.275, :name => 'krakow'}
     databases << {:top => 48.06673, :left => 11.82377, :bottom => 47.06673, :right => 12.82377, :name => 'well_mapped_rocky_mountains'}
     databases << {:top => 42.130, :left => 12.109, :bottom => 41.578, :right => 12.845, :name => 'rome'}
-    databases << {:top => 48.609, :left => 15.763, :bottom => 47.496, :right => 17.841, :name => 'vienna'}
+    databases << {:top => 48.386, :left => 16.137, :bottom => 48.048, :right => 16.714, :name => 'vienna'}
     databases << {:top => 5.523, :left => -4.183, :bottom => 5.220, :right => -3.849, :name => 'abidjan_ivory_coast'}
     databases << {:top => 33.82792, :left => -112.5891, :bottom => 32.82792, :right => -111.5891, :name => 'south_mountain'}
     databases << {:top => 51.984, :left => -1.115, :bottom => 50.941, :right => 0.895, :name => 'london'}
