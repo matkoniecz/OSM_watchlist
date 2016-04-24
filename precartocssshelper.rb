@@ -15,7 +15,6 @@ module CartoCSSHelper
     before_after_directly_from_database('abuja_nigeria', 9.05020, 7.52628, to, from, zlevels, image_size, 'abuja_nigeria')
     before_after_directly_from_database('market', 53.86360, -0.66369, to, from, zlevels, image_size, 'market')
     before_after_directly_from_database('tokyo', 35.31782, 139.50708, to, from, zlevels, image_size, 'tokyo')
-
   end
 
   def reload_database_using_mapzen_extract(database_name, mapzen_extract_name)
@@ -24,14 +23,7 @@ module CartoCSSHelper
     switch_databases(database_name, 'gis_test')
   end
 
-  end
-
-  def reload_databases
-    #create_new_gis_database('for_tests')
-    #switch_databases('gis_test', 'for_tests')
-    #CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=47.56673&mlon=12.32377#map=19/47.56673/12.32377', 19..19, 'master', 'master', 'footways on natural=bare_rock', 0.001, 10)
-    #switch_databases('for_tests', 'gis_test')
-
+  def reload_databases()
     reload_database_using_mapzen_extract('krakow', 'krakow_poland')
     reload_database_using_mapzen_extract('london', 'london_england')
     reload_database_using_mapzen_extract('rome', 'rome_italy')
@@ -116,7 +108,8 @@ module CartoCSSHelper
     databases << {:top => 52.623, :left => 20.341, :bottom => 51.845, :right => 21.692, :name => 'warsaw'}
 =begin
     databases << {:top => , :left => , :bottom => , :right => , :name => ''}
-=end    return databases
+=end 
+    return databases
 	end
 
   def before_after_from_loaded_databases(tags, to, from, zlevels, image_size = 375, count = 3, skip = 0)
