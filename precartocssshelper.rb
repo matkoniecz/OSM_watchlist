@@ -19,7 +19,7 @@ module CartoCSSHelper
 
   def reload_database_using_mapzen_extract(database_name, mapzen_extract_name)
     switch_databases('gis_test', database_name)
-    load_remote_file('https://s3.amazonaws.com/metro-extracts.mapzen.com/#{mapzen_extract_name}.osm.pbf', true)
+    load_remote_file("https://s3.amazonaws.com/metro-extracts.mapzen.com/#{mapzen_extract_name}.osm.pbf", true)
     switch_databases(database_name, 'gis_test')
   end
 
