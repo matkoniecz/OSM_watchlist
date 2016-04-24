@@ -96,5 +96,5 @@ def init(create_copy = true, index='')
   if with_uncommitted_changes
     raise 'uncommitted changes in project'
   end
-  CartoCSSHelper::Downloader.check_for_free_space
+  CartoCSSHelper::OverpassQueryGenerator.check_for_free_space
 end
