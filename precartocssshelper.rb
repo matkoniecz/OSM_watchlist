@@ -23,53 +23,35 @@ module CartoCSSHelper
     switch_databases(database_name, 'gis_test')
   end
 
+  def reload_database_sourced_as_osm_url(database_name, url, download_bbox_size)
+    switch_databases('gis_test', database_name)
+    #TODO - is it really flushing cache without manually deleting overpass cache?
+    CartoCSSHelper.visualise_place_by_url(url, 19..19, 'master', 'master', nil, download_bbox_size, 35)
+    switch_databases(database_name, 'gis_test')
+  end
+
   def reload_databases()
     reload_database_using_mapzen_extract('krakow', 'krakow_poland')
     reload_database_using_mapzen_extract('london', 'london_england')
     reload_database_using_mapzen_extract('rome', 'rome_italy')
     reload_database_using_mapzen_extract('reykjavik', 'reykjavik_iceland')
-
     reload_database_using_mapzen_extract('vienna', 'vienna_austria')
 
-
-    switch_databases('gis_test', 'well_mapped_rocky_mountains')
-    #TODO - is it really flushing cache?
-    CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=47.56673&mlon=12.32377#map=19/47.56673/12.32377', 19..19, 'master', 'master', 'footways on natural=bare_rock', 1, 10)
-    switch_databases('well_mapped_rocky_mountains', 'gis_test')
+    #footways on natural=bare_rock
+    reload_database_sourced_as_osm_url('well_mapped_rocky_mountains', 'http://www.openstreetmap.org/?mlat=47.56673&mlon=12.32377#map=19/47.56673/12.32377', 1)
 
     reload_database_using_mapzen_extract('abidjan_ivory_coast', 'abidjan_ivory-coast')
     reload_database_using_mapzen_extract('accra_ghana', 'accra_ghana')
     reload_database_using_mapzen_extract('abuja_nigeria', 'abuja_nigeria')
     reload_database_using_mapzen_extract('tokyo', 'tokyo_japan')
 
-    switch_databases('gis_test', 'market')
-    CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/#map=19/53.86360/-0.66369', 9..9, 'master', 'master', 'x3', 0.4, 100)
-    switch_databases('market', 'gis_test')
-
-    switch_databases('gis_test', 'rosenheim')
-    CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=47.82989&mlon=12.07764#map=19/47.82989/12.07764', 19..19, 'master', 'master', 'x2', 1, 10)
-    switch_databases('rosenheim', 'gis_test')
-
-    switch_databases('gis_test', 'south_mountain')
-    CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=33.32792&mlon=-112.08914#map=19/33.32792/-112.08914', 19..19, 'master', 'master', 'x3', 1, 10)
-    switch_databases('south_mountain', 'gis_test')
-
-    switch_databases('gis_test', 'bridleway')
-    CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=53.2875&mlon=-1.5254#map=15/53.2875/-1.5254', 19..19, 'master', 'master', 'x3', 1, 10)
-    switch_databases('bridleway', 'gis_test')
-
-    switch_databases('gis_test', 'vineyards')
-    CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=48.08499&mlon=7.64856#map=19/48.08499/7.64856', 19..19, 'master', 'master', 'x3', 0.8, 500)
-    switch_databases('vineyards', 'gis_test')
-
-    switch_databases('gis_test', 'monte_lozzo')
-    CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=45.2952&mlon=11.6215#map=14/45.2952/11.6215', 19..19, 'master', 'master', 'x3', 0.8, 500)
-    switch_databases('monte_lozzo', 'gis_test')
-
-    switch_databases('gis_test', 'danube_sinkhole')
-    CartoCSSHelper.visualise_place_by_url('https://www.openstreetmap.org/?mlat=47.932173&mlon=8.763528&zoom=16#map=16/47.9337/8.7667', 9..16, 'water', 'master', 'Danube test', 1, 1000)
-    switch_databases('danube_sinkhole', 'gis_test')
-
+    reload_database_sourced_as_osm_url('market', 'http://www.openstreetmap.org/#map=19/53.86360/-0.66369', 0.4)
+    reload_database_sourced_as_osm_url('rosenheim', 'http://www.openstreetmap.org/?mlat=47.82989&mlon=12.07764#map=19/47.82989/12.07764', 1)
+    reload_database_sourced_as_osm_url('south_mountain', 'http://www.openstreetmap.org/?mlat=33.32792&mlon=-112.08914#map=19/33.32792/-112.08914', 1)
+    reload_database_sourced_as_osm_url('bridleway', 'http://www.openstreetmap.org/?mlat=53.2875&mlon=-1.5254#map=15/53.2875/-1.5254', 1)
+    reload_database_sourced_as_osm_url('vineyards', 'http://www.openstreetmap.org/?mlat=48.08499&mlon=7.64856#map=19/48.08499/7.64856', 0.8)
+    reload_database_sourced_as_osm_url('monte_lozzo', 'http://www.openstreetmap.org/?mlat=45.2952&mlon=11.6215#map=14/45.2952/11.6215', 0.8)
+    reload_database_sourced_as_osm_url('danube_sinkhole', 'https://www.openstreetmap.org/?mlat=47.932173&mlon=8.763528&zoom=16#map=16/47.9337/8.7667', 1)
     reload_database_using_mapzen_extract('warsaw', 'warsaw_poland')
     reload_database_using_mapzen_extract('new_york', 'new_york_new_york')
   end
