@@ -94,7 +94,7 @@ module CartoCSSHelper
 
     final
     
-    #https://github.com/gravitystorm/openstreetmap-carto/issues/1781
+    #https://github.com/gravitystorm/openstreetmap-carto/issues/1781 - tweaking water colour
     #TODO - from world database
     #before_after_from_loaded_databases({'waterway' => 'river'}, 'water', 'master', 9..19, 1000)
     #before_after_from_loaded_databases({'waterway' => 'stream'}, 'water', 'master', 9..19, 1000)
@@ -104,13 +104,7 @@ module CartoCSSHelper
     #before_after_from_loaded_databases({'natural' => 'coastline'}, 'water', 'master', 9..19, 1000)
     #final
 
-    #generate_preview(['master'])
-
-    #before_after_from_loaded_databases({'historic' => 'wayside_cross'}, 'cross', 'master', 16..22, 375)
-    #before_after_from_loaded_databases({'man_made' => 'cross'}, 'cross', 'master', 16..22, 375)
-
-    #test_cross_pr
-    
+   
     #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'barrier' => 'lift_gate', 'name' => 'a'}, 'closed_way', false, 22..22, 'master', 'master')
     #catcha-all for areas
 
@@ -268,20 +262,6 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
     CartoCSSHelper::Validator.run_tests('v2.32.0')
   end
 
-   def test_destination_change
-   #dashes not visible enough
-   before_after_from_loaded_databases({'access' => 'destination', 'highway' => 'track'}, 'destination', 'master', 15..19)
-   before_after_from_loaded_databases({'access' => 'private', 'highway' => 'track'}, 'destination', 'master', 15..19)
-   #final
-   CartoCSSHelper.probe({'access' => 'destination', 'highway' => 'track'}, 'destination', 'master', 19..19)
-   CartoCSSHelper.probe({'highway' => 'track'}, 'destination', 'master', 19..19)
-   CartoCSSHelper.probe({'access' => 'destination', 'highway' => 'track'}, 'destination', 'master')
-   CartoCSSHelper.probe({'highway' => 'track'}, 'destination', 'master')
-   before_after_from_loaded_databases({'highway' => 'track'}, 'destination', 'master', 10..17)
-   CartoCSSHelper.test({'access' => 'destination', 'highway' => 'track'}, 'destination', 'master')
-   CartoCSSHelper.test({'highway' => 'track'}, 'destination', 'master')
-   CartoCSSHelper.test({'access' => 'private', 'highway' => 'track'}, 'destination', 'master')        
-  end
 end
 
 #    additional_test_unpaved('master', 'master')
