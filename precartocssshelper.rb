@@ -127,13 +127,13 @@ module CartoCSSHelper
       found = false
       ['node', 'way'].each {|type|
         begin
-          latitude, longitude = Downloader.locate_element_with_given_tags_and_type tags, type, lat, lon, max_range_in_km_for_radius
+          latitude, longitude = OverpassQueryGenerator.locate_element_with_given_tags_and_type tags, type, lat, lon, max_range_in_km_for_radius
           if latitude > database[:bottom] && latitude < database[:top] && longitude > database[:left] && longitude < database[:right]
             description = "#{database[:name]} - #{VisualDiff.dict_to_pretty_tag_list(tags)} [#{latitude}, #{longitude}] #{type}"
             before_after_directly_from_database(database[:name], latitude, longitude, to, from, zlevels, image_size, description)
             found = true
           end
-        rescue Downloader::NoLocationFound, Downloader::OverpassRefusedResponse
+        rescue OverpassQueryGenerator::NoLocationFound, OverpassDownloader::OverpassRefusedResponse
           puts 'No nearby instances of tags and tag is not extremely rare - no generation of nearby location and wordwide search was impossible. No diff image will be generated for this location.'
         end
       }
@@ -245,7 +245,7 @@ alter database #{switched_into_for_gis} rename to gis;
   end
   def visualise_changes_on_real_data_pair(tags_a, tags_b, type, latitude, longitude, zlevels, new_branch, old_branch, image_size)
     #TODO - what about neraby nodes? is it also going to work?
-    latitude, longitude = Downloader.find_data_pair(tags_a, tags_b, latitude, longitude)
+    latitude, longitude = OverpassQueryGenerator.find_data_pair(tags_a, tags_b, latitude, longitude)
     if latitude == nil
       return false
     end

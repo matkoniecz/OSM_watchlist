@@ -234,7 +234,7 @@ def generate_preview(branches, download_bbox_size=0.05)
     end
     latitude = (ymin+ymax)/2
     longitude = (xmin+xmax)/2
-    osm_data_filename = Downloader.get_file_with_downloaded_osm_data_for_location(latitude, longitude, download_bbox_size)
+    osm_data_filename = OverpassQueryGenerator.get_file_with_downloaded_osm_data_for_location(latitude, longitude, download_bbox_size)
     DataFileLoader.load_data_into_database(osm_data_filename)
 
     command = "node /usr/share/tilemill/index.js export #{project_name} '#{export_filename}' #{params}"
