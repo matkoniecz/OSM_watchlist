@@ -275,7 +275,13 @@ def final
   exit
 end
 
-#create_databases()
+def encoutered_exception(e)
+	puts e
+	puts
+	puts e.backtrace
+    notify 'Crash during map generation!'
+    sleep 10
+end
 
 begin
   make_copy_of_repository = false
@@ -283,10 +289,9 @@ begin
   #CartoCSSHelper::Configuration.set_known_alternative_overpass_url
   main
 rescue => e
-  puts e
-  puts
-  puts e.backtrace
-  notify_spam('Crash during map generation!')
+  while true
+  	encoutered_exception(e)
+  end
 end
 
 
