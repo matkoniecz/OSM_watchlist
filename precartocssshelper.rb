@@ -53,7 +53,7 @@ module CartoCSSHelper
     reload_database_sourced_as_osm_url('monte_lozzo', 'http://www.openstreetmap.org/?mlat=45.2952&mlon=11.6215#map=14/45.2952/11.6215', 0.8)
     reload_database_sourced_as_osm_url('danube_sinkhole', 'https://www.openstreetmap.org/?mlat=47.932173&mlon=8.763528&zoom=16#map=16/47.9337/8.7667', 1)
     reload_database_using_mapzen_extract('warsaw', 'warsaw_poland')
-    reload_database_using_mapzen_extract('new_york', 'new_york_new_york')
+    reload_database_using_mapzen_extract('new_york', 'new-york_new-york')
   end
 
   def create_databases()
