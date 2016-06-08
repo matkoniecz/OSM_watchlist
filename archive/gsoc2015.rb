@@ -1,5 +1,28 @@
 # encoding: UTF-8
 # frozen_string_literal: true
+def test_on_low_zoom_levels
+  [11, 10, 9, 8].each do |z|
+    ['55c4b27', master].each do |branch| # new-road-style
+      image_size = 780
+      image_size = 300 if z <= 6
+      # get_single_image_from_database('world', branch, 50.8288, 4.3684, z, 300, "Brussels #{branch}")
+      # get_single_image_from_database('world', branch, -36.84870, 174.76135, z, 300, "Auckland #{branch}")
+      # get_single_image_from_database('world', branch, 39.9530, -75.1858, z, 300, "New Jersey #{branch}")
+      # get_single_image_from_database('world', branch, 55.39276, 13.29790, z, 300, "Malmo - fields #{branch}")
+      get_single_image_from_database('world', branch, 50, 40, z, image_size, "Russia interior #{branch}")
+      get_single_image_from_database('world', branch, 50, 20, z, image_size, "Krakow #{branch}")
+      get_single_image_from_database('world', branch, 35.07851, 137.684848, z, image_size, "Japan #{branch}")
+      if z < 10
+        # nothing interesting on z11+
+        get_single_image_from_database('world', branch, -12.924, -67.841, z, image_size, "South America #{branch}")
+        get_single_image_from_database('world', branch, 50, 0, z, image_size, "UK, France #{branch}")
+      end
+      get_single_image_from_database('world', branch, 16.820, 79.915, z, image_size, "India #{branch}")
+      before_after_directly_from_database('world', 53.8656, -0.6659, branch, branch, z..z, image_size, "rural UK #{branch}")
+      before_after_directly_from_database('world', 64.1173, -21.8688, branch, branch, z..z, image_size, "Iceland, Reykjavik #{branch}")
+    end
+  end
+end
 
 def gsoc_places_unpaved(tested_branch, base_branch = 'master', zlevels = 16..16)
   CartoCSSHelper.visualise_place_by_file('test-clean.osm', 50.08690, 19.80704, zlevels, tested_branch, base_branch, 'testowy plik na bazie węzła balickiego')

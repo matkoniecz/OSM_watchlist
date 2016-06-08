@@ -135,14 +135,13 @@ end
 
 module CartoCSSHelper
   def main
-    before_after_from_loaded_databases({ 'man_made' => 'obelisk' }, 'master', 'master', 14..18, 300, 10, 0)
+    # before_after_from_loaded_databases({ 'man_made' => 'obelisk' }, 'master', 'master', 14..18, 300, 10, 0)
 
     test_fishmonger
-    # test_viewpoint
+    before_after_from_loaded_databases({ 'tourism' => 'alpine_hut' }, 'master', 'master', 12..15, 500, 10)
     test_turning_circle
     test_eternal_710_text_resize
 
-    before_after_from_loaded_databases({ 'tourism' => 'alpine_hut' }, 'master', 'master', 12..15, 500, 10)
     final
 
     get_all_road_types.each do |highway|
@@ -152,32 +151,6 @@ module CartoCSSHelper
 
     CartoCSSHelper::VisualDiff.enable_job_pooling
     CartoCSSHelper::VisualDiff.shuffle_jobs(8)
-    final
-
-    [11, 10, 9, 8].each do |z|
-      ['55c4b27', master].each do |branch| # new-road-style
-        image_size = 780
-        image_size = 300 if z <= 6
-        # get_single_image_from_database('world', branch, 50.8288, 4.3684, z, 300, "Brussels #{branch}")
-        # get_single_image_from_database('world', branch, -36.84870, 174.76135, z, 300, "Auckland #{branch}")
-        # get_single_image_from_database('world', branch, 39.9530, -75.1858, z, 300, "New Jersey #{branch}")
-        # get_single_image_from_database('world', branch, 55.39276, 13.29790, z, 300, "Malmo - fields #{branch}")
-        get_single_image_from_database('world', branch, 50, 40, z, image_size, "Russia interior #{branch}")
-        get_single_image_from_database('world', branch, 50, 20, z, image_size, "Krakow #{branch}")
-        get_single_image_from_database('world', branch, 35.07851, 137.684848, z, image_size, "Japan #{branch}")
-        if z < 10
-          # nothing interesting on z11+
-          get_single_image_from_database('world', branch, -12.924, -67.841, z, image_size, "South America #{branch}")
-          get_single_image_from_database('world', branch, 50, 0, z, image_size, "UK, France #{branch}")
-        end
-        get_single_image_from_database('world', branch, 16.820, 79.915, z, image_size, "India #{branch}")
-        before_after_directly_from_database('world', 53.8656, -0.6659, branch, branch, z..z, image_size, "rural UK #{branch}")
-        before_after_directly_from_database('world', 64.1173, -21.8688, branch, branch, z..z, image_size, "Iceland, Reykjavik #{branch}")
-      end
-    end
-    CartoCSSHelper::VisualDiff.shuffle_jobs(8)
-    final
-
     CartoCSSHelper::VisualDiff.run_jobs
   end
 end
