@@ -47,35 +47,6 @@ module CartoCSSHelper
     return true
   end
 
-  def before_after_from_loaded_databases(tags, to, from, zlevels, image_size = 375, count = 3, skip = 0)
-    get_list_of_databases.each do |database|
-      return true if count <= 0
-      if skip > 0
-        skip -= 1
-        next
-      end
-      max_range_in_km_for_radius = 400
-      lat = (database[:top] + database[:bottom]) / 2
-      lon = (database[:left] + database[:right]) / 2
-      found = false
-      ['node', 'way'].each do |type|
-        begin
-          latitude, longitude = OverpassQueryGenerator.locate_element_with_given_tags_and_type tags, type, lat, lon, max_range_in_km_for_radius
-          if fits_in_database_bb?(database, latitude, longitude)
-            description = "#{database[:name]} - #{VisualDiff.dict_to_pretty_tag_list(tags)} [#{latitude}, #{longitude}] #{type}"
-            before_after_directly_from_database(database[:name], latitude, longitude, to, from, zlevels, image_size, description)
-            found = true
-          end
-        rescue OverpassQueryGenerator::NoLocationFound, OverpassDownloader::OverpassRefusedResponse
-          puts 'No nearby instances of tags and tag is not extremely rare - no generation of nearby location and wordwide search was impossible. No diff image will be generated for this location.'
-        end
-      end
-      count -= 1 if found
-    end
-    puts "failed to find #{tags} in loaded databases"
-    return false
-  end
-
   def compare_presense_of_tag(branch, old_branch, key, value)
     # TODO: use it more in standard tests
     CartoCSSHelper::Git.checkout(old_branch)
