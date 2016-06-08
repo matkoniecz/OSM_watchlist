@@ -160,35 +160,11 @@ Style/GlobalVars:
     - 'startup.rb'
     - 'test.rb'
 
-# Offense count: 22
-# Cop supports --auto-correct.
-# Configuration parameters: MaxLineLength.
-Style/IfUnlessModifier:
-  Exclude:
-    - 'archive.rb'
-    - 'gsoc.rb'
-    - 'precartocssshelper.rb'
-    - 'road_grid.rb'
-    - 'startup.rb'
-    - 'test.rb'
-
-
 # Offense count: 2
 # Cop supports --auto-correct.
 Style/InfiniteLoop:
   Exclude:
     - 'test.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/NumericLiterals:
-  MinDigits: 7
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/RedundantParentheses:
-  Exclude:
-    - 'archive.rb'
 
 # Offense count: 15
 # Cop supports --auto-correct.

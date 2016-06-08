@@ -18,9 +18,7 @@ def test_decasing
     ['decased01', 'decased00', 'decasedz11'].each {|branch| # new-road-style
       # [frozen_trunk, master, 'decasedz11'].each {|branch| #new-road-style
       image_size = 780
-      if z <= 6
-        image_size = 300
-      end
+      image_size = 300 if z <= 6
       get_single_image_from_database('world', branch, 50.8288, 4.3684, z, image_size, "Brussels #{branch}")
       get_single_image_from_database('world', branch, -36.84870, 174.76135, z, image_size, "Auckland #{branch}")
       get_single_image_from_database('world', branch, 39.9530, -75.1858, z, image_size, "New Jersey #{branch}")
@@ -352,9 +350,7 @@ def various_from_gsoc
     CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/255795002#map=19/50.30822/19.06292', zlevels, to, from, 'test_pedestrian_on_industrial (1) red')
     CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/157403305#map=18/41.6974955/44.81631', zlevels, to, from, 'conflict with landuse=residential - church collision_with_residential')
 
-    if faster
-      return
-    end
+    return if faster
 
     before_after_directly_from_database('london', 51.50817, -0.12802, to, from, zlevels, image_size, "London - Trafalgar Square #{from} -> #{to}")
     before_after_directly_from_database('krakow', 50.06227, 19.94026, to, from, zlevels, image_size, 'Krakow')
@@ -367,9 +363,7 @@ def various_from_gsoc
     before_after_directly_from_database('london', 51.51320, -0.15145, to, from, zlevels, image_size, 'London - highway=pedestrian area near buildings (1)')
     before_after_directly_from_database('london', 51.49987, -0.16199, to, from, zlevels, image_size, 'London - highway=pedestrian area near buildings (2)')
 
-    if fast
-      return
-    end
+    return if fast
 
     test_pedestrian_on_residential(zlevels, to, from)
     test_pedestrian_on_industrial(zlevels, to, from)
@@ -406,9 +400,7 @@ def various_from_gsoc
     [8].each{|z|
       [frozen_trunk, '1', '0.9', '0.8'].each {|branch| # new-road-style
         image_size = 780
-        if z <= 6
-          image_size = 300
-        end
+        image_size = 300 if z <= 6
         # get_single_image_from_database('world', branch, 50.8288, 4.3684, z, image_size, "Brussels #{branch}")
         # get_single_image_from_database('world', branch, -36.84870, 174.76135, z, image_size, "Auckland #{branch}")
         get_single_image_from_database('world', branch, 39.9530, -75.1858, z, image_size, "New Jersey #{branch}")
@@ -573,7 +565,7 @@ def various_from_gsoc
   edelta_run
   def show_dashes
     ['access', 'master'].each{|branch|
-      ([15, 18]).each {|z|
+      [15, 18].each {|z|
         roads = road_set(true, true)
         roads.each {|tags|
           tags['access'] = 'private'

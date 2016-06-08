@@ -96,9 +96,7 @@ module CartoCSSHelper
 
   def before_after_from_loaded_databases(tags, to, from, zlevels, image_size = 375, count = 3, skip = 0)
     get_list_of_databases.each {|database|
-      if count <= 0
-        return true
-      end
+      return true if count <= 0
       if skip > 0
         skip -= 1
         next
@@ -119,9 +117,7 @@ module CartoCSSHelper
           puts 'No nearby instances of tags and tag is not extremely rare - no generation of nearby location and wordwide search was impossible. No diff image will be generated for this location.'
         end
       }
-      if found
-        count -= 1
-      end
+      count -= 1 if found
     }
     puts "failed to find #{tags} in loaded databases"
     return false
@@ -187,12 +183,8 @@ alter database #{switched_into_for_gis} rename to gis;
   def get_single_image_from_database(database_name, branch, latitude, longitude, zlevel, image_size, header = '')
     switch_databases('gis_test', database_name)
     zlevel_text = "#{zlevel}"
-    if zlevel < 10
-      zlevel_text = "0#{zlevel}"
-    end
-    if header == ''
-      header = branch
-    end
+    zlevel_text = "0#{zlevel}" if zlevel < 10
+    header = branch if header == ''
     header += ' '
     cache_filename = make_image_from_loaded_database(branch, latitude, longitude, zlevel, image_size)
     output_filename = CartoCSSHelper::Configuration.get_path_to_folder_for_output + "#{header} [#{latitude}, #{longitude}] z#{zlevel_text} #{image_size}px #{CartoCSSHelper::Git.get_commit_hash} #{image_size}px.png"
@@ -217,9 +209,7 @@ alter database #{switched_into_for_gis} rename to gis;
 
   def before_after_directly_from_database(database_name, latitude, longitude, to, from, zlevels, image_size, header = nil)
     description = "#{database_name}, z(#{zlevels}): #{from} -> #{to} [#{latitude}, #{longitude}]"
-    if header.nil?
-      header = description
-    end
+    header = description if header.nil?
     puts description
     switch_databases('gis_test', database_name)
     before_after_from_loaded_database(latitude, longitude, to, from, zlevels, image_size, header)
@@ -229,9 +219,7 @@ alter database #{switched_into_for_gis} rename to gis;
   def visualise_changes_on_real_data_pair(tags_a, tags_b, type_a, type_b, latitude, longitude, zlevels, new_branch, old_branch, image_size)
     # TODO: - what about neraby nodes? is it also going to work?
     latitude, longitude = OverpassQueryGenerator.find_data_pair(tags_a, tags_b, latitude, longitude, type_a, type_b)
-    if latitude.nil?
-      return false
-    end
+    return false if latitude.nil?
     header = "#{latitude} #{longitude} - #{VisualDiff.dict_to_pretty_tag_list(tags_a)} near #{VisualDiff.dict_to_pretty_tag_list(tags_b)}"
     VisualDiff.visualise_changes_for_location(latitude, longitude, zlevels, header, new_branch, old_branch, 0.4, image_size)
     return true
@@ -244,16 +232,12 @@ alter database #{switched_into_for_gis} rename to gis;
     max_n = CartoCSSHelper.get_maxn_for_nth_location
     max_n -= skip
     skip_string = ''
-    if skip > 0
-      skip_string = " (#{skip} locations skipped)"
-    end
+    skip_string = " (#{skip} locations skipped)" if skip > 0
     while generated < min
       location = CartoCSSHelper.get_nth_location(n + skip)
       generated += 1 if visualise_changes_on_real_data_pair(tags_a, tags_b, type_a, type_b, location[0], location[1], zlevels, new_branch, old_branch, image_size)
       n += 1
-      if n > max_n
-        return
-      end
+      return if n > max_n
       puts "#{n}/#{max_n} locations checked #{skip_string}. #{generated}/#{min} testing location found"
     end
   end

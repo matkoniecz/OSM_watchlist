@@ -20,7 +20,7 @@ module CartoCSSHelper
       @data_file_maker.prepare_file
       @max_x = way_tag_list.length
       @max_y = way_tag_list.length
-      @free_id = (@max_x + 1) * (@max_y + 1) + 100000
+      @free_id = (@max_x + 1) * (@max_y + 1) + 100_000
 
       add_ways(way_tag_list)
 
@@ -30,9 +30,7 @@ module CartoCSSHelper
       @data_file_maker.finish_file
       DataFileLoader.load_data_into_database(Configuration.get_data_filename, debug)
       zlevel_text = "z#{zlevel}"
-      if zlevel < 10
-        zlevel_text = "z0#{zlevel}"
-      end
+      zlevel_text = "z0#{zlevel}" if zlevel < 10
       data = way_tag_list.to_s + '<>' + area_tag_list.to_s
       data_hash = Digest::SHA1.hexdigest(data)
       output_filename = Configuration.get_path_to_folder_for_output + "road grid #{new_branch} #{zlevel_text} #{Git.get_commit_hash} #{header}.png"
@@ -65,9 +63,7 @@ module CartoCSSHelper
     end
 
     def add_areas(way_count, area_tag_list)
-      if area_tag_list.empty?
-        return
-      end
+      return if area_tag_list.empty?
       available_space_for_one_area = @delta * way_count / area_tag_list.length
       i = 0
       area_tag_list.each {|tag|
@@ -108,12 +104,8 @@ def road_set(without_access = true, without_surface = true)
   # rest_area, services, proposed
   access = ['', 'private', 'destination']
   surface = ['paved', 'unpaved']
-  if without_access
-    access = ['']
-  end
-  if without_surface
-    surface = ['']
-  end
+  access = [''] if without_access
+  surface = [''] if without_surface
 
   returned = []
   main.each{|value|

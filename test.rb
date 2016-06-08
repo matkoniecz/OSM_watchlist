@@ -283,9 +283,7 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
     [11, 10, 9, 8].each{|z|
       ['55c4b27', master].each {|branch| # new-road-style
         image_size = 780
-        if z <= 6
-          image_size = 300
-        end
+        image_size = 300 if z <= 6
         # get_single_image_from_database('world', branch, 50.8288, 4.3684, z, 300, "Brussels #{branch}")
         # get_single_image_from_database('world', branch, -36.84870, 174.76135, z, 300, "Auckland #{branch}")
         # get_single_image_from_database('world', branch, 39.9530, -75.1858, z, 300, "New Jersey #{branch}")
@@ -360,9 +358,7 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
 end
 
 def notify(text, silent = $silent)
-  if silent
-    return
-  end
+  return if silent
   puts "Notification: #{text}"
   system("notify-send '#{text}'")
 end

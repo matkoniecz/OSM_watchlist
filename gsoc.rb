@@ -228,9 +228,7 @@ def generate_preview(branches, download_bbox_size = 0.05)
   branches.each {|branch|
     Git.checkout branch
     export_filename = Configuration.get_path_to_folder_for_branch_specific_cache + filename
-    if File.exist?(export_filename)
-      next
-    end
+    next if File.exist?(export_filename)
     latitude = (ymin + ymax) / 2
     longitude = (xmin + xmax) / 2
     osm_data_filename = OverpassQueryGenerator.get_file_with_downloaded_osm_data_for_location(latitude, longitude, download_bbox_size)

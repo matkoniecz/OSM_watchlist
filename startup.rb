@@ -37,9 +37,7 @@ def working_on_wrong_database_check(name)
   Open3.popen3(command) {|_, stdout, stderr, wait_thr|
     error = stderr.read.chomp
     stdout = stdout.read.chomp
-    if error != '' # or wait_thr.value.success? != true TODO: WAT?
-      raise 'failed command ' + command + ' due to ' + error
-    end
+    raise 'failed command ' + command + ' due to ' + error if error != '' # or wait_thr.value.success? != true TODO: WAT?
     if stdout == ''
       puts "Database #{name} is missing!"
       switch_databases(name, 'gis_test')
@@ -69,9 +67,7 @@ def set_paths(tilemill_project_location)
 end
 
 def init(create_copy = true, index = '')
-  if working_on_wrong_database
-    raise 'loaded_not_generic_database'
-  end
+  raise 'loaded_not_generic_database' if working_on_wrong_database
 
   $silent = false
   project = 'osm-carto'
@@ -93,8 +89,6 @@ def init(create_copy = true, index = '')
 
   set_paths(destination)
 
-  if with_uncommitted_changes
-    raise 'uncommitted changes in project'
-  end
+  raise 'uncommitted changes in project' if with_uncommitted_changes
   CartoCSSHelper::OverpassQueryGenerator.check_for_free_space
 end
