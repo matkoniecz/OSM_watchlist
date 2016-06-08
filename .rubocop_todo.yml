@@ -47,11 +47,9 @@ Metrics/LineLength:
 # Offense count: 33
 # Configuration parameters: CountComments.
 Metrics/MethodLength:
-  Max: 318
+  Max: 300
 
 # Offense count: 1
-Metrics/PerceivedComplexity:
-  Max: 9
 
 # Offense count: 28
 # Cop supports --auto-correct.

@@ -303,8 +303,6 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
     CartoCSSHelper::VisualDiff.shuffle_jobs(8)
     final
 
-
-
     (5..19).each do |zlevel|
       CartoCSSHelper::Grid.new(zlevel, branch, road_set(true, true), areas_set)
     end
