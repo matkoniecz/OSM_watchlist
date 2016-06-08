@@ -45,7 +45,7 @@ module CartoCSSHelper
   end
 
   class LocateTagsInsideLoadedDatabases
-    def initialize(tags, skip=0)
+    def initialize(tags, skip = 0)
       seed_generator = loaded_database_centers(skip)
       locator = LocateTags.new(tags, seed_generator)
       @inner = AllowOnlyLoadedAreas.new(location_provider: locator)
@@ -86,7 +86,7 @@ module CartoCSSHelper
  end
 
   class LocatePairedTags
-    def initialize(tags_a, tags_b, type_a, type_b, seed_generator=land_locations)
+    def initialize(tags_a, tags_b, type_a, type_b, seed_generator = land_locations)
       @tags_a = tags_a
       @tags_b = tags_b
       @type_a = type_a
@@ -113,7 +113,7 @@ module CartoCSSHelper
   end
 
   class LocateTags
-    def initialize(tags, seed_generator=land_locations)
+    def initialize(tags, seed_generator = land_locations)
       @tags = tags
       @seed_generator = seed_generator
     end

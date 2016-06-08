@@ -22,23 +22,6 @@ module CartoCSSHelper
     before_after_directly_from_database('tokyo', 35.31782, 139.50708, to, from, zlevels, image_size, 'tokyo')
   end
 
-  def test_tag_on_real_data_pair_for_this_type(tags_a, tags_b, new_branch, old_branch, zlevels, type_a, type_b, min = 4, skip = 0, image_size = 400)
-    generated = 0
-
-    n = 0
-    max_n = CartoCSSHelper.get_maxn_for_nth_location
-    max_n -= skip
-    skip_string = ''
-    skip_string = " (#{skip} locations skipped)" if skip > 0
-    while generated < min
-      location = CartoCSSHelper.get_nth_location(n + skip)
-      generated += 1 if visualise_changes_on_real_data_pair(tags_a, tags_b, type_a, type_b, location[0], location[1], zlevels, new_branch, old_branch, image_size)
-      n += 1
-      return if n > max_n
-      puts "#{n}/#{max_n} locations checked #{skip_string}. #{generated}/#{min} testing location found"
-    end
-  end
-
   def fits_in_database_bb?(database, latitude, longitude)
     return false if latitude < database[:bottom]
     return false if latitude > database[:top]

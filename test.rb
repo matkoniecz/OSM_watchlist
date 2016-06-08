@@ -162,7 +162,7 @@ end
 
 module CartoCSSHelper
   def main
-    test_forest
+    # test_forest
     # before_after_from_loaded_databases({ 'man_made' => 'obelisk' }, 'master', 'master', 14..18, 300, 10, 0)
 
     # before_after_from_loaded_databases({ 'tourism' => 'alpine_hut' }, 'master', 'master', 12..15, 500, 10)
