@@ -23,4 +23,4 @@ module CartoCSSHelper
       VisualDiff.visualise_changes_for_location(latitude, longitude, zlevels, header, to, from, 0.4, image_size)
     end
   end
- end
+end

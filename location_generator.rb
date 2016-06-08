@@ -83,7 +83,7 @@ module CartoCSSHelper
     def description
       @inner.description
     end
- end
+  end
 
   class LocatePairedTags
     def initialize(tags_a, tags_b, type_a, type_b, seed_generator = land_locations)

@@ -36,20 +36,24 @@ def with_uncommitted_changes
   end
 end
 
-def working_on_wrong_database_check(name)
-  command = 'echo "\l" | psql postgres | grep ' + name
+def execute_command(command)
+  stdout = ''
   Open3.popen3(command) do |_, stdout, stderr, wait_thr|
     error = stderr.read.chomp
     stdout = stdout.read.chomp
     raise 'failed command ' + command + ' due to ' + error if error != '' # or wait_thr.value.success? != true TODO: WAT?
-    if stdout == ''
-      puts "Database #{name} is missing!"
-      switch_databases(name, 'gis_test')
-      # raise 'working_on_wrong_database_check - missing ' + name
-    end
-    return
+    return stdout
   end
   raise 'impossible happened'
+end
+
+def working_on_wrong_database_check(name)
+  command = 'echo "\l" | psql postgres | grep ' + name
+  if execute_command(command) == ''
+    puts "Database #{name} is missing!"
+    switch_databases(name, 'gis_test')
+  end
+  return
 end
 
 def working_on_wrong_database
