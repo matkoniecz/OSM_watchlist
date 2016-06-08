@@ -1,5 +1,20 @@
 # frozen_string_literal: true
 module CartoCSSHelper
+  def land_locations(skip)
+    Enumerator.new do |yielder|
+      n = 0
+      get_list_of_databases.each do |_database|
+        n + +
+        if skip > 0
+          skip -= 1
+        else
+          lat, lon = CartoCSSHelper.get_nth_location(n)
+          yielder.yield lat, lon
+        end
+      end
+    end
+  end
+
   def loaded_database_centers(skip)
     Enumerator.new do |yielder|
       get_list_of_databases.each do |database|
@@ -30,7 +45,7 @@ module CartoCSSHelper
   end
 
   class LocateTagsInsideLoadedDatabases
-    def initialize(_tags_a, _tags_b, _type_a, _type_b, skip)
+    def initialize(tags, skip=0)
       seed_generator = loaded_database_centers(skip)
       locator = LocateTags.new(tags, seed_generator)
       @inner = AllowOnlyLoadedAreas.new(location_provider: locator)
@@ -58,7 +73,6 @@ module CartoCSSHelper
           # puts "#{latitude} #{longitude}"
           get_list_of_databases.each do |database|
             next unless fits_in_database_bb?(database, latitude, longitude)
-            puts "#{latitude} #{longitude} is inside #{database[:name]}"
             yielder.yield latitude, longitude
             next
           end
@@ -73,7 +87,7 @@ module CartoCSSHelper
 
   # blatant DRY violation with locate_tags_inside_loaded_database
   class LocatePairedTags
-    def initialize(tags_a, tags_b, type_a, type_b, seed_generator)
+    def initialize(tags_a, tags_b, type_a, type_b, seed_generator=land_locations)
       @tags_a = tags_a
       @tags_b = tags_b
       @type_a = type_a
@@ -100,7 +114,7 @@ module CartoCSSHelper
   end
 
   class LocateTags
-    def initialize(tags, seed_generator)
+    def initialize(tags, seed_generator=land_locations)
       @tags = tags
       @seed_generator = seed_generator
     end
@@ -119,7 +133,7 @@ module CartoCSSHelper
     end
 
     def description
-      return VisualDiff.dict_to_pretty_tag_list(tags)
+      return VisualDiff.dict_to_pretty_tag_list(@tags)
     end
   end
 

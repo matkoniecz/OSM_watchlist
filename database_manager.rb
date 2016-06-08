@@ -79,20 +79,22 @@ module CartoCSSHelper
     return returned
   end
 
-  def mapzen_database_data(database_name, mapzen_name)
+  def mapzen_database_data(mapzen_name)
     json_describing_mapzen_databases.each do |city|
-      if city[0] == mapzen_name
-        bbox = city[1]["bbox"]
-        return { top: bbox["top"].to_f, left: bbox["left"].to_f, bottom: bbox["bottom"].to_f, right: bbox["right"].to_f, name: database_name }
-      end
+      return city[1]["bbox"] if city[0] == mapzen_name
     end
     raise "not found"
+  end
+
+  def bbox_from_mapzen_data(database_name, mapzen_name)
+    bbox = mapzen_database_data(mapzen_name)
+    return { top: bbox["top"].to_f, left: bbox["left"].to_f, bottom: bbox["bottom"].to_f, right: bbox["right"].to_f, name: database_name }
   end
 
   def get_list_of_databases
     databases = []
     mapzen_databases.each do |entry|
-      databases << mapzen_database_data(entry[:database_name], entry[:mapzen_name])
+      databases << bbox_from_mapzen_data(entry[:database_name], entry[:mapzen_name])
     end
     databases << { top: 33.82792, left: -112.5891, bottom: 32.82792, right: -111.5891, name: 'south_mountain' }
     databases << { top: 48.32989, left: 11.57764, bottom: 47.32989, right: 12.57764, name: 'rosenheim' }

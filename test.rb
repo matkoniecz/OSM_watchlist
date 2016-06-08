@@ -9,6 +9,8 @@ require_relative 'archive/archive'
 require_relative 'road_grid'
 require_relative 'startup'
 require_relative 'precartocssshelper'
+require_relative 'location_generator'
+require_relative 'location_to_image'
 
 include CartoCSSHelper
 
@@ -148,15 +150,19 @@ end
 def test_forest
   CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'natural' => 'valley', 'landuse' => 'forest' }, 'closed_way', false, 22..22, 'forest', 'master')
 
-  locator = LocateTagsInsideLoadedDatabases({ 'natural' => :any_value, 'landuse' => 'forest' })
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'natural' => :any_value, 'landuse' => 'forest' })
   diff_on_loaded_database(location_provider: locator, to: 'forest', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
 
-  locator = LocateTagsInsideLoadedDatabases({ 'natural' => 'wood' })
+  locator = CartoCSSHelper::LocateTags.new({ 'natural' => :any_value, 'landuse' => 'forest' })
+  diff_on_loaded_database(location_provider: locator, to: 'forest', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'natural' => 'wood' })
   diff_on_loaded_database(location_provider: locator, to: 'forest', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
 end
 
 module CartoCSSHelper
   def main
+    test_forest
     # before_after_from_loaded_databases({ 'man_made' => 'obelisk' }, 'master', 'master', 14..18, 300, 10, 0)
 
     # before_after_from_loaded_databases({ 'tourism' => 'alpine_hut' }, 'master', 'master', 12..15, 500, 10)
