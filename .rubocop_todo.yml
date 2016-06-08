@@ -179,19 +179,6 @@ Style/InfiniteLoop:
   Exclude:
     - 'test.rb'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/NegatedIf:
-  Exclude:
-    - 'precartocssshelper.rb'
-    - 'road_grid.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/NilComparison:
-  Exclude:
-    - 'precartocssshelper.rb'
-
 # Offense count: 1
 # Cop supports --auto-correct.
 Style/NumericLiterals:
@@ -234,11 +221,3 @@ Style/UnneededInterpolation:
 Style/WhileUntilModifier:
   Exclude:
     - 'test.rb'
-
-# Offense count: 19
-# Cop supports --auto-correct.
-# Configuration parameters: SupportedStyles, MinSize, WordRegex.
-# SupportedStyles: percent, brackets
-Style/WordArray:
-  EnforcedStyle: brackets
-

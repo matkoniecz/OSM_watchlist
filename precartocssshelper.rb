@@ -162,7 +162,7 @@ module CartoCSSHelper
     cache_folder = CartoCSSHelper::Configuration.get_path_to_folder_for_branch_specific_cache
     get_timestamp = '<<<manual file generation>>>'
     cache_filename = "#{cache_folder + "#{latitude} #{longitude} #{zlevel}zlevel #{image_size}px #{get_timestamp} #{render_bbox_size}.png"}"
-    if !File.exist?(cache_filename)
+    unless File.exist?(cache_filename)
       TilemillHandler.run_tilemill_export_image(latitude, longitude, zlevel, render_bbox_size, image_size, cache_filename)
     end
     return cache_filename
@@ -217,7 +217,7 @@ alter database #{switched_into_for_gis} rename to gis;
 
   def before_after_directly_from_database(database_name, latitude, longitude, to, from, zlevels, image_size, header = nil)
     description = "#{database_name}, z(#{zlevels}): #{from} -> #{to} [#{latitude}, #{longitude}]"
-    if header == nil
+    if header.nil?
       header = description
     end
     puts description
@@ -229,7 +229,7 @@ alter database #{switched_into_for_gis} rename to gis;
   def visualise_changes_on_real_data_pair(tags_a, tags_b, type_a, type_b, latitude, longitude, zlevels, new_branch, old_branch, image_size)
     # TODO: - what about neraby nodes? is it also going to work?
     latitude, longitude = OverpassQueryGenerator.find_data_pair(tags_a, tags_b, latitude, longitude, type_a, type_b)
-    if latitude == nil
+    if latitude.nil?
       return false
     end
     header = "#{latitude} #{longitude} - #{VisualDiff.dict_to_pretty_tag_list(tags_a)} near #{VisualDiff.dict_to_pretty_tag_list(tags_b)}"

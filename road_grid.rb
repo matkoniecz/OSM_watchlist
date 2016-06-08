@@ -37,7 +37,7 @@ module CartoCSSHelper
       data_hash = Digest::SHA1.hexdigest(data)
       output_filename = Configuration.get_path_to_folder_for_output + "road grid #{new_branch} #{zlevel_text} #{Git.get_commit_hash} #{header}.png"
       cache_filename = Configuration.get_path_to_folder_for_branch_specific_cache + "road grid v8 #{zlevel_text} #{data_hash}.png"
-      if !File.exist?(cache_filename)
+      unless File.exist?(cache_filename)
         image_size = 3000
         render_bbox_size = VisualDiff.get_render_bbox_size(zlevel, image_size, @lat)
         TilemillHandler.run_tilemill_export_image(@lat, @lon, zlevel, render_bbox_size, image_size, cache_filename, debug)
