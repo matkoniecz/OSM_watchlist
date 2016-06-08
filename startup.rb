@@ -3,13 +3,16 @@ def get_project_location(project_name)
   return File.join(ENV['HOME'], 'Documents', 'MapBox', 'project', project_name, '')
 end
 
-def create_frozen_copy(project, index = '')
-  copied_project = project + "-frozen#{index}"
+def destination_of_frozen_copy(project)
+  copied_project = project + "-frozen"
+  return get_project_location(copied_project)
+end
+
+def create_frozen_copy(project)
   source = get_project_location(project)
-  destination = get_project_location(copied_project)
+  destination = destination_of_frozen_copy(project)
   FileUtils.remove_entry destination, true
   FileUtils.copy_entry source, destination, false, false, true
-  return destination
 end
 
 def expect_empty_stout_sterr(command)
@@ -50,12 +53,11 @@ def working_on_wrong_database_check(name)
 end
 
 def working_on_wrong_database
-  # TODO: load it from database list for the freaking freak
-  databases = ['krakow', 'vienna', 'london', 'rome', 'world', 'reykjavik', 'accra_ghana', 'abuja_nigeria', 'abidjan_ivory_coast',
-               'well_mapped_rocky_mountains', 'rosenheim', 'south_mountain', 'tokyo', 'market', 'bridleway', 'vineyards', 'monte_lozzo',
-               'danube_sinkhole', 'warsaw', 'new_york']
-  databases.each do |name|
-    working_on_wrong_database_check(name)
+  database_list = get_list_of_databases
+  database_list << { name: "world" } # TODO: what about world database???
+
+  database_list.each do |name|
+    working_on_wrong_database_check(name[:name])
   end
   return false
 end
@@ -80,19 +82,19 @@ def warn_about_live_git_repository
   puts 'WARNING WARNING WARNING'
 end
 
-def init(create_copy = true, index = '')
-  raise 'loaded_not_generic_database' if working_on_wrong_database
-
+def init(create_copy = true)
   $silent = false
   project = 'osm-carto'
   destination = get_project_location(project)
   if create_copy
-    destination = create_frozen_copy(project, index)
+    destination = destination_of_frozen_copy(project)
   else
     warn_about_live_git_repository
   end
-
   set_paths(destination)
+
+  raise 'loaded_not_generic_database' if working_on_wrong_database
+  create_frozen_copy(project)
 
   raise 'uncommitted changes in project' if with_uncommitted_changes
   CartoCSSHelper::OverpassQueryGenerator.check_for_free_space
