@@ -94,7 +94,7 @@ def init(create_copy = true)
   set_paths(destination)
 
   raise 'loaded_not_generic_database' if working_on_wrong_database
-  create_frozen_copy(project)
+  create_frozen_copy(project) if create_copy
 
   raise 'uncommitted changes in project' if with_uncommitted_changes
   CartoCSSHelper::OverpassQueryGenerator.check_for_free_space

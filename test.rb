@@ -21,11 +21,22 @@ def make_copy_of_repository
 end
 
 def test_turning_circle
-  test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'residential' }, 'turning_circle', 'master', 15..19, 'node', 'way', 2, 0, 375)
-  test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'living_street' }, 'turning_circle', 'master', 15..19, 'node', 'way', 2, 0, 375)
-  test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'service' }, 'turning_circle', 'master', 15..19, 'node', 'way', 2, 0, 375)
-  test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'service', 'service' => 'driveway' }, 'turning_circle', 'master', 15..19, 'node', 'way', 2, 0, 375)
-  test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'service', 'service' => 'parking_aisle' }, 'turning_circle', 'master', 15..19, 'node', 'way', 2, 0, 375)
+  tags_a = { 'highway' => 'turning_circle' }
+  tags = [{ 'highway' => 'residential' }, { 'highway' => 'living_street' },
+          { 'highway' => 'service' }, { 'highway' => 'service', 'service' => 'driveway' },
+          { 'highway' => 'service', 'service' => 'parking_aisle' }]
+
+  tags.each do |tags_b|
+    puts tags_b
+    locator = CartoCSSHelper::LocatePairedTagsInsideLoadedDatabases.new(tags_a, tags_b, 'node', 'way', 0)
+    diff_on_loaded_database(location_provider: locator, to: 'turning_circle', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
+  end
+
+  # test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'residential' }, 'turning_circle', 'master', 15..19, 'node', 'way', 2, 0, 375)
+  # test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'living_street' }, 'turning_circle', 'master', 15..19, 'node', 'way', 2, 0, 375)
+  # test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'service' }, 'turning_circle', 'master', 15..19, 'node', 'way', 2, 0, 375)
+  # test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'service', 'service' => 'driveway' }, 'turning_circle', 'master', 15..19, 'node', 'way', 2, 0, 375)
+  # test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'service', 'service' => 'parking_aisle' }, 'turning_circle', 'master', 15..19, 'node', 'way', 2, 0, 375)
 end
 
 def test_viewpoint
@@ -92,6 +103,10 @@ def database_cleaning
 end
 
 def barrier_names
+  before_after_from_loaded_databases({ 'barrier' => 'wall', 'name' => :any_value }, 'barrier_way', 'master', 15..19, 600, 1)
+  before_after_from_loaded_databases({ 'barrier' => 'wall', 'name' => :any_value }, 'barrier_way', 'master', 15..19)
+  before_after_from_loaded_databases({ 'barrier' => :any_value, 'name' => :any_value }, 'barrier_way', 'master', 15..19)
+
   # PR to redo
   CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 18..18, 'barrier_way', 'master', 'tourism_way', 0.1)
   CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 15..22, 'barrier_way', 'master', 'tourism_way', 0.1)
@@ -99,9 +114,6 @@ def barrier_names
   CartoCSSHelper.probe({ 'barrier' => 'wall', 'name' => :any_value }, 'barrier_way', 'master', 19..19)
   CartoCSSHelper.probe({ 'barrier' => 'wall', 'name' => :any_value }, 'barrier_way', 'master', 8..8)
   CartoCSSHelper.probe({ 'barrier' => 'wall', 'name' => :any_value }, 'barrier_way', 'master')
-  before_after_from_loaded_databases({ 'barrier' => 'wall', 'name' => :any_value }, 'barrier_way', 'master', 15..19, 600, 1)
-  before_after_from_loaded_databases({ 'barrier' => 'wall', 'name' => :any_value }, 'barrier_way', 'master', 15..19)
-  before_after_from_loaded_databases({ 'barrier' => :any_value, 'name' => :any_value }, 'barrier_way', 'master', 15..19)
   CartoCSSHelper.test({ 'barrier' => 'wall', 'name' => :any_value }, 'barrier_way', 'master')
 
 =begin
@@ -133,12 +145,21 @@ def missing_labels
   CartoCSSHelper.test_tag_on_real_data({ 'aeroway' => 'gate', 'ref' => :any_value }, 'v2.31.0', 'v2.30.0', 22..22, ['way'], 2)
 end
 
+def test_forest
+  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'natural' => 'valley', 'landuse' => 'forest' }, 'closed_way', false, 22..22, 'forest', 'master')
+
+  locator = LocateTagsInsideLoadedDatabases({ 'natural' => :any_value, 'landuse' => 'forest' })
+  diff_on_loaded_database(location_provider: locator, to: 'forest', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
+
+  locator = LocateTagsInsideLoadedDatabases({ 'natural' => 'wood' })
+  diff_on_loaded_database(location_provider: locator, to: 'forest', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
+end
+
 module CartoCSSHelper
   def main
     # before_after_from_loaded_databases({ 'man_made' => 'obelisk' }, 'master', 'master', 14..18, 300, 10, 0)
 
-    test_fishmonger
-    before_after_from_loaded_databases({ 'tourism' => 'alpine_hut' }, 'master', 'master', 12..15, 500, 10)
+    # before_after_from_loaded_databases({ 'tourism' => 'alpine_hut' }, 'master', 'master', 12..15, 500, 10)
     test_turning_circle
     test_eternal_710_text_resize
 
