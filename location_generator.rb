@@ -85,7 +85,6 @@ module CartoCSSHelper
     end
  end
 
-  # blatant DRY violation with locate_tags_inside_loaded_database
   class LocatePairedTags
     def initialize(tags_a, tags_b, type_a, type_b, seed_generator=land_locations)
       @tags_a = tags_a
