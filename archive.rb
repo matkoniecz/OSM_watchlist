@@ -14,6 +14,78 @@
 #  CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/157403305#map=18/41.6974955/44.81631', zlevels, branch, branch, 'conflict with landuse=residential - church collision_with_residential')
 # }
 
+def test_eternal_710_text_resize
+    # before_after_from_loaded_databases({'amenity'=>'hospital', 'name' => :any_value}, 'eternal_710', 'master', 18..18, 1000, 5, 0)
+    # before_after_from_loaded_databases({'highway' => 'pedestrian', 'area'=>'yes', 'name' => :any_value}, 'eternal_710', 'master', 18..18, 1000, 5, 0)
+    affected = [
+      # was 11
+      { 'leisure' => 'miniature_golf' },
+      { 'leisure' => 'golf_course' },
+      { 'leisure' => 'playground' },
+      { 'leisure' => 'water_park' },
+      # was 9
+      { 'amenity' => 'car_rental' },
+      { 'amenity' => 'bicycle_rental' },
+      { 'leisure' => 'slipway' },
+      { 'amenity' => 'parking' },
+      { 'amenity' => 'bicycle_parking' },
+      { 'amenity' => 'motorcycle_parking' },
+      { 'historic' => 'memorial' },
+      { 'historic' => 'monument' },
+      { 'historic' => 'archaeological_site' },
+      { 'amenity' => 'embassy' },
+      { 'amenity' => 'taxi' },
+      { 'highway' => 'bus_stop' },
+      { 'amenity' => 'fuel' },
+      { 'amenity' => 'bus_station' },
+      { 'amenity' => 'fountain' },
+      { 'man_made' => 'lighthouse' },
+      { 'man_made' => 'windmill' },
+      { 'amenity' => 'recycling' },
+      { 'natural' => 'tree' },
+
+      # was 8
+      { 'aeroway' => 'helipad' },
+      { 'aeroway' => 'aerodrome' },
+      { 'amenity' => 'hospital' },
+      { 'amenity' => 'clinic' },
+      { 'amenity' => 'pharmacy' },
+      { 'amenity' => 'doctors' },
+      { 'amenity' => 'dentist' },
+      { 'amenity' => 'veterinary' },
+
+      # was 10, partial list
+      { 'shop' => 'books' },
+      { 'place' => 'island' },
+      { 'amenity' => 'pub' },
+      { 'amenity' => 'police' },
+      { 'amenity' => 'car_wash' },
+      { 'tourism' => 'museum' },
+      { 'amenity' => 'place_of_worship' },
+      { 'natural' => 'peak' },
+      { 'historic' => 'wayside_cross' },
+      { 'amenity' => 'bank' },
+      { 'amenity' => 'atm' },
+      { 'tourism' => 'alpine_hut' },
+      { 'amenity' => 'prison' },
+      { 'shop' => 'bakery' },
+      { 'shop' => 'supermarket' },
+      { 'amenity' => 'hunting_stand' },
+    ]
+
+    active = false
+    affected.each do |tag|
+      # active =true if (tag == {'amenity' => 'car_wash'})
+      # next unless active
+      # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test(tag.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'node', false, 22..22, 'eternal_710', 'master')
+    end
+    affected.each do |tag|
+      before_after_from_loaded_databases(tag.merge({ 'name' => :any_value }), 'eternal_710', 'master', 16..18, 300, 1, 5)
+      # before_after_from_loaded_databases(tag, 'eternal_710', 'master', 16..18, 300, 1, 0)
+    end
+end
+
+
 def test_decasing
   [11].each do |z|
     ['decased01', 'decased00', 'decasedz11'].each do |branch| # new-road-style

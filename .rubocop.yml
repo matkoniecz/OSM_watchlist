@@ -52,3 +52,5 @@ Lint/ShadowingOuterLocalVariable:
   Exclude:
     - 'archive.rb'
 
+Style/BracesAroundHashParameters:
+  Enabled: false

@@ -43,15 +43,10 @@ module CartoCSSHelper
     CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'shop' => 'fishmonger', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ' }, 'node', false, 22..22, 'fishmonger', 'master')
     before_after_from_loaded_databases({ 'shop' => 'fishmonger' }, 'fishmonger', 'master', 17..18, 300, 2, 8)
 
-    # before_after_from_loaded_databases({'amenity'=>'hospital', 'name' => :any_value}, 'eternal_710', 'master', 18..18, 1000, 5, 0)
-    # before_after_from_loaded_databases({'highway' => 'pedestrian', 'area'=>'yes', 'name' => :any_value}, 'eternal_710', 'master', 18..18, 1000, 5, 0)
 
     # before_after_from_loaded_databases({'highway' => 'pedestrian', 'area'=>'yes', 'name' => :any_value}, 'pnorman/road_areas', 'v2.38.0', 16..18, 400, 2, 0)
 
     # before_after_from_loaded_databases({'highway' => :any_value, 'name' => :any_value}, 'pnorman/road_areas', 'v2.38.0', 16..18, 1000, 2, 0)
-
-    n = 4
-    skip = 0
 
     # switch_databases('gis_test', 'krakow')
 
@@ -65,73 +60,7 @@ module CartoCSSHelper
     # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'amenity' => 'bicycle_parking'}.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'closed_way', false, 22..22, 'eternal_710', 'master')
     # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'amenity' => 'parking'}.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'closed_way', false, 22..22, 'eternal_710', 'master')
     # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'amenity' => 'motorcycle_parking'}.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'closed_way', false, 22..22, 'eternal_710', 'master')
-
-    affected = [
-      # was 11
-      { 'leisure' => 'miniature_golf' },
-      { 'leisure' => 'golf_course' },
-      { 'leisure' => 'playground' },
-      { 'leisure' => 'water_park' },
-      # was 9
-      { 'amenity' => 'car_rental' },
-      { 'amenity' => 'bicycle_rental' },
-      { 'leisure' => 'slipway' },
-      { 'amenity' => 'parking' },
-      { 'amenity' => 'bicycle_parking' },
-      { 'amenity' => 'motorcycle_parking' },
-      { 'historic' => 'memorial' },
-      { 'historic' => 'monument' },
-      { 'historic' => 'archaeological_site' },
-      { 'amenity' => 'embassy' },
-      { 'amenity' => 'taxi' },
-      { 'highway' => 'bus_stop' },
-      { 'amenity' => 'fuel' },
-      { 'amenity' => 'bus_station' },
-      { 'amenity' => 'fountain' },
-      { 'man_made' => 'lighthouse' },
-      { 'man_made' => 'windmill' },
-      { 'amenity' => 'recycling' },
-      { 'natural' => 'tree' },
-
-      # was 8
-      { 'aeroway' => 'helipad' },
-      { 'aeroway' => 'aerodrome' },
-      { 'amenity' => 'hospital' },
-      { 'amenity' => 'clinic' },
-      { 'amenity' => 'pharmacy' },
-      { 'amenity' => 'doctors' },
-      { 'amenity' => 'dentist' },
-      { 'amenity' => 'veterinary' },
-
-      # was 10, partial list
-      { 'shop' => 'books' },
-      { 'place' => 'island' },
-      { 'amenity' => 'pub' },
-      { 'amenity' => 'police' },
-      { 'amenity' => 'car_wash' },
-      { 'tourism' => 'museum' },
-      { 'amenity' => 'place_of_worship' },
-      { 'natural' => 'peak' },
-      { 'historic' => 'wayside_cross' },
-      { 'amenity' => 'bank' },
-      { 'amenity' => 'atm' },
-      { 'tourism' => 'alpine_hut' },
-      { 'amenity' => 'prison' },
-      { 'shop' => 'bakery' },
-      { 'shop' => 'supermarket' },
-      { 'amenity' => 'hunting_stand' },
-    ]
-
-    active = false
-    affected.each do |tag|
-      # active =true if (tag == {'amenity' => 'car_wash'})
-      # next unless active
-      # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test(tag.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'node', false, 22..22, 'eternal_710', 'master')
-    end
-    affected.each do |tag|
-      before_after_from_loaded_databases(tag.merge({ 'name' => :any_value }), 'eternal_710', 'master', 16..18, 300, 1, 5)
-      # before_after_from_loaded_databases(tag, 'eternal_710', 'master', 16..18, 300, 1, 0)
-    end
+    test_eternal_710_text_resize
 
     before_after_from_loaded_databases({ 'man_made' => 'obelisk' }, 'master', 'master', 14..18, 300, 10, 0)
 
