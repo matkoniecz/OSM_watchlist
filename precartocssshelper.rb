@@ -1,5 +1,5 @@
 module CartoCSSHelper
-  def large_scale_diff(to, from='master', image_size=375, zlevels = 8..19)
+  def large_scale_diff(to, from = 'master', image_size = 375, zlevels = 8..19)
     puts
     puts "large_scale_diff: #{from}->#{to}"
     before_after_directly_from_database('krakow', 50.06227, 19.94026, to, from, zlevels, image_size, 'Krakow')
@@ -25,19 +25,19 @@ module CartoCSSHelper
 
   def reload_database_sourced_as_osm_url(database_name, url, download_bbox_size)
     switch_databases('gis_test', database_name)
-    #TODO - is it really flushing cache without manually deleting overpass cache?
+    # TODO: - is it really flushing cache without manually deleting overpass cache?
     CartoCSSHelper.visualise_place_by_url(url, 19..19, 'master', 'master', nil, download_bbox_size, 35)
     switch_databases(database_name, 'gis_test')
   end
 
-  def reload_databases()
+  def reload_databases
     reload_database_using_mapzen_extract('krakow', 'krakow_poland')
     reload_database_using_mapzen_extract('london', 'london_england')
     reload_database_using_mapzen_extract('rome', 'rome_italy')
     reload_database_using_mapzen_extract('reykjavik', 'reykjavik_iceland')
     reload_database_using_mapzen_extract('vienna', 'vienna_austria')
 
-    #footways on natural=bare_rock
+    # footways on natural=bare_rock
     reload_database_sourced_as_osm_url('well_mapped_rocky_mountains', 'http://www.openstreetmap.org/?mlat=47.56673&mlon=12.32377#map=19/47.56673/12.32377', 1)
 
     reload_database_using_mapzen_extract('abidjan_ivory_coast', 'abidjan_ivory-coast')
@@ -56,43 +56,43 @@ module CartoCSSHelper
     reload_database_using_mapzen_extract('new_york', 'new-york_new-york')
   end
 
-  def create_databases()
+  def create_databases
     create_new_gis_database('gis')
     create_new_gis_database('gis_test')
     get_list_of_databases.each {|database|
-	    create_new_gis_database(database[:name])
+      create_new_gis_database(database[:name])
     }
   end
 
-  def get_list_of_databases()
-	 databases = []
-    #https://github.com/mapzen/metroextractor-cities/blob/master/cities.json
-    #TODO - it is quickly bitrotting as result of changes, including ones that affect existing extract names/ranges
-    #this should be generated from this file
-    databases << {:top => 50.240, :left => 19.594, :bottom => 49.850, :right => 20.275, :name => 'krakow'}
-    databases << {:top => 48.06673, :left => 11.82377, :bottom => 47.06673, :right => 12.82377, :name => 'well_mapped_rocky_mountains'}
-    databases << {:top => 42.130, :left => 12.109, :bottom => 41.578, :right => 12.845, :name => 'rome'}
-    databases << {:top => 48.386, :left => 16.137, :bottom => 48.048, :right => 16.714, :name => 'vienna'}
-    databases << {:top => 5.523, :left => -4.183, :bottom => 5.220, :right => -3.849, :name => 'abidjan_ivory_coast'}
-    databases << {:top => 33.82792, :left => -112.5891, :bottom => 32.82792, :right => -111.5891, :name => 'south_mountain'}
-    databases << {:top => 51.984, :left => -1.115, :bottom => 50.941, :right => 0.895, :name => 'london'}
-    databases << {:top => 64.297, :left => -22.826, :bottom => 63.771, :right => -21.140, :name => 'reykjavik'}
-    databases << {:top => 48.32989, :left => 11.57764, :bottom => 47.32989, :right => 12.57764, :name => 'rosenheim'}
-    databases << {:top => 54.06360, :left => -0.86369, :bottom => 53.66360, :right => -0.46369, :name => 'market'}
-    databases << {:top => 36.558, :left => 138.779, :bottom => 34.867, :right => 141.152, :name => 'tokyo'}
-    databases << {:top => 9.246, :left => 7.248, :bottom => 8.835, :right => 7.717, :name => 'abuja_nigeria'}
-    databases << {:top => 5.675, :left => -0.437, :bottom => 5.475, :right => -0.071, :name => 'accra_ghana'}
-    databases << {:top => 53.7875, :left => -2.0254, :bottom => 52.7875, :right => -1.0254, :name => 'bridleway'}
-    databases << {:top => 48.48499, :left => 7.24856, :bottom => 47.68499, :right => 8.04856, :name => 'vineyards'}
-    databases << {:top => 45.6952, :left => 11.2215, :bottom => 44.8952, :right => 12.0215, :name => 'monte_lozzo'}
-    databases << {:top => 48.4337, :left => 8.2667, :bottom => 47.4337, :right => 9.2667, :name => 'danube_sinkhole'}
-    databases << {:top => 41.097, :left => -74.501, :bottom => 40.345, :right => -73.226, :name => 'new_york'}
-    databases << {:top => 52.623, :left => 20.341, :bottom => 51.845, :right => 21.692, :name => 'warsaw'}
+  def get_list_of_databases
+    databases = []
+    # https://github.com/mapzen/metroextractor-cities/blob/master/cities.json
+    # TODO - it is quickly bitrotting as result of changes, including ones that affect existing extract names/ranges
+    # this should be generated from this file
+    databases << { top: 50.240, left: 19.594, bottom: 49.850, right: 20.275, name: 'krakow' }
+    databases << { top: 48.06673, left: 11.82377, bottom: 47.06673, right: 12.82377, name: 'well_mapped_rocky_mountains' }
+    databases << { top: 42.130, left: 12.109, bottom: 41.578, right: 12.845, name: 'rome' }
+    databases << { top: 48.386, left: 16.137, bottom: 48.048, right: 16.714, name: 'vienna' }
+    databases << { top: 5.523, left: -4.183, bottom: 5.220, right: -3.849, name: 'abidjan_ivory_coast' }
+    databases << { top: 33.82792, left: -112.5891, bottom: 32.82792, right: -111.5891, name: 'south_mountain' }
+    databases << { top: 51.984, left: -1.115, bottom: 50.941, right: 0.895, name: 'london' }
+    databases << { top: 64.297, left: -22.826, bottom: 63.771, right: -21.140, name: 'reykjavik' }
+    databases << { top: 48.32989, left: 11.57764, bottom: 47.32989, right: 12.57764, name: 'rosenheim' }
+    databases << { top: 54.06360, left: -0.86369, bottom: 53.66360, right: -0.46369, name: 'market' }
+    databases << { top: 36.558, left: 138.779, bottom: 34.867, right: 141.152, name: 'tokyo' }
+    databases << { top: 9.246, left: 7.248, bottom: 8.835, right: 7.717, name: 'abuja_nigeria' }
+    databases << { top: 5.675, left: -0.437, bottom: 5.475, right: -0.071, name: 'accra_ghana' }
+    databases << { top: 53.7875, left: -2.0254, bottom: 52.7875, right: -1.0254, name: 'bridleway' }
+    databases << { top: 48.48499, left: 7.24856, bottom: 47.68499, right: 8.04856, name: 'vineyards' }
+    databases << { top: 45.6952, left: 11.2215, bottom: 44.8952, right: 12.0215, name: 'monte_lozzo' }
+    databases << { top: 48.4337, left: 8.2667, bottom: 47.4337, right: 9.2667, name: 'danube_sinkhole' }
+    databases << { top: 41.097, left: -74.501, bottom: 40.345, right: -73.226, name: 'new_york' }
+    databases << { top: 52.623, left: 20.341, bottom: 51.845, right: 21.692, name: 'warsaw' }
 =begin
     databases << {:top => , :left => , :bottom => , :right => , :name => ''}
-=end 
+=end
     return databases
-	end
+  end
 
   def before_after_from_loaded_databases(tags, to, from, zlevels, image_size = 375, count = 3, skip = 0)
     get_list_of_databases.each {|database|
@@ -104,8 +104,8 @@ module CartoCSSHelper
         next
       end
       max_range_in_km_for_radius = 400
-      lat = (database[:top]+database[:bottom])/2
-      lon = (database[:left]+database[:right])/2
+      lat = (database[:top] + database[:bottom]) / 2
+      lon = (database[:left] + database[:right]) / 2
       found = false
       ['node', 'way'].each {|type|
         begin
@@ -128,7 +128,7 @@ module CartoCSSHelper
   end
 
   def compare_presense_of_tag(branch, old_branch, key, value)
-    #TODO use it more in standard tests
+    # TODO: use it more in standard tests
     CartoCSSHelper::Git.checkout(old_branch)
     before = CartoCSSHelper::Heuristic.get_tags.include?([key, value])
     CartoCSSHelper::Git.checkout(branch)
@@ -146,23 +146,23 @@ module CartoCSSHelper
     puts "[#{key}=#{value}]: #{before} -> #{after} in database querries"
   end
 
-  def megatest(tags, branch, zlevels=CartoCSSHelper::Configuration.get_min_z..CartoCSSHelper::Configuration.get_max_z, types=['node', 'closed_way', 'way'], old_branch='master')
-    #TODO - add test text-dy
+  def megatest(tags, branch, zlevels = CartoCSSHelper::Configuration.get_min_z..CartoCSSHelper::Configuration.get_max_z, types = ['node', 'closed_way', 'way'], old_branch = 'master')
+    # TODO: - add test text-dy
     tags.each { |key, value|
       compare_presense_of_tag(branch, old_branch, key, value)
     }
     CartoCSSHelper.probe tags, branch, old_branch, zlevels, types
     CartoCSSHelper.test tags, branch, old_branch, zlevels, types
-    CartoCSSHelper.test tags.merge({'name' => :any_value}), branch, old_branch, zlevels, types
+    CartoCSSHelper.test tags.merge({ 'name' => :any_value }), branch, old_branch, zlevels, types
   end
 
-  def make_image_from_loaded_database(branch, latitude, longitude, zlevel, image_size, header='')
+  def make_image_from_loaded_database(branch, latitude, longitude, zlevel, image_size, header = '')
     CartoCSSHelper::Git.checkout(branch)
     render_bbox_size = VisualDiff.get_render_bbox_size(zlevel, image_size, latitude)
     cache_folder = CartoCSSHelper::Configuration.get_path_to_folder_for_branch_specific_cache
     get_timestamp = '<<<manual file generation>>>'
-    cache_filename = "#{cache_folder+"#{latitude} #{longitude} #{zlevel}zlevel #{image_size}px #{get_timestamp} #{render_bbox_size}.png"}"
-    if !File.exists?(cache_filename)
+    cache_filename = "#{cache_folder + "#{latitude} #{longitude} #{zlevel}zlevel #{image_size}px #{get_timestamp} #{render_bbox_size}.png"}"
+    if !File.exist?(cache_filename)
       TilemillHandler.run_tilemill_export_image(latitude, longitude, zlevel, render_bbox_size, image_size, cache_filename)
     end
     return cache_filename
@@ -184,7 +184,7 @@ alter database #{switched_into_for_gis} rename to gis;
     system command
   end
 
-  def get_single_image_from_database(database_name, branch, latitude, longitude, zlevel, image_size, header='')
+  def get_single_image_from_database(database_name, branch, latitude, longitude, zlevel, image_size, header = '')
     switch_databases('gis_test', database_name)
     zlevel_text = "#{zlevel}"
     if zlevel < 10
@@ -195,12 +195,12 @@ alter database #{switched_into_for_gis} rename to gis;
     end
     header += ' '
     cache_filename = make_image_from_loaded_database(branch, latitude, longitude, zlevel, image_size)
-    output_filename = CartoCSSHelper::Configuration.get_path_to_folder_for_output+"#{header} [#{latitude}, #{longitude}] z#{zlevel_text} #{image_size}px #{ CartoCSSHelper::Git.get_commit_hash} #{image_size}px.png"
+    output_filename = CartoCSSHelper::Configuration.get_path_to_folder_for_output + "#{header} [#{latitude}, #{longitude}] z#{zlevel_text} #{image_size}px #{CartoCSSHelper::Git.get_commit_hash} #{image_size}px.png"
     FileUtils.copy_entry cache_filename, output_filename, false, false, true
     switch_databases(database_name, 'gis_test')
   end
 
-  def x(branch, latitude, longitude, zlevels=7..18, image_size = 550)
+  def x(branch, latitude, longitude, zlevels = 7..18, image_size = 550)
     collection = []
     zlevels.each {|zlevel|
       cache_filename = make_image_from_loaded_database(branch, latitude, longitude, zlevel, image_size, branch)
@@ -212,10 +212,10 @@ alter database #{switched_into_for_gis} rename to gis;
   def before_after_from_loaded_database(latitude, longitude, to, from, zlevels, image_size, header)
     to_images = x(to, latitude, longitude, zlevels, image_size)
     from_images = x(from, latitude, longitude, zlevels, image_size)
-    VisualDiff.pack_image_sets from_images, to_images, header+" #{zlevels}", to, from, image_size
+    VisualDiff.pack_image_sets from_images, to_images, header + " #{zlevels}", to, from, image_size
   end
 
-  def before_after_directly_from_database(database_name, latitude, longitude, to, from, zlevels, image_size, header=nil)
+  def before_after_directly_from_database(database_name, latitude, longitude, to, from, zlevels, image_size, header = nil)
     description = "#{database_name}, z(#{zlevels}): #{from} -> #{to} [#{latitude}, #{longitude}]"
     if header == nil
       header = description
@@ -225,8 +225,9 @@ alter database #{switched_into_for_gis} rename to gis;
     before_after_from_loaded_database(latitude, longitude, to, from, zlevels, image_size, header)
     switch_databases(database_name, 'gis_test')
   end
+
   def visualise_changes_on_real_data_pair(tags_a, tags_b, type_a, type_b, latitude, longitude, zlevels, new_branch, old_branch, image_size)
-    #TODO - what about neraby nodes? is it also going to work?
+    # TODO: - what about neraby nodes? is it also going to work?
     latitude, longitude = OverpassQueryGenerator.find_data_pair(tags_a, tags_b, latitude, longitude, type_a, type_b)
     if latitude == nil
       return false
@@ -236,7 +237,7 @@ alter database #{switched_into_for_gis} rename to gis;
     return true
   end
 
-  def test_tag_on_real_data_pair_for_this_type(tags_a, tags_b, new_branch, old_branch, zlevels, type_a, type_b, min = 4, skip = 0, image_size=400)
+  def test_tag_on_real_data_pair_for_this_type(tags_a, tags_b, new_branch, old_branch, zlevels, type_a, type_b, min = 4, skip = 0, image_size = 400)
     generated = 0
 
     n = 0
@@ -248,8 +249,8 @@ alter database #{switched_into_for_gis} rename to gis;
     end
     while generated < min
       location = CartoCSSHelper.get_nth_location(n + skip)
-      generated +=1 if visualise_changes_on_real_data_pair(tags_a, tags_b, type_a, type_b, location[0], location[1], zlevels, new_branch, old_branch, image_size)
-      n+=1
+      generated += 1 if visualise_changes_on_real_data_pair(tags_a, tags_b, type_a, type_b, location[0], location[1], zlevels, new_branch, old_branch, image_size)
+      n += 1
       if n > max_n
         return
       end
@@ -258,7 +259,7 @@ alter database #{switched_into_for_gis} rename to gis;
   end
 end
 
-def load_remote_file(url, clear_cache=False)
+def load_remote_file(url, clear_cache = False)
   CartoCSSHelper.download_remote_file(url, clear_cache)
   filename = CartoCSSHelper.get_place_of_storage_of_resource_under_url(url)
   scene = CartoCSSHelper::VisualDiff::FileDataSource.new(nil, nil, 0.3, filename)
