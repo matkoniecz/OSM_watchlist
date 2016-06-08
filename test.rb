@@ -142,8 +142,6 @@ module CartoCSSHelper
     test_turning_circle
     test_eternal_710_text_resize
 
-    before_after_from_loaded_databases({ 'highway' => 'turning_circle' }, 'master', 'master', 12..15, 500, 10)
-
     before_after_from_loaded_databases({ 'tourism' => 'alpine_hut' }, 'master', 'master', 12..15, 500, 10)
     final
 
@@ -151,11 +149,6 @@ module CartoCSSHelper
       puts highway
       before_after_from_loaded_databases({ 'highway' => highway, 'ref' => :any_value }, 'nebulon/road-shields', 'master', 13..22, 1000, 5)
     end
-
-    final
-
-    large_scale_diff('branch', master)
-    final
 
     CartoCSSHelper::VisualDiff.enable_job_pooling
     CartoCSSHelper::VisualDiff.shuffle_jobs(8)
