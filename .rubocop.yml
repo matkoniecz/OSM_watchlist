@@ -28,37 +28,45 @@ Style/SpecialGlobalVars:
 AllCops:
   TargetRubyVersion: 2.3
 
-Metrics/AbcSize:
-  Exclude:
-    - 'archive.rb'
-
 Metrics/CyclomaticComplexity:
   Exclude:
-    - 'archive.rb'
+    - 'archive/**'
 
 Metrics/PerceivedComplexity:
   Exclude:
-    - 'archive.rb'
+    - 'archive/**'
 
 Lint/UselessAssignment:
   Exclude:
-    - 'archive.rb'
+    - 'archive/**'
 
 Metrics/ParameterLists:
   Exclude:
-    - 'archive.rb'
+    - 'archive/**'
 
 Lint/ShadowingOuterLocalVariable:
   Exclude:
-    - 'archive.rb'
+    - 'archive/**'
 
 Metrics/MethodLength:
   Exclude:
-    - 'archive.rb'
+    - 'archive/**'
 
 Lint/NestedMethodDefinition:
   Exclude:
-    - 'archive.rb'
+    - 'archive/**'
+
+Lint/UnreachableCode:
+  Exclude:
+    - 'archive/**'
+
+Style/FileName:
+  Exclude:
+    - 'archive/**'
+
+Style/GuardClause:
+  Exclude:
+    - 'archive/**'
 
 Style/BracesAroundHashParameters:
   Enabled: false

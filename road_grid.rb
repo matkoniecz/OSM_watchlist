@@ -1,7 +1,10 @@
 # encoding: UTF-8
 # frozen_string_literal: true
-require_relative 'gsoc'
-
+require_relative 'archive/gsoc2015'
+require_relative '../CartoCSSHelper/lib/cartocss_helper'
+require_relative '../CartoCSSHelper/lib/cartocss_helper/configuration'
+require_relative '../CartoCSSHelper/lib/cartocss_helper/visualise_changes_image_generation'
+require_relative '../CartoCSSHelper/lib/cartocss_helper/util/filehelper'
 # include CartoCSSHelper::TilemillHandler
 
 module CartoCSSHelper
@@ -125,40 +128,38 @@ def road_set(without_access = true, without_surface = true)
 end
 
 def areas_set
-  landuses = ['allotments', 'basin', 'brownfield', 'cemetery', 'commercial', 'conservation', 'construction', 'farm', 'farmland', 'farmyard', 'forest', 'garages', 'grass', 'greenhouse_horticulture', 'industrial', 'landfill', 'meadow', 'military', 'orchard', 'quarry', 'railway', 'recreation_ground', 'reservoir', 'residential', 'retail', 'village_green', 'vineyard']
-  natural = ['bare_rock', 'beach', 'glacier', 'grassland', 'heath', 'marsh', 'sand', 'scree', 'scrub', 'shingle', 'water', 'wetland', 'wood']
-  amenity = ['bicycle_parking', 'college', 'grave_yard', 'hospital', 'kindergarten', 'parking', 'place_of_worship', 'prison', 'university', 'school']
-  aeroway = ['aerodrome', 'apron', 'helipad', 'runway', 'taxiway']
-  power = ['generator', 'station', 'sub_station', 'substation']
-  highway = ['footway', 'living_street', 'path', 'pedestrian', 'platform', 'residential', 'rest_area', 'service', 'services', 'track', 'unclassified']
-  leisure = ['common', 'garden', 'golf_course', 'marina', 'miniature_golf', 'nature_reserve', 'park', 'pitch', 'playground', 'recreation_ground', 'sports_centre', 'stadium', 'swimming_pool', 'track']
-  tourism = ['camp_site', 'caravan_site', 'picnic_site', 'theme_park']
-
+  data = [
+    { key: 'landuse',
+      values: ['allotments', 'basin', 'brownfield', 'cemetery', 'commercial',
+               'conservation', 'construction', 'farm', 'farmland', 'farmyard', 'forest',
+               'garages', 'grass', 'greenhouse_horticulture', 'industrial', 'landfill',
+               'meadow', 'military', 'orchard', 'quarry', 'railway', 'recreation_ground',
+               'reservoir', 'residential', 'retail', 'village_green', 'vineyard'] },
+    { key: 'natural',
+      values: ['bare_rock', 'beach', 'glacier', 'grassland', 'heath', 'marsh',
+               'sand', 'scree', 'scrub', 'shingle', 'water', 'wetland', 'wood'] },
+    { key: 'amenity',
+      values: ['bicycle_parking', 'college', 'grave_yard', 'hospital',
+               'kindergarten', 'parking', 'place_of_worship', 'prison', 'university',
+               'school'] },
+    { key: 'aeroway',
+      values: ['aerodrome', 'apron', 'helipad', 'runway', 'taxiway'] },
+    { key: 'power',
+      values: ['generator', 'station', 'sub_station', 'substation'] },
+    { key: 'highway',
+      values: ['footway', 'living_street', 'path', 'pedestrian', 'platform',
+               'residential', 'rest_area', 'service', 'services', 'track', 'unclassified'] },
+    { key: 'leisure',
+      values: ['common', 'garden', 'golf_course', 'marina', 'miniature_golf',
+               'nature_reserve', 'park', 'pitch', 'playground', 'recreation_ground',
+               'sports_centre', 'stadium', 'swimming_pool', 'track'] },
+    { key: 'tourism',
+      values: ['camp_site', 'caravan_site', 'picnic_site', 'theme_park'] },
+  ]
   returned = []
   returned.push({ 'fixme' => 'yes' })
-  landuses.each do |value|
-    returned.push({ 'landuse' => value, 'name' => value })
-  end
-  natural.each do |value|
-    returned.push({ 'natural' => value, 'name' => value })
-  end
-  amenity.each do |value|
-    returned.push({ 'amenity' => value, 'name' => value })
-  end
-  aeroway.each do |value|
-    returned.push({ 'aeroway' => value, 'name' => value })
-  end
-  power.each do |value|
-    returned.push({ 'power' => value, 'name' => value })
-  end
-  highway.each do |value|
-    returned.push({ 'highway' => value, 'name' => value })
-  end
-  leisure.each do |value|
-    returned.push({ 'leisure' => value, 'name' => value })
-  end
-  tourism.each do |value|
-    returned.push({ 'tourism' => value, 'name' => value })
+  data.each[:values].each do |value|
+    returned.push({ landuses[:key] => value, 'name' => value })
   end
   returned.push({ 'railway' => 'platform' })
   returned.push({ 'railway' => 'station' })
