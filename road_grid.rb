@@ -65,7 +65,7 @@ module CartoCSSHelper
     end
 
     def add_areas(way_count, area_tag_list)
-      if area_tag_list.length == 0
+      if area_tag_list.empty?
         return
       end
       available_space_for_one_area = @delta * way_count / area_tag_list.length
