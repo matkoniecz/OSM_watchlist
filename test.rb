@@ -15,8 +15,159 @@ require 'fileutils'
 
 #TODO w renderowaniu miejsc przeskocz nad tymi gdzie miejsce jest znane a plik jest nadal do pobrania - oznacza to iż jest on wileki, został skasowany przy czyszczeniu nadmiaru a będzie się 
 
+def make_copy_of_repository
+    false #true #false
+end
+
 module CartoCSSHelper
   def main
+    test_tag_on_real_data_pair_for_this_type({'highway'=>'turning_circle'}, {'highway' => 'residential'}, 'turning_circle', 'master', 17..19, 'node', 'way', 2, 0, 375)
+    test_tag_on_real_data_pair_for_this_type({'highway'=>'turning_circle'}, {'highway' => 'living_street'}, 'turning_circle', 'master', 17..19, 'node', 'way', 2, 0, 375)
+    test_tag_on_real_data_pair_for_this_type({'highway'=>'turning_circle'}, {'highway' => 'service'}, 'turning_circle', 'master', 17..19, 'node', 'way', 2, 0, 375)
+    test_tag_on_real_data_pair_for_this_type({'highway'=>'turning_circle'}, {'highway' => 'service', 'service' => 'driveway'}, 'turning_circle', 'master', 17..19, 'node', 'way', 2, 0, 375)
+    test_tag_on_real_data_pair_for_this_type({'highway'=>'turning_circle'}, {'highway' => 'service', 'service' => 'parking_aisle'}, 'turning_circle', 'master', 17..19, 'node', 'way', 2, 0, 375)
+
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'tourism' => 'viewpoint', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}, 'closed_way', false, 12..22, 'viewpoint', 'master')   
+    before_after_from_loaded_databases({'tourism' => 'viewpoint', 'name' => :any_value}, 'viewpoint', 'master', 18..18, 350, 5, 0)
+
+    #missing label
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'tourism' => 'viewpoint', 'name' => 'a'}, 'closed_way', false, 22..22, 'viewpoint', '41714f1')
+
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'tourism' => 'attraction', 'name' => 'a'}, 'closed_way', false, 22..22, 'viewpoint', 'master')
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'tourism' => 'viewpoint', 'name' => 'a'}, 'closed_way', false, 22..22, 'viewpoint', 'master')
+
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'tourism' => 'attraction', 'name' => 'a'}, 'closed_way', false, 22..22, 'test1', 'master')
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'tourism' => 'viewpoint', 'name' => 'a'}, 'closed_way', false, 22..22, 'test1', 'master')
+
+
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'shop' => 'fishmonger', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}, 'node', false, 22..22, 'fishmonger', 'master')   
+    before_after_from_loaded_databases({'shop' => 'fishmonger'}, 'fishmonger', 'master', 17..18, 300, 2, 8)
+
+    #before_after_from_loaded_databases({'amenity'=>'hospital', 'name' => :any_value}, 'eternal_710', 'master', 18..18, 1000, 5, 0)
+    #before_after_from_loaded_databases({'highway' => 'pedestrian', 'area'=>'yes', 'name' => :any_value}, 'eternal_710', 'master', 18..18, 1000, 5, 0)
+
+    #before_after_from_loaded_databases({'highway' => 'pedestrian', 'area'=>'yes', 'name' => :any_value}, 'pnorman/road_areas', 'v2.38.0', 16..18, 400, 2, 0)  
+
+    #before_after_from_loaded_databases({'highway' => :any_value, 'name' => :any_value}, 'pnorman/road_areas', 'v2.38.0', 16..18, 1000, 2, 0)  
+
+    n = 4
+    skip = 0
+
+    #switch_databases('gis_test', 'krakow')
+
+    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'shop' => 'seafood', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}, 'node', false, 22..22, 'drop-fishmonger', 'master')   
+    #before_after_from_loaded_databases({'shop' => 'seafood'}, 'drop-fishmonger', 'master', 17..18, 300, 2, 8)
+
+  	#CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'shop' => 'fishmonger', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}, 'node', false, 22..22, 'fishmonger', 'master')  	
+
+    #before_after_from_loaded_databases({'shop' => 'fishmonger'}, 'fishmonger', 'master', 17..18, 300, 2, 8)
+
+    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'amenity' => 'bicycle_parking'}.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'closed_way', false, 22..22, 'eternal_710', 'master')   
+    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'amenity' => 'parking'}.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'closed_way', false, 22..22, 'eternal_710', 'master')   
+    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'amenity' => 'motorcycle_parking'}.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'closed_way', false, 22..22, 'eternal_710', 'master')   
+
+    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'amenity' => 'car_rental'}.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'node', false, 17..22, 'eternal_710', 'master')   
+    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'amenity' => 'car_rental'}.merge({'name' => 'RV Rental Outlet'}), 'node', false, 17..22, 'eternal_710', 'master')   
+affected = [
+#was 11
+{'leisure' => 'miniature_golf'},
+{'leisure' => 'golf_course'},
+{'leisure' => 'playground'},
+{'leisure' => 'water_park'},
+#was 9
+{'amenity' => 'car_rental'},
+{'amenity' => 'bicycle_rental'},
+{'leisure' => 'slipway'},
+{'amenity' => 'parking'},
+{'amenity' => 'bicycle_parking'},
+{'amenity' => 'motorcycle_parking'},
+{'historic' => 'memorial'},
+{'historic' => 'monument'},
+{'historic' => 'archaeological_site'},
+{'amenity' => 'embassy'},
+{'amenity' => 'taxi'},
+{'highway' => 'bus_stop'},
+{'amenity' => 'fuel'},
+{'amenity' => 'bus_station'},
+{'amenity' => 'fountain'},
+{'man_made' => 'lighthouse'},
+{'man_made' => 'windmill'},
+{'amenity' => 'recycling'},
+{'natural' => 'tree'},
+
+#was 8
+{'aeroway' => 'helipad'},
+{'aeroway' => 'aerodrome'},
+{'amenity' => 'hospital'},
+{'amenity' => 'clinic'},
+{'amenity' => 'pharmacy'},
+{'amenity' => 'doctors'},
+{'amenity' => 'dentist'},
+{'amenity' => 'veterinary'},
+
+    #was 10, partial list
+    {'shop' => 'books'},
+    {'place' => 'island'},
+    {'amenity' => 'pub'},
+    {'amenity' => 'police'},
+    {'amenity' => 'car_wash'},
+    {'tourism' => 'museum'},
+    {'amenity' => 'place_of_worship'},
+    {'natural' => 'peak'},
+    {'historic' => 'wayside_cross'},
+    {'amenity' => 'bank'},
+    {'amenity' => 'atm'},
+    {'tourism' => 'alpine_hut'},
+    {'amenity' => 'prison'},
+    {'shop' => 'bakery'},
+    {'shop' => 'supermarket'},
+    {'amenity' => 'hunting_stand'},
+]
+
+
+active = false
+affected.each do |tag|
+    #active =true if (tag == {'amenity' => 'car_wash'})
+    #next unless active
+    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test(tag.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'node', false, 22..22, 'eternal_710', 'master')   
+end
+affected.each do |tag|
+    before_after_from_loaded_databases(tag.merge({'name' => :any_value}), 'eternal_710', 'master', 16..18, 300, 1, 5)  
+    #before_after_from_loaded_databases(tag, 'eternal_710', 'master', 16..18, 300, 1, 0)    
+end
+
+    before_after_from_loaded_databases({'man_made' => 'obelisk'}, 'master', 'master', 14..18, 300, 10, 0)
+
+    #before_after_from_loaded_databases({'railway' => 'rail', 'tunnel' => 'yes', 'service' => :any_value}, 'rail', 'master', 17..20, 1100, n, skip)
+    #final
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'railway' => 'rail', 'tunnel' => 'yes', 'service' => :any_value}, 'rail', 'master', 17..20, 'way', 5)
+    before_after_from_loaded_databases({'railway' => 'rail'}, 'rail', 'master', 17..20, 1100, 3, 1)
+    before_after_from_loaded_databases({'railway' => 'rail', 'tunnel' => 'yes'}, 'rail', 'master', 17..20, 1100, 3, 1)
+
+    #CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 15..22, 'master', 'pnorman/osm2pgsql_style_update', 'master', 0.1)
+  	CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'amenity' => 'library', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}, 'node', false, 22..22, 'library11', 'master')
+  	CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'shop' => 'books', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}, 'node', false, 22..22, 'also_shop', 'master')
+
+    
+    #CartoCSSHelper.test_tag_on_real_data_for_this_type({'highway' => 'turning_circle'}, branch, 'master', 15..18, 'node', 2)
+
+    n = 6
+    skip = 3
+    before_after_from_loaded_databases({'amenity' => 'library'}, 'library11', 'master', 16..18, 300, n, skip)
+    n = 6
+    skip = 0
+    before_after_from_loaded_databases({'shop' => 'books'}, 'also_shop', 'master', 16..18, 300, n, skip)
+
+    #before_after_from_loaded_databases({'amenity' => 'university'}, 'imagico/sport-colors', 'master', 14..18, 500, n, skip)
+    #before_after_from_loaded_databases({'leisure' => 'track'}, 'imagico/sport-colors', 'master', 14..18, 500, n, skip)
+    #before_after_from_loaded_databases({'leisure' => 'sports_centre'}, 'imagico/sport-colors', 'master', 14..18, 500, n, skip)
+    #before_after_from_loaded_databases({'leisure' => 'stadium'}, 'imagico/sport-colors', 'master', 14..18, 500, n, skip)
+
+    before_after_from_loaded_databases({'highway' => 'turning_circle'}, 'master', 'master', 12..15, 500, 10)
+
+    before_after_from_loaded_databases({'tourism' => 'alpine_hut'}, 'master', 'master', 12..15, 500, 10)
+    final
+
     #CartoCSSHelper::test_tag_on_sythetic_data({'barrier' => 'swing_gate'}, 'swing')
     #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'oneway' => 'yes', 'highway' => 'path'}, 'way', false, 8..22, 'nebulon/oneway-bicycle-designated', 'master')
 
@@ -26,36 +177,27 @@ module CartoCSSHelper
     CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'library'}, 'kocio/library-icon-open', 'master', 14..22, 'node', 5)
     CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'library'}, 'kocio/library-icon-open', 'master', 14..22, 'node', 5)
     CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'library'}, 'kocio/library-icon-open', 'master', 14..22, 'closed_way', 5)
+
     final
 
-    reload_databases()
-    #create_databases
-
-
-
-    before_after_from_loaded_databases({'amenity' => 'library'}, 'kocio/library-icon', 'master', 15..18, 300, 1)
     final
 
     branch = 'master'
     CartoCSSHelper.test_tag_on_real_data_for_this_type({'highway' => 'turning_circle'}, branch, 'master', 15..18, 'node', 2)
     before_after_from_loaded_databases({'highway' => 'turning_circle'}, branch, 'master', 15..18, 300, 1)
     
-    #test_tag_on_real_data_pair_for_this_type({'highway'=>'turning_circle'}, {'highway' => 'service'}, branch, 'master', 15..18, 'way', 1, 0, 375)
-    #test_tag_on_real_data_pair_for_this_type({'highway'=>'turning_circle'}, {'highway' => 'service', 'service' => 'driveway'}, branch, 'master', 15..18, 'way', 1, 0, 375)
-    #test_tag_on_real_data_pair_for_this_type({'highway'=>'turning_circle'}, {'highway' => 'living_street'}, branch, 'master', 15..18, 'way', 1, 0, 375)
-    #test_tag_on_real_data_pair_for_this_type({'highway'=>'turning_circle'}, {'highway' => 'service', 'service' => 'parking_aisle'}, branch, 'master', 15..18, 'way', 1, 0, 375)
 
    #switch_databases('gis_test', 'new_york')
    #final
 
-    #switch_databases('gis_test', 'krakow')
-    #final
 
 	get_all_road_types.each{|highway|
 		puts highway
         before_after_from_loaded_databases({'highway' => highway, 'ref' => :any_value}, 'nebulon/road-shields', 'master', 13..22, 1000, 5)
 	}
 
+    #create_databases
+    #reload_databases()
 
     #PR puiblished
     #CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 18..18, 'barrier_way', 'master', 'tourism_way', 0.1)
@@ -104,8 +246,6 @@ module CartoCSSHelper
     #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'barrier' => 'lift_gate', 'name' => 'a'}, 'closed_way', false, 22..22, 'master', 'master')
     #catcha-all for areas
 
-    #missing label
-    #CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'tourism' => 'viewpoint', 'name' => 'a'}, 'closed_way', false, 22..22, 'master', 'master')
 
 #TODO watchlist
 =begin
@@ -202,11 +342,6 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
 
 
     CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=53.149497&mlon=-6.3292126', 16..16, branch, 'master', 'bog', 0.1)
-    test_tag_on_real_data_pair_for_this_type({'highway'=>'pedestrian'}, {'highway' => 'living_street'}, branch, 'master', 17..17, 'way', 2, 5, 375)
-    test_tag_on_real_data_pair_for_this_type({'natural'=>'heath'}, {'highway' => 'secondary', 'ref' => :any_value}, branch, 'master', 16..16, 'way', 2, 6, 375)
-    test_tag_on_real_data_pair_for_this_type({'natural'=>'beach'}, {'highway' => 'secondary'}, branch, 'master', 17..17, 'way', 2, 6, 375)
-    test_tag_on_real_data_pair_for_this_type({'natural'=>'sand'}, {'highway' => 'secondary'}, branch, 'master', 17..17, 'way', 1, 72, 375)
-    test_tag_on_real_data_pair_for_this_type({'natural'=>'wetland', 'wetland' => 'bog'}, {'highway' => 'secondary', 'ref' => :any_value}, branch, 'master', 17..17, 'way', 1, 72, 375)
     before_after_directly_from_database('world', 47.1045, -122.5882, branch, 'master', 9..10, 375)
 
     before_after_directly_from_database('rome', 41.92054, 12.48020, branch, 'master', 12..19, 375)
@@ -241,11 +376,6 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
 
 end
 
-#    additional_test_unpaved('master', 'master')
-#not great, not terrribe
-#test_tag_on_real_data_pair_for_this_type({'natural'=>'heath'}, {'highway' => 'secondary', 'ref' => :any_value}, 'new-road-style', 'new-road-style', 16..16, 'way')
-#test_tag_on_real_data_pair_for_this_type({'natural'=>'wetland', 'wetland' => 'bog'}, {'highway' => 'secondary', 'ref' => :any_value}, 'new-road-style', 'new-road-style', 17..17, 'way')
-#test_airport_unify
 
 
 
@@ -284,8 +414,7 @@ def encoutered_exception(e)
 end
 
 begin
-  make_copy_of_repository = false
-  init(make_copy_of_repository)
+  init(make_copy_of_repository) #frozen copy making
   #CartoCSSHelper::Configuration.set_known_alternative_overpass_url
   main
 rescue => e

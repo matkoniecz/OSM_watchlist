@@ -225,9 +225,9 @@ alter database #{switched_into_for_gis} rename to gis;
     before_after_from_loaded_database(latitude, longitude, to, from, zlevels, image_size, header)
     switch_databases(database_name, 'gis_test')
   end
-  def visualise_changes_on_real_data_pair(tags_a, tags_b, type, latitude, longitude, zlevels, new_branch, old_branch, image_size)
+  def visualise_changes_on_real_data_pair(tags_a, tags_b, type_a, type_b, latitude, longitude, zlevels, new_branch, old_branch, image_size)
     #TODO - what about neraby nodes? is it also going to work?
-    latitude, longitude = OverpassQueryGenerator.find_data_pair(tags_a, tags_b, latitude, longitude)
+    latitude, longitude = OverpassQueryGenerator.find_data_pair(tags_a, tags_b, latitude, longitude, type_a, type_b)
     if latitude == nil
       return false
     end
@@ -236,10 +236,7 @@ alter database #{switched_into_for_gis} rename to gis;
     return true
   end
 
-  def test_tag_on_real_data_pair_for_this_type(tags_a, tags_b, new_branch, old_branch, zlevels, type, min = 4, skip = 0, image_size=400)
-    if type.kind_of?(Array)
-      type = type[0]
-    end
+  def test_tag_on_real_data_pair_for_this_type(tags_a, tags_b, new_branch, old_branch, zlevels, type_a, type_b, min = 4, skip = 0, image_size=400)
     generated = 0
 
     n = 0
@@ -251,7 +248,7 @@ alter database #{switched_into_for_gis} rename to gis;
     end
     while generated < min
       location = CartoCSSHelper.get_nth_location(n + skip)
-      generated +=1 if visualise_changes_on_real_data_pair(tags_a, tags_b, type, location[0], location[1], zlevels, new_branch, old_branch, image_size)
+      generated +=1 if visualise_changes_on_real_data_pair(tags_a, tags_b, type_a, type_b, location[0], location[1], zlevels, new_branch, old_branch, image_size)
       n+=1
       if n > max_n
         return
