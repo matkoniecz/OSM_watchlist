@@ -1,3 +1,5 @@
+require 'open3'
+
 # frozen_string_literal: true
 def get_project_location(project_name)
   return File.join(ENV['HOME'], 'Documents', 'MapBox', 'project', project_name, '')
@@ -15,33 +17,23 @@ def create_frozen_copy(project)
   FileUtils.copy_entry source, destination, false, false, true
 end
 
-def expect_empty_stout_sterr(command)
-  require 'open3'
-  Open3.popen3(command) do |_, stdout, stderr, wait_thr|
-    error = stderr.read.chomp
-    stdout = stdout.read.chomp
-    if error != '' || wait_thr.value.success? != true
-      raise 'failed command ' + command + ' due to ' + error
-    end
-    return stdout != ''
-  end
-  raise 'impossible happened'
+def expect_empty_stdout_sterr(command)
+  return execute_command(command) == ''
 end
 
 def with_uncommitted_changes
   Dir.chdir(CartoCSSHelper::Configuration.get_path_to_tilemill_project_folder) do
     system 'git stash > /dev/null'
     command = 'git diff @'
-    return expect_empty_stout_sterr(command)
+    return expect_empty_stdout_sterr(command)
   end
 end
 
 def execute_command(command)
-  stdout = ''
   Open3.popen3(command) do |_, stdout, stderr, wait_thr|
     error = stderr.read.chomp
     stdout = stdout.read.chomp
-    raise 'failed command ' + command + ' due to ' + error if error != '' # or wait_thr.value.success? != true TODO: WAT?
+    raise 'failed command ' + command + ' due to ' + error if error != ''
     return stdout
   end
   raise 'impossible happened'
