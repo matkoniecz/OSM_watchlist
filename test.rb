@@ -155,8 +155,6 @@ module CartoCSSHelper
     final
 
     large_scale_diff('branch', master)
-
-    generate_preview(['master'])
     final
 
     CartoCSSHelper::VisualDiff.enable_job_pooling
@@ -187,14 +185,23 @@ module CartoCSSHelper
     CartoCSSHelper::VisualDiff.shuffle_jobs(8)
     final
 
-    (5..19).each do |zlevel|
-      CartoCSSHelper::Grid.new(zlevel, branch, road_set(true, true), areas_set)
-    end
-
     CartoCSSHelper::VisualDiff.run_jobs
-
-    CartoCSSHelper::Validator.run_tests('v2.32.0')
   end
+end
+
+def show_road_grid
+  # TODO: code is broken, requires updates
+  (5..19).each do |zlevel|
+    CartoCSSHelper::Grid.new(zlevel, branch, road_set(true, true), areas_set)
+  end
+end
+
+def run_tests
+  CartoCSSHelper::Validator.run_tests('v2.32.0')
+end
+
+def generate_preview
+  generate_preview(['master'])
 end
 
 def test_water_color
