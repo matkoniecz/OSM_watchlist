@@ -393,9 +393,7 @@ begin
   # CartoCSSHelper::Configuration.set_known_alternative_overpass_url
   main
 rescue => e
-  while true
-    encoutered_exception(e)
-  end
+  encoutered_exception(e) while true
 end
 
 # poszukać carto w efektywność

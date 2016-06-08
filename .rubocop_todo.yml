@@ -136,14 +136,6 @@ Style/BracesAroundHashParameters:
     - 'road_grid.rb'
     - 'test.rb'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, SingleLineConditionsOnly.
-# SupportedStyles: assign_to_condition, assign_inside_condition
-Style/ConditionalAssignment:
-  Exclude:
-    - 'precartocssshelper.rb'
-
 # Offense count: 3
 Style/Documentation:
   Exclude:
@@ -175,25 +167,3 @@ Style/RedundantReturn:
     - 'precartocssshelper.rb'
     - 'road_grid.rb'
     - 'startup.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline, SupportedStyles.
-# SupportedStyles: comma, consistent_comma, no_comma
-Style/TrailingCommaInLiteral:
-  Exclude:
-    - 'archive.rb'
-    - 'test.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/UnneededInterpolation:
-  Exclude:
-    - 'precartocssshelper.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: MaxLineLength.
-Style/WhileUntilModifier:
-  Exclude:
-    - 'test.rb'

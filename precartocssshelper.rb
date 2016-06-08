@@ -129,16 +129,16 @@ module CartoCSSHelper
     before = CartoCSSHelper::Heuristic.get_tags.include?([key, value])
     CartoCSSHelper::Git.checkout(branch)
     after = CartoCSSHelper::Heuristic.get_tags.include?([key, value])
-    if before
-      before = 'found'
-    else
-      before = 'missing'
-    end
-    if after
-      after = 'found'
-    else
-      after = 'missing'
-    end
+    before = if before
+               'found'
+             else
+               'missing'
+             end
+    after = if after
+              'found'
+            else
+              'missing'
+            end
     puts "[#{key}=#{value}]: #{before} -> #{after} in database querries"
   end
 
@@ -157,7 +157,7 @@ module CartoCSSHelper
     render_bbox_size = VisualDiff.get_render_bbox_size(zlevel, image_size, latitude)
     cache_folder = CartoCSSHelper::Configuration.get_path_to_folder_for_branch_specific_cache
     get_timestamp = '<<<manual file generation>>>'
-    cache_filename = "#{cache_folder + "#{latitude} #{longitude} #{zlevel}zlevel #{image_size}px #{get_timestamp} #{render_bbox_size}.png"}"
+    cache_filename = (cache_folder + "#{latitude} #{longitude} #{zlevel}zlevel #{image_size}px #{get_timestamp} #{render_bbox_size}.png").to_s
     unless File.exist?(cache_filename)
       TilemillHandler.run_tilemill_export_image(latitude, longitude, zlevel, render_bbox_size, image_size, cache_filename)
     end
@@ -182,7 +182,7 @@ alter database #{switched_into_for_gis} rename to gis;
 
   def get_single_image_from_database(database_name, branch, latitude, longitude, zlevel, image_size, header = '')
     switch_databases('gis_test', database_name)
-    zlevel_text = "#{zlevel}"
+    zlevel_text = zlevel.to_s
     zlevel_text = "0#{zlevel}" if zlevel < 10
     header = branch if header == ''
     header += ' '
