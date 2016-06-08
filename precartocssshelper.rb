@@ -33,15 +33,15 @@ module CartoCSSHelper
 
   def mapzen_databases
     return [
-      {:database_name => 'krakow', :mapzen_name =>'krakow_poland'},
-      {:database_name => 'rome', :mapzen_name =>'rome_italy'},
-      {:database_name => 'vienna', :mapzen_name =>'vienna_austria'},
-      {:database_name => 'abidjan_ivory_coast', :mapzen_name =>'abidjan_ivory-coast'},
-      {:database_name => 'london', :mapzen_name =>'london_england'},
-      {:database_name => 'reykjavik', :mapzen_name =>'reykjavik_iceland'},
-      {:database_name => 'tokyo', :mapzen_name =>'tokyo_japan'},
-      {:database_name => 'abuja_nigeria', :mapzen_name =>'abuja_nigeria'},
-      {:database_name => 'accra_ghana', :mapzen_name =>'accra_ghana'},
+      { database_name: 'krakow', mapzen_name: 'krakow_poland' },
+      { database_name: 'rome', mapzen_name: 'rome_italy' },
+      { database_name: 'vienna', mapzen_name: 'vienna_austria' },
+      { database_name: 'abidjan_ivory_coast', mapzen_name: 'abidjan_ivory-coast' },
+      { database_name: 'london', mapzen_name: 'london_england' },
+      { database_name: 'reykjavik', mapzen_name: 'reykjavik_iceland' },
+      { database_name: 'tokyo', mapzen_name: 'tokyo_japan' },
+      { database_name: 'abuja_nigeria', mapzen_name: 'abuja_nigeria' },
+      { database_name: 'accra_ghana', mapzen_name: 'accra_ghana' },
       # {:database_name => 'new_york', :mapzen_name =>'new-york_new-york'},
       # {:database_name => 'warsaw', :mapzen_name =>'warsaw_poland'},
     ]
