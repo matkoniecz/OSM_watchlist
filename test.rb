@@ -21,11 +21,11 @@ def make_copy_of_repository
 end
 
 def test_turning_circle
-  test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'residential' }, 'turning_circle', 'master', 17..19, 'node', 'way', 2, 0, 375)
-  test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'living_street' }, 'turning_circle', 'master', 17..19, 'node', 'way', 2, 0, 375)
-  test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'service' }, 'turning_circle', 'master', 17..19, 'node', 'way', 2, 0, 375)
-  test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'service', 'service' => 'driveway' }, 'turning_circle', 'master', 17..19, 'node', 'way', 2, 0, 375)
-  test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'service', 'service' => 'parking_aisle' }, 'turning_circle', 'master', 17..19, 'node', 'way', 2, 0, 375)
+  test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'residential' }, 'turning_circle', 'master', 15..19, 'node', 'way', 2, 0, 375)
+  test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'living_street' }, 'turning_circle', 'master', 15..19, 'node', 'way', 2, 0, 375)
+  test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'service' }, 'turning_circle', 'master', 15..19, 'node', 'way', 2, 0, 375)
+  test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'service', 'service' => 'driveway' }, 'turning_circle', 'master', 15..19, 'node', 'way', 2, 0, 375)
+  test_tag_on_real_data_pair_for_this_type({ 'highway' => 'turning_circle' }, { 'highway' => 'service', 'service' => 'parking_aisle' }, 'turning_circle', 'master', 15..19, 'node', 'way', 2, 0, 375)
 end
 
 def test_viewpoint
@@ -124,8 +124,8 @@ end
 
 module CartoCSSHelper
   def main
-    test_turning_circle
     test_viewpoint
+    test_turning_circle
     test_fishmonger
     before_after_from_loaded_databases({ 'man_made' => 'obelisk' }, 'master', 'master', 14..18, 300, 10, 0)
     test_eternal_710_text_resize
