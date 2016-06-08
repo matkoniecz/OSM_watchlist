@@ -14,8 +14,8 @@
 # }
 
 def test_decasing
-  [11].each{|z|
-    ['decased01', 'decased00', 'decasedz11'].each {|branch| # new-road-style
+  [11].each do |z|
+    ['decased01', 'decased00', 'decasedz11'].each do |branch| # new-road-style
       # [frozen_trunk, master, 'decasedz11'].each {|branch| #new-road-style
       image_size = 780
       image_size = 300 if z <= 6
@@ -34,13 +34,13 @@ def test_decasing
       get_single_image_from_database('world', branch, 16.820, 79.915, z, image_size, "India #{branch}")
       get_single_image_from_database('world', branch, 53.8656, -0.6659, z, image_size, "rural UK #{branch}")
       get_single_image_from_database('world', branch, 64.1173, -21.8688, z, image_size, "Iceland, Reykjavik #{branch}")
-    }
-  }
+    end
+  end
   end
 
 def test7
-  [750].each {|image_size|
-    [7].each {|z|
+  [750].each do |image_size|
+    [7].each do |z|
       lat = 53.245
       lon = -2.274
       # get_single_image_from_database('world', frozen_trunk, lat, lon, z, image_size)
@@ -99,8 +99,8 @@ def test7
       # get_single_image_from_database('world', frozen_trunk, lat, lon, z, image_size)
       get_single_image_from_database('world', 'z7', lat, lon, z, image_size)
       get_single_image_from_database('world', 'rail', lat, lon, z, image_size)
-    }
-  }
+    end
+  end
   final
   zoom = 10..10
   # before_after_directly_from_database('vienna', 48.0918, 15.8807, 'glowlayer', 'glow', zoom, 300, 'minor roads')
@@ -117,13 +117,13 @@ def test7
   # test_low_invisible('band-aid', master)
 
   # large_scale_diff('new-road-style', master, 375, 12..14)
-  [400].each {|image_size|
-    [7, 8, 6].each {|z|
+  [400].each do |image_size|
+    [7, 8, 6].each do |z|
       get_single_image_from_database('world', 'vholten-1-dark', 48.07104, 17.07272, z, image_size)
       get_single_image_from_database('world', 'vholten-2-dark', 48.07104, 17.07272, z, image_size)
       get_single_image_from_database('world', frozen_trunk, 48.07104, 17.07272, z, image_size)
-    }
-  }
+    end
+  end
   final
 
   zlevels = 9..12
@@ -131,13 +131,13 @@ def test7
   before_after_directly_from_database('motorway_border_mess', 51.5754, -2.7068, 'vholten-1', frozen_trunk, zlevels, 500, 'motorway_border_mess')
   before_after_directly_from_database('motorway_border_mess', 51.5754, -2.7068, 'vholten-2', frozen_trunk, zlevels, 500, 'motorway_border_mess')
 
-  [400].each {|image_size|
-    [7, 8, 6].each {|z|
+  [400].each do |image_size|
+    [7, 8, 6].each do |z|
       get_single_image_from_database('world', 'vholten-1', 48.07104, 17.07272, z, image_size)
       get_single_image_from_database('world', 'vholten-2', 48.07104, 17.07272, z, image_size)
       get_single_image_from_database('world', frozen_trunk, 48.07104, 17.07272, z, image_size)
-    }
-  }
+    end
+  end
 
   final
 end
@@ -215,15 +215,15 @@ def various_from_gsoc
   test_low_zoom('railmoto7low', 7..7)
   test_low_invisible('band-aid', 'master', 11..16)
   before_after_directly_from_database('kosice', 49.08921, 21.31254, 'gsoc', 'new-road-style', 11..11, 375, 'weird thingy')
-  [7, 8].each{|z| # 11, 10, 9, 8
+  [7, 8].each do |z| # 11, 10, 9, 8
     puts z
-    ['raillow', 'raillowlow', 'new-road-style'].each {|branch|
+    ['raillow', 'raillowlow', 'new-road-style'].each do |branch|
       get_single_image_from_database('world', branch, 50.8288, 4.3684, z, 750, "Brussels #{branch}")
       get_single_image_from_database('world', branch, -36.84870, 174.76135, z, 750, "Auckland #{branch}")
       get_single_image_from_database('world', branch, 39.9530, -75.1858, z, 750, "New Jersey #{branch}")
       get_single_image_from_database('world', branch, 55.39276, 13.29790, z, 750, "Malmo - fields #{branch}")
-    }
-  }
+    end
+  end
   # before_after_directly_from_database('krakow', 50.04069, 19.96767, 'longrail', 'master', 11..12, 500, 'węzeł kolejowy')
   # before_after_directly_from_database('kosice', 49.0196, 21.1869, 'longrail', 'master', 11..12, 500, 'London')
   # before_after_directly_from_database('krakow', 50.04069, 19.96767, 'rail', 'master', 9..20, 500, 'węzeł kolejowy')
@@ -250,7 +250,7 @@ def various_from_gsoc
   before_after_directly_from_database('london', 51.50780, -0.12392, 'superrail', 'superrail', 7..10, 450, 'London')
   before_after_directly_from_database('london', 51.50780, -0.12392, 'superplusrail', 'superplusrail', 7..10, 450, 'London')
 
-  [9, 8, 7, 6, 5].each{|z|
+  [9, 8, 7, 6, 5].each do |z|
     before_after_directly_from_database('world', 35, -100, 'new-road-style', 'new-road-style', z..z, 800, 'worldtest USA (35, -100)')
     before_after_directly_from_database('world', 35, -100, 'superrail', 'superrail', z..z, 800, 'worldtest USA (35, -100)')
     before_after_directly_from_database('world', 35, -100, 'superplusrail', 'superplusrail', z..z, 800, 'worldtest USA (35, -100)')
@@ -263,7 +263,7 @@ def various_from_gsoc
     # before_after_directly_from_database('world', 51, 7, 'stronglowrail', 'stronglowrail', z..z, 800, 'worldtest (51, 7)')
     before_after_directly_from_database('world', 51, 7, 'superrail', 'superrail', z..z, 800, 'worldtest (51, 7)')
     before_after_directly_from_database('world', 51, 7, 'superplusrail', 'superplusrail', z..z, 800, 'worldtest (51, 7)')
-  }
+  end
 
   CartoCSSHelper::VisualDiff.enable_job_pooling
   test_tag_on_real_data_pair_for_this_type({ 'landuse' => 'orchard' }, { 'natural' => 'scrub' }, 'old_new_forest', 'new_forest', 10..18, 'way', 3, 1)
@@ -397,8 +397,8 @@ def various_from_gsoc
 
   def test_8
     frozen_trunk = 'bcd2543'
-    [8].each{|z|
-      [frozen_trunk, '1', '0.9', '0.8'].each {|branch| # new-road-style
+    [8].each do |z|
+      [frozen_trunk, '1', '0.9', '0.8'].each do |branch| # new-road-style
         image_size = 780
         image_size = 300 if z <= 6
         # get_single_image_from_database('world', branch, 50.8288, 4.3684, z, image_size, "Brussels #{branch}")
@@ -413,8 +413,8 @@ def various_from_gsoc
         get_single_image_from_database('world', branch, 16.820, 79.915, z, image_size, "India #{branch}")
         get_single_image_from_database('world', branch, 53.8656, -0.6659, z, image_size, "rural UK #{branch}")
         get_single_image_from_database('world', branch, 64.1173, -21.8688, z, image_size, "iceland #{branch}")
-      }
-    }
+      end
+    end
   end
 
   entries = []
@@ -422,10 +422,10 @@ def various_from_gsoc
   entries << { name: 'abidjan_ivory_coast', lat: 5.31886, lon: -4.01640 }
   entries << { name: 'abuja_nigeria', lat: 9.05271, lon: 7.49409 }
   entries << { name: 'accra_ghana', lat: 5.54767, lon: -0.21769 }
-  entries.each{|entry|
+  entries.each do |entry|
     before_after_directly_from_database(entry[:name], entry[:lat], entry[:lon], 'trunk', master, 10..19, 325, entry[:name])
     before_after_directly_from_database('world', entry[:lat], entry[:lon], 'trunk', master, 5..9, 325, entry[:name])
-  }
+  end
   final
 
   create_new_gis_database('new_gis')
@@ -505,36 +505,36 @@ def various_from_gsoc
   final
   # before_after_from_loaded_databases({'man_made' => 'bridge', 'name' => :any_value}, 'bridge', 'master', 12..19, 375, 4, 0)
 
-  [16..18].each {|zlevels| # 19..19, 15..15, 11..11,
-    get_all_road_types.each { |tag|
+  [16..18].each do |zlevels| # 19..19, 15..15, 11..11,
+    get_all_road_types.each do |tag|
       before_after_from_loaded_databases({ 'highway' => tag, 'oneway' => 'yes' }, 'gray-oneway', 'gsoc', zlevels, 375, 1, 1)
-    }
-  }
+    end
+  end
 
-  [16..18].each {|zlevels| # 19..19, 15..15, 11..11,
-    get_all_road_types.each { |tag|
+  [16..18].each do |zlevels| # 19..19, 15..15, 11..11,
+    get_all_road_types.each do |tag|
       before_after_from_loaded_databases({ 'highway' => tag, 'oneway' => 'yes' }, 'pale-gray-oneway', 'gsoc', zlevels, 375, 1, 2)
-    }
-  }
+    end
+  end
 
-  [15..18].each {|zlevels| # 19..19, 15..15, 11..11,
-    get_all_road_types.each { |tag|
+  [15..18].each do |zlevels| # 19..19, 15..15, 11..11,
+    get_all_road_types.each do |tag|
       before_after_from_loaded_databases({ 'highway' => tag, 'access' => 'private' }, 'access', master, zlevels, 375, 1, 0)
       before_after_from_loaded_databases({ 'highway' => tag, 'access' => 'no' }, 'access', master, zlevels, 375, 1, 1)
-    }
-  }
+    end
+  end
 
-  [16..18].each {|zlevels| # 19..19, 15..15, 11..11,
-    get_all_road_types.each { |tag|
+  [16..18].each do |zlevels| # 19..19, 15..15, 11..11,
+    get_all_road_types.each do |tag|
       before_after_from_loaded_databases({ 'highway' => tag, 'oneway' => 'yes' }, 'gray-oneway', 'gsoc', zlevels, 375, 2, 1)
-    }
-  }
+    end
+  end
 
-  [16..18].each {|zlevels| # 19..19, 15..15, 11..11,
-    get_all_road_types.each { |tag|
+  [16..18].each do |zlevels| # 19..19, 15..15, 11..11,
+    get_all_road_types.each do |tag|
       before_after_from_loaded_databases({ 'highway' => tag, 'oneway' => 'yes' }, 'pale-gray-oneway', 'gsoc', zlevels, 375, 1, 2)
-    }
-  }
+    end
+  end
 
   CartoCSSHelper.test_tag_on_real_data ({ 'highway' => 'motorway', 'access' => 'no' }), 'access', master, 10..16, ['way'], 3, 1
 
@@ -564,22 +564,22 @@ def various_from_gsoc
   before_after_from_loaded_databases({ 'highway' => 'residential', 'tunnel' => 'yes' }, frozen_trunk, frozen_trunk, 11..19, 375, 10)
   edelta_run
   def show_dashes
-    ['access', 'master'].each{|branch|
-      [15, 18].each {|z|
+    ['access', 'master'].each do |branch|
+      [15, 18].each do |z|
         roads = road_set(true, true)
-        roads.each {|tags|
+        roads.each do |tags|
           tags['access'] = 'private'
-        }
+        end
         CartoCSSHelper::Grid.new(z, branch, roads, [], 'private')
         roads = road_set(true, true)
         CartoCSSHelper::Grid.new(z, branch, roads, [], 'normal')
         roads = road_set(true, true)
-        roads.each {|tags|
+        roads.each do |tags|
           tags['access'] = 'destination'
-        }
+        end
         CartoCSSHelper::Grid.new(z, branch, roads, [], 'destination')
-      }
-    }
+      end
+    end
   end
 
   def fucking_dashes
@@ -617,12 +617,12 @@ def various_from_gsoc
   CartoCSSHelper.probe ({ 'railway' => 'rail' }), 'sql-rail', 'master'
   CartoCSSHelper.probe ({ 'railway' => 'rail', 'service' => 'spur' }), 'sql-rail', 'master'
   generate_preview(['master', 'new-road-style', 'colours', 'legacy2'])
-  (4..19).each { |zlevel|
+  (4..19).each do |zlevel|
     CartoCSSHelper::Grid.new(zlevel, 'master', road_set(true, true), [])
-  }
-  (4..19).each { |zlevel|
+  end
+  (4..19).each do |zlevel|
     CartoCSSHelper::Grid.new(zlevel, 'new-road-style', road_set(true, true), [])
-  }
+  end
 
   gsoc_places_town_large_bb('new-road-style', 'master', 10..12, 0.04, 350)
   gsoc_places_town_large_bb('also-un', 'master', 10..12, 0.04, 350)
@@ -638,14 +638,14 @@ end
 def testz12buildings
   CartoCSSHelper::VisualDiff.enable_job_pooling
   zlevels = 12..12
-  ['no_b_12', 'no_b_pow_12'].each { |branch| # 0.2, 0.5, 1, 2, 5 - not aggressive enough, exception for major buildings is pointless, it is necessary to deal also with PoW
+  ['no_b_12', 'no_b_pow_12'].each do |branch| # 0.2, 0.5, 1, 2, 5 - not aggressive enough, exception for major buildings is pointless, it is necessary to deal also with PoW
     # always handle also PoW
 
     # also, this PR achieved new record in ratio of effort to changed code
     CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/#map=17/49.26214/-123.24533', zlevels, branch, 'new-road-style', 'UBC', 0.2)
     CartoCSSHelper.test_tag_on_real_data_for_this_type ({ 'building' => 'yes' }), branch, 'new-road-style', zlevels, 'closed_way', 5, 12
     CartoCSSHelper.test_tag_on_real_data_for_this_type ({ 'amenity' => 'place_of_worship' }), branch, 'new-road-style', zlevels, 'closed_way', 5, 0
-  }
+  end
   CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/#map=17/49.26214/-123.24533', zlevels, 'new-road-style', 'master', 'UBC', 0.2)
   CartoCSSHelper.test_tag_on_real_data_for_this_type ({ 'building' => 'yes' }), 'new-road-style', 'master', zlevels, 'closed_way', 5, 12
   CartoCSSHelper.test_tag_on_real_data_for_this_type ({ 'amenity' => 'place_of_worship' }), 'new-road-style', 'new-road-style', zlevels, 'closed_way', 5, 0
@@ -680,11 +680,11 @@ def test_cross_pr
     'http://www.openstreetmap.org/relation/62372#map=10/49.2669/7.0340',
     'http://www.openstreetmap.org/relation/62372#map=10/49.3108/6.9008',
   ]
-  urls.each {|url|
+  urls.each do |url|
     latitude, longitude = CartoCSSHelper.get_latitude_longitude_from_url(url)
     CartoCSSHelper::VisualDiff.visualise_changes_on_real_data({ 'historic' => 'wayside_cross' }, 'node', latitude, longitude, 10..19, to, 'master')
     CartoCSSHelper::VisualDiff.visualise_changes_on_real_data({ 'man_made' => 'cross' }, 'node', latitude, longitude, 10..19, to, 'master')
-  }
+  end
   megatest({ 'historic' => 'wayside_cross' }, to, 14..19, ['node'])
   megatest({ 'man_made' => 'cross' }, to, 14..19, ['node'])
 end
@@ -842,22 +842,22 @@ def old_check_delta
   areas.push({ 'natural' => 'scree' })
   areas.push({ 'leisure' => 'golf_course' })
 
-  [16, 20].each {|zlevel| # 10, 13
+  [16, 20].each do |zlevel| # 10, 13
     generate_image_of_close_landcovers(branch, areas, zlevel)
     generate_image_of_close_landcovers(branch, areas_set, zlevel)
     # generate_image_of_close_landcovers('old_new_forest', areas, zlevel)
     # generate_image_of_close_landcovers('no_scrub', areas, zlevel)
     # generate_image_of_close_landcovers('older_master_but_after_last_landcover_change', areas, zlevel)
-  }
+  end
 
   return
 
   areas = areas_set
-  [13, 20, 10].each {|zlevel|
+  [13, 20, 10].each do |zlevel|
     generate_image_of_close_landcovers('old_new_forest', areas, zlevel)
     generate_image_of_close_landcovers('no_scrub', areas, zlevel)
     generate_image_of_close_landcovers('older_master_but_after_last_landcover_change', areas, zlevel)
-  }
+  end
 end
 
 # CartoCSSHelper.test_tag_on_real_data_for_this_type({'landuse' => 'quarry'}, 'kocio/quarry-icon', 'master', 10..17, 'way', 10)

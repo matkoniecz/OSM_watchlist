@@ -87,44 +87,6 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Max: 9
 
-# Offense count: 7
-Style/AccessorMethodName:
-  Exclude:
-    - 'gsoc.rb'
-    - 'precartocssshelper.rb'
-    - 'road_grid.rb'
-    - 'startup.rb'
-
-# Offense count: 15
-Style/AsciiComments:
-  Exclude:
-    - 'archive.rb'
-    - 'gsoc.rb'
-    - 'test.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-Style/BlockComments:
-  Exclude:
-    - 'precartocssshelper.rb'
-    - 'test.rb'
-
-# Offense count: 72
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, ProceduralMethods, FunctionalMethods, IgnoredMethods.
-# SupportedStyles: line_count_based, semantic, braces_for_chaining
-# ProceduralMethods: benchmark, bm, bmbm, create, each_with_object, measure, new, realtime, tap, with_object
-# FunctionalMethods: let, let!, subject, watch
-# IgnoredMethods: lambda, proc, it
-Style/BlockDelimiters:
-  Exclude:
-    - 'archive.rb'
-    - 'gsoc.rb'
-    - 'precartocssshelper.rb'
-    - 'road_grid.rb'
-    - 'startup.rb'
-    - 'test.rb'
-
 # Offense count: 28
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.

@@ -44,29 +44,29 @@ module CartoCSSHelper
     end
 
     def add_ways(way_tag_list)
-      (1..@max_y).each { |y|
+      (1..@max_y).each do |y|
         nodes_in_way = []
-        (1..@max_x).each { |x|
+        (1..@max_x).each do |x|
           node_id = y * @max_y + x
           @data_file_maker.add_node(@lat + (-@max_y / 2 + y) * @delta, @lon + (-@max_x / 2 + x) * @delta, {}, node_id)
           nodes_in_way.push(node_id)
-        }
+        end
         @data_file_maker.add_way(way_tag_list[y - 1], nodes_in_way, get_free_id)
-      }
-      (1..@max_x).each { |x|
+      end
+      (1..@max_x).each do |x|
         nodes_in_way = []
-        (1..@max_y).each { |y|
+        (1..@max_y).each do |y|
           nodes_in_way.push(y * @max_y + x)
-        }
+        end
         @data_file_maker.add_way(way_tag_list[x - 1], nodes_in_way, get_free_id)
-      }
+      end
     end
 
     def add_areas(way_count, area_tag_list)
       return if area_tag_list.empty?
       available_space_for_one_area = @delta * way_count / area_tag_list.length
       i = 0
-      area_tag_list.each {|tag|
+      area_tag_list.each do |tag|
         nodes_in_way = []
         base_longitude = @lon + i * available_space_for_one_area + available_space_for_one_area / 2 - @delta * way_count / 2
         delta_longitude = available_space_for_one_area / 2
@@ -94,7 +94,7 @@ module CartoCSSHelper
         @data_file_maker.add_way(tag.merge({ 'area' => 'yes' }), nodes_in_way, get_free_id)
 
         i += 1
-      }
+      end
     end
   end
 end
@@ -108,18 +108,18 @@ def road_set(without_access = true, without_surface = true)
   surface = [''] if without_surface
 
   returned = []
-  main.each{|value|
-    access.each{|access_value|
-      surface.each{|surface_value|
+  main.each do |value|
+    access.each do |access_value|
+      surface.each do |surface_value|
         returned.push({ 'highway' => value, 'name' => value + ' ' + access_value + ' ' + surface_value, 'access' => access_value, 'surface' => surface_value, 'ref' => '12345' })
-      }
-    }
-  }
-  access.each{|access_value|
-    surface.each{|surface_value|
+      end
+    end
+  end
+  access.each do |access_value|
+    surface.each do |surface_value|
       returned.push({ 'highway' => 'service', 'service' => 'driveway', 'name' => 'service, service=driveway' + ' ' + access_value + ' ' + surface_value, 'access' => access_value, 'surface' => surface_value, 'ref' => '12345' })
-    }
-  }
+    end
+  end
   return returned
 end
 
@@ -135,30 +135,30 @@ def areas_set
 
   returned = []
   returned.push({ 'fixme' => 'yes' })
-  landuses.each{|value|
+  landuses.each do |value|
     returned.push({ 'landuse' => value, 'name' => value })
-  }
-  natural.each{|value|
+  end
+  natural.each do |value|
     returned.push({ 'natural' => value, 'name' => value })
-  }
-  amenity.each{ |value|
+  end
+  amenity.each do |value|
     returned.push({ 'amenity' => value, 'name' => value })
-  }
-  aeroway.each{ |value|
+  end
+  aeroway.each do |value|
     returned.push({ 'aeroway' => value, 'name' => value })
-  }
-  power.each{ |value|
+  end
+  power.each do |value|
     returned.push({ 'power' => value, 'name' => value })
-  }
-  highway.each{ |value|
+  end
+  highway.each do |value|
     returned.push({ 'highway' => value, 'name' => value })
-  }
-  leisure.each{ |value|
+  end
+  leisure.each do |value|
     returned.push({ 'leisure' => value, 'name' => value })
-  }
-  tourism.each{ |value|
+  end
+  tourism.each do |value|
     returned.push({ 'tourism' => value, 'name' => value })
-  }
+  end
   returned.push({ 'railway' => 'platform' })
   returned.push({ 'railway' => 'station' })
   returned.push({ 'man_made' => 'breakwater' })

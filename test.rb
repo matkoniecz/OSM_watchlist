@@ -186,10 +186,10 @@ module CartoCSSHelper
     # switch_databases('gis_test', 'new_york')
     # final
 
-    get_all_road_types.each{|highway|
+    get_all_road_types.each do |highway|
       puts highway
       before_after_from_loaded_databases({ 'highway' => highway, 'ref' => :any_value }, 'nebulon/road-shields', 'master', 13..22, 1000, 5)
-    }
+    end
 
 # create_databases
 # reload_databases()
@@ -280,8 +280,8 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
     CartoCSSHelper::VisualDiff.shuffle_jobs(8)
     final
 
-    [11, 10, 9, 8].each{|z|
-      ['55c4b27', master].each {|branch| # new-road-style
+    [11, 10, 9, 8].each do |z|
+      ['55c4b27', master].each do |branch| # new-road-style
         image_size = 780
         image_size = 300 if z <= 6
         # get_single_image_from_database('world', branch, 50.8288, 4.3684, z, 300, "Brussels #{branch}")
@@ -299,11 +299,11 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
         get_single_image_from_database('world', branch, 16.820, 79.915, z, image_size, "India #{branch}")
         before_after_directly_from_database('world', 53.8656, -0.6659, branch, branch, z..z, image_size, "rural UK #{branch}")
         before_after_directly_from_database('world', 64.1173, -21.8688, branch, branch, z..z, image_size, "Iceland, Reykjavik #{branch}")
-      }
-    }
+      end
+    end
     image_size = 780
-    [6, 5, 7].each{|z|
-      ['55c4b27', master].each {|branch|
+    [6, 5, 7].each do |z|
+      ['55c4b27', master].each do |branch|
         # get_single_image_from_database('world', branch, 50.8288, 4.3684, z, 300, "Brussels #{branch}")
         # get_single_image_from_database('world', branch, -36.84870, 174.76135, z, 300, "Auckland #{branch}")
         # get_single_image_from_database('world', branch, 39.9530, -75.1858, z, 300, "New Jersey #{branch}")
@@ -319,8 +319,8 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
         get_single_image_from_database('world', branch, 16.820, 79.915, z, image_size, "India #{branch}")
         before_after_directly_from_database('world', 53.8656, -0.6659, branch, branch, z..z, image_size, "rural UK #{branch}")
         before_after_directly_from_database('world', 64.1173, -21.8688, branch, branch, z..z, image_size, "Iceland, Reykjavik #{branch}")
-      }
-    }
+      end
+    end
     CartoCSSHelper::VisualDiff.shuffle_jobs(8)
     final
 
@@ -341,9 +341,9 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
     CartoCSSHelper::VisualDiff.shuffle_jobs(4)
     CartoCSSHelper::VisualDiff.run_jobs
 
-    (5..19).each { |zlevel|
+    (5..19).each do |zlevel|
       CartoCSSHelper::Grid.new(zlevel, branch, road_set(true, true), areas_set)
-    }
+    end
 
     test_all_road_types(branch)
 

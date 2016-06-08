@@ -59,9 +59,9 @@ module CartoCSSHelper
   def create_databases
     create_new_gis_database('gis')
     create_new_gis_database('gis_test')
-    get_list_of_databases.each {|database|
+    get_list_of_databases.each do |database|
       create_new_gis_database(database[:name])
-    }
+    end
   end
 
   def get_list_of_databases
@@ -95,7 +95,7 @@ module CartoCSSHelper
   end
 
   def before_after_from_loaded_databases(tags, to, from, zlevels, image_size = 375, count = 3, skip = 0)
-    get_list_of_databases.each {|database|
+    get_list_of_databases.each do |database|
       return true if count <= 0
       if skip > 0
         skip -= 1
@@ -105,7 +105,7 @@ module CartoCSSHelper
       lat = (database[:top] + database[:bottom]) / 2
       lon = (database[:left] + database[:right]) / 2
       found = false
-      ['node', 'way'].each {|type|
+      ['node', 'way'].each do |type|
         begin
           latitude, longitude = OverpassQueryGenerator.locate_element_with_given_tags_and_type tags, type, lat, lon, max_range_in_km_for_radius
           if latitude > database[:bottom] && latitude < database[:top] && longitude > database[:left] && longitude < database[:right]
@@ -116,9 +116,9 @@ module CartoCSSHelper
         rescue OverpassQueryGenerator::NoLocationFound, OverpassDownloader::OverpassRefusedResponse
           puts 'No nearby instances of tags and tag is not extremely rare - no generation of nearby location and wordwide search was impossible. No diff image will be generated for this location.'
         end
-      }
+      end
       count -= 1 if found
-    }
+    end
     puts "failed to find #{tags} in loaded databases"
     return false
   end
@@ -144,9 +144,9 @@ module CartoCSSHelper
 
   def megatest(tags, branch, zlevels = CartoCSSHelper::Configuration.get_min_z..CartoCSSHelper::Configuration.get_max_z, types = ['node', 'closed_way', 'way'], old_branch = 'master')
     # TODO: - add test text-dy
-    tags.each { |key, value|
+    tags.each do |key, value|
       compare_presense_of_tag(branch, old_branch, key, value)
-    }
+    end
     CartoCSSHelper.probe tags, branch, old_branch, zlevels, types
     CartoCSSHelper.test tags, branch, old_branch, zlevels, types
     CartoCSSHelper.test tags.merge({ 'name' => :any_value }), branch, old_branch, zlevels, types
@@ -194,10 +194,10 @@ alter database #{switched_into_for_gis} rename to gis;
 
   def x(branch, latitude, longitude, zlevels = 7..18, image_size = 550)
     collection = []
-    zlevels.each {|zlevel|
+    zlevels.each do |zlevel|
       cache_filename = make_image_from_loaded_database(branch, latitude, longitude, zlevel, image_size, branch)
       collection.push(ImageForComparison.new(cache_filename, "z#{zlevel}"))
-    }
+    end
     return collection
   end
 

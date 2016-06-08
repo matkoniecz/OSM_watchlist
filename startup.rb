@@ -13,28 +13,28 @@ end
 
 def expect_empty_stout_sterr(command)
   require 'open3'
-  Open3.popen3(command) {|_, stdout, stderr, wait_thr|
+  Open3.popen3(command) do |_, stdout, stderr, wait_thr|
     error = stderr.read.chomp
     stdout = stdout.read.chomp
     if error != '' || wait_thr.value.success? != true
       raise 'failed command ' + command + ' due to ' + error
     end
     return stdout != ''
-  }
+  end
   raise 'impossible happened'
 end
 
 def with_uncommitted_changes
-  Dir.chdir(CartoCSSHelper::Configuration.get_path_to_tilemill_project_folder) {
+  Dir.chdir(CartoCSSHelper::Configuration.get_path_to_tilemill_project_folder) do
     system 'git stash > /dev/null'
     command = 'git diff @'
     return expect_empty_stout_sterr(command)
-  }
+  end
 end
 
 def working_on_wrong_database_check(name)
   command = 'echo "\l" | psql postgres | grep ' + name
-  Open3.popen3(command) {|_, stdout, stderr, wait_thr|
+  Open3.popen3(command) do |_, stdout, stderr, wait_thr|
     error = stderr.read.chomp
     stdout = stdout.read.chomp
     raise 'failed command ' + command + ' due to ' + error if error != '' # or wait_thr.value.success? != true TODO: WAT?
@@ -44,7 +44,7 @@ def working_on_wrong_database_check(name)
       # raise 'working_on_wrong_database_check - missing ' + name
     end
     return
-  }
+  end
   raise 'impossible happened'
 end
 
@@ -53,9 +53,9 @@ def working_on_wrong_database
   databases = ['krakow', 'vienna', 'london', 'rome', 'world', 'reykjavik', 'accra_ghana', 'abuja_nigeria', 'abidjan_ivory_coast',
                'well_mapped_rocky_mountains', 'rosenheim', 'south_mountain', 'tokyo', 'market', 'bridleway', 'vineyards', 'monte_lozzo',
                'danube_sinkhole', 'warsaw', 'new_york']
-  databases.each{|name|
+  databases.each do |name|
     working_on_wrong_database_check(name)
-  }
+  end
   return false
 end
 

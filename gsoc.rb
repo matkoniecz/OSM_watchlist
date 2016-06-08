@@ -189,21 +189,21 @@ def test_unpaved(tested_branch, base_branch = 'master', zlevels = 16..16)
   CartoCSSHelper.test_tag_on_real_data_for_this_type({ 'surface' => 'unpaved', 'access' => 'no' }, tested_branch, base_branch, zlevels, 'way')
   CartoCSSHelper.test_tag_on_real_data_for_this_type({ 'surface' => 'unpaved', 'access' => 'destination' }, tested_branch, base_branch, zlevels, 'way')
 
-  get_all_road_types_that_are_likely_to_be_unpaved_with_expected_rendering_change.each {|highway_value|
+  get_all_road_types_that_are_likely_to_be_unpaved_with_expected_rendering_change.each do |highway_value|
     CartoCSSHelper.test_tag_on_real_data_for_this_type({ 'surface' => 'unpaved', 'highway' => highway_value }, tested_branch, base_branch, zlevels, 'way')
     CartoCSSHelper.test_tag_on_real_data_for_this_type({ 'surface' => 'unpaved', 'highway' => highway_value, 'access' => 'destination' }, tested_branch, base_branch, zlevels, 'way')
     # CartoCSSHelper.test_tag_on_real_data_for_this_type({'surface' => 'unpaved', 'highway'=> highway_value, 'access'=> 'no'}, tested_branch, base_branch, zlevels, 'way')
-  }
+  end
   CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'surface' => 'unpaved', 'highway' => 'primary' }, 'way', false, zlevels, tested_branch, base_branch)
   CartoCSSHelper.visualise_place_by_file('test-clean.osm', 50.08690, 19.80704, zlevels, tested_branch, base_branch, 'testowy plik na bazie węzła balickiego')
 end
 
 def additional_test_unpaved(tested_branch, base_branch = 'master', zlevels = 16..16)
-  get_all_road_types_that_are_highly_unlikely_to_be_unpaved.each {|highway_value|
+  get_all_road_types_that_are_highly_unlikely_to_be_unpaved.each do |highway_value|
     CartoCSSHelper.test_tag_on_real_data_for_this_type({ 'surface' => 'unpaved', 'highway' => highway_value }, tested_branch, base_branch, zlevels, 'way')
     # CartoCSSHelper.test_tag_on_real_data_for_this_type({'surface' => 'unpaved', 'highway'=> highway_value, 'access'=> 'destination'}, tested_branch, base_branch, zlevels, 'way')
     # CartoCSSHelper.test_tag_on_real_data_for_this_type({'surface' => 'unpaved', 'highway'=> highway_value, 'access'=> 'no'}, tested_branch, base_branch, zlevels, 'way')
-  }
+  end
 end
 
 def generate_preview(branches, download_bbox_size = 0.05)
@@ -225,7 +225,7 @@ def generate_preview(branches, download_bbox_size = 0.05)
   project_name = CartoCSSHelper::Configuration.get_tilemill_project_name
 
   filename = "preview for readme #{download_bbox_size}.png"
-  branches.each {|branch|
+  branches.each do |branch|
     Git.checkout branch
     export_filename = Configuration.get_path_to_folder_for_branch_specific_cache + filename
     next if File.exist?(export_filename)
@@ -237,9 +237,9 @@ def generate_preview(branches, download_bbox_size = 0.05)
     command = "node /usr/share/tilemill/index.js export #{project_name} '#{export_filename}' #{params}"
     puts command
     system command
-  }
+  end
 
-  branches.each {|branch|
+  branches.each do |branch|
     Git.checkout branch
     source = Configuration.get_path_to_folder_for_branch_specific_cache + filename
     destination = Configuration.get_path_to_folder_for_output + "preview #{branch} #{download_bbox_size}.png"
@@ -250,13 +250,13 @@ def generate_preview(branches, download_bbox_size = 0.05)
     else
       raise 'file that should be created is not present'
     end
-  }
+  end
 end
 
 def test_all_road_types(to)
-  get_all_road_types.each { |tag|
+  get_all_road_types.each do |tag|
     test_road_type to, tag
-  }
+  end
 end
 
 def test_current_road_style(to, from = 'master')
