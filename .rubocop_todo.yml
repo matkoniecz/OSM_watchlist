@@ -11,21 +11,10 @@ Lint/LiteralInCondition:
   Exclude:
     - 'test.rb'
 
-# Offense count: 6
-Lint/NestedMethodDefinition:
-  Exclude:
-    - 'archive.rb'
-
 # Offense count: 1
 Lint/NonLocalExitFromIterator:
   Exclude:
     - 'startup.rb'
-
-# Offense count: 11
-Lint/ShadowingOuterLocalVariable:
-  Exclude:
-    - 'archive.rb'
-    - 'test.rb'
 
 # Offense count: 3
 Lint/UnreachableCode:
@@ -48,40 +37,17 @@ Lint/UnusedMethodArgument:
     - 'gsoc.rb'
     - 'precartocssshelper.rb'
 
-# Offense count: 10
-Lint/UselessAssignment:
-  Exclude:
-    - 'archive.rb'
-    - 'test.rb'
-
-# Offense count: 21
-Metrics/AbcSize:
-  Max: 292
-
-# Offense count: 1
-Metrics/CyclomaticComplexity:
-  Max: 9
-
 # Offense count: 671
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes.
 # URISchemes: http, https
 Metrics/LineLength:
   Max: 365
-
+  Exclude:
+    - 'archive.rb'
 # Offense count: 33
 # Configuration parameters: CountComments.
 Metrics/MethodLength:
   Max: 318
-
-# Offense count: 2
-# Configuration parameters: CountComments.
-Metrics/ModuleLength:
-  Max: 229
-
-# Offense count: 7
-# Configuration parameters: CountKeywordArgs.
-Metrics/ParameterLists:
-  Max: 10
 
 # Offense count: 1
 Metrics/PerceivedComplexity:

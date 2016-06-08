@@ -1,4 +1,5 @@
 # encoding: UTF-8
+# frozen_string_literal: true
 
 def gsoc_places_unpaved(tested_branch, base_branch = 'master', zlevels = 16..16)
   CartoCSSHelper.visualise_place_by_file('test-clean.osm', 50.08690, 19.80704, zlevels, tested_branch, base_branch, 'testowy plik na bazie węzła balickiego')

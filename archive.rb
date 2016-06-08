@@ -1,4 +1,5 @@
 # encoding: UTF-8
+# frozen_string_literal: true
 # https://github.com/gravitystorm/openstreetmap-carto/pull/1242
 # neither blocking nor merging
 

@@ -25,5 +25,25 @@ Style/TrailingCommaInLiteral:
 Style/SpecialGlobalVars:
   Enabled: false
 
-#AllCops:
-#  TargetRubyVersion: 2.3
+AllCops:
+  TargetRubyVersion: 2.3
+
+Metrics/AbcSize:
+  Exclude:
+    - 'archive.rb'
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - 'archive.rb'
+
+Lint/UselessAssignment:
+  Exclude:
+    - 'archive.rb'
+
+Metrics/ParameterLists:
+  Exclude:
+    - 'archive.rb'
+
+Lint/ShadowingOuterLocalVariable:
+  Exclude:
+    - 'archive.rb'

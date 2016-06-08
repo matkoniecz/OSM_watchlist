@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 def get_project_location(project_name)
   return File.join(ENV['HOME'], 'Documents', 'MapBox', 'project', project_name, '')
 end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module CartoCSSHelper
   def large_scale_diff(to, from = 'master', image_size = 375, zlevels = 8..19)
     puts
