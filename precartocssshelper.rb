@@ -31,18 +31,26 @@ module CartoCSSHelper
     switch_databases(database_name, 'gis_test')
   end
 
+  def mapzen_databases
+    return [
+      {:database_name => 'krakow', :mapzen_name =>'krakow_poland'},
+      {:database_name => 'rome', :mapzen_name =>'rome_italy'},
+      {:database_name => 'vienna', :mapzen_name =>'vienna_austria'},
+      {:database_name => 'abidjan_ivory_coast', :mapzen_name =>'abidjan_ivory-coast'},
+      {:database_name => 'london', :mapzen_name =>'london_england'},
+      {:database_name => 'reykjavik', :mapzen_name =>'reykjavik_iceland'},
+      {:database_name => 'tokyo', :mapzen_name =>'tokyo_japan'},
+      {:database_name => 'abuja_nigeria', :mapzen_name =>'abuja_nigeria'},
+      {:database_name => 'accra_ghana', :mapzen_name =>'accra_ghana'},
+      # {:database_name => 'new_york', :mapzen_name =>'new-york_new-york'},
+      # {:database_name => 'warsaw', :mapzen_name =>'warsaw_poland'},
+    ]
+  end
+
   def reload_databases
-    reload_database_using_mapzen_extract('krakow', 'krakow_poland')
-    reload_database_using_mapzen_extract('rome', 'rome_italy')
-    reload_database_using_mapzen_extract('vienna', 'vienna_austria')
-    reload_database_using_mapzen_extract('abidjan_ivory_coast', 'abidjan_ivory-coast')
-    reload_database_using_mapzen_extract('london', 'london_england')
-    reload_database_using_mapzen_extract('reykjavik', 'reykjavik_iceland')
-    reload_database_using_mapzen_extract('tokyo', 'tokyo_japan')
-    reload_database_using_mapzen_extract('abuja_nigeria', 'abuja_nigeria')
-    reload_database_using_mapzen_extract('accra_ghana', 'accra_ghana')
-    reload_database_using_mapzen_extract('new_york', 'new-york_new-york')
-    reload_database_using_mapzen_extract('warsaw', 'warsaw_poland')
+    mapzen_databases.each do |entry|
+      reload_database_using_mapzen_extract(entry[:database_name], entry[:mapzen_name])
+    end
 
     # footways on natural=bare_rock
     reload_database_sourced_as_osm_url('well_mapped_rocky_mountains', 'http://www.openstreetmap.org/?mlat=47.56673&mlon=12.32377#map=19/47.56673/12.32377', 1)
@@ -64,30 +72,55 @@ module CartoCSSHelper
     end
   end
 
+  def raw_json_describing_mapzen_databases
+    # https://github.com/mapzen/metroextractor-cities/blob/master/cities.json
+    url = 'https://raw.githubusercontent.com/mapzen/metroextractor-cities/master/cities.json'
+    clear_cache = false
+    CartoCSSHelper.download_remote_file(url, clear_cache)
+    filename = CartoCSSHelper.get_place_of_storage_of_resource_under_url(url)
+    json_string = ''
+    File.open(filename, "r") do |file|
+      json_string = file.read
+    end
+    require 'json'
+    obj = JSON.parse(json_string)
+    return obj
+  end
+
+  def json_describing_mapzen_databases
+    returned = []
+    raw_json_describing_mapzen_databases['regions'].each do |region|
+      region[1]['cities'].each do |city|
+        returned << city
+      end
+    end
+    return returned
+  end
+
+  def mapzen_database_data(database_name, mapzen_name)
+    json_describing_mapzen_databases.each do |city|
+      if city[0] == mapzen_name
+        bbox = city[1]["bbox"]
+        return { top: bbox["top"].to_f, left: bbox["left"].to_f, bottom: bbox["bottom"].to_f, right: bbox["right"].to_f, name: database_name }
+      end
+    end
+    raise "not found"
+  end
+
   def get_list_of_databases
     databases = []
-    # https://github.com/mapzen/metroextractor-cities/blob/master/cities.json
-    # TODO - it is quickly bitrotting as result of changes, including ones that affect existing extract names/ranges
-    # this should be generated from this file
-    databases << { top: 50.240, left: 19.594, bottom: 49.850, right: 20.275, name: 'krakow' } # from mapzen
-    databases << { top: 48.06673, left: 11.82377, bottom: 47.06673, right: 12.82377, name: 'well_mapped_rocky_mountains' }
-    databases << { top: 42.130, left: 12.109, bottom: 41.578, right: 12.845, name: 'rome' } # from mapzen
-    databases << { top: 48.386, left: 16.137, bottom: 48.048, right: 16.714, name: 'vienna' } # from mapzen
-    databases << { top: 5.523, left: -4.183, bottom: 5.220, right: -3.849, name: 'abidjan_ivory_coast' } # from mapzen
+    mapzen_databases.each do |entry|
+      databases << mapzen_database_data(entry[:database_name], entry[:mapzen_name])
+    end
     databases << { top: 33.82792, left: -112.5891, bottom: 32.82792, right: -111.5891, name: 'south_mountain' }
-    databases << { top: 51.984, left: -1.115, bottom: 50.941, right: 0.895, name: 'london' } # from mapzen
-    databases << { top: 64.297, left: -22.826, bottom: 63.771, right: -21.140, name: 'reykjavik' } # from mapzen
     databases << { top: 48.32989, left: 11.57764, bottom: 47.32989, right: 12.57764, name: 'rosenheim' }
     databases << { top: 54.06360, left: -0.86369, bottom: 53.66360, right: -0.46369, name: 'market' }
-    databases << { top: 36.558, left: 138.779, bottom: 34.867, right: 141.152, name: 'tokyo' } # from mapzen
-    databases << { top: 9.246, left: 7.248, bottom: 8.835, right: 7.717, name: 'abuja_nigeria' } # from mapzen
-    databases << { top: 5.675, left: -0.437, bottom: 5.475, right: -0.071, name: 'accra_ghana' } # from mapzen
     databases << { top: 53.7875, left: -2.0254, bottom: 52.7875, right: -1.0254, name: 'bridleway' }
     databases << { top: 48.48499, left: 7.24856, bottom: 47.68499, right: 8.04856, name: 'vineyards' }
     databases << { top: 45.6952, left: 11.2215, bottom: 44.8952, right: 12.0215, name: 'monte_lozzo' }
     databases << { top: 48.4337, left: 8.2667, bottom: 47.4337, right: 9.2667, name: 'danube_sinkhole' }
-    databases << { top: 41.097, left: -74.501, bottom: 40.345, right: -73.226, name: 'new_york' } # from mapzen
-    databases << { top: 52.623, left: 20.341, bottom: 51.845, right: 21.692, name: 'warsaw' } # from mapzen
+
+    databases.insert(1, { top: 48.06673, left: 11.82377, bottom: 47.06673, right: 12.82377, name: 'well_mapped_rocky_mountains' })
 =begin
     databases << {:top => , :left => , :bottom => , :right => , :name => ''}
 =end

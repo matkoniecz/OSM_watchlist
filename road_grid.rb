@@ -127,8 +127,8 @@ def road_set(without_access = true, without_surface = true)
   return returned
 end
 
-def areas_set
-  data = [
+def get_landuse_data
+  return [
     { key: 'landuse',
       values: ['allotments', 'basin', 'brownfield', 'cemetery', 'commercial',
                'conservation', 'construction', 'farm', 'farmland', 'farmyard', 'forest',
@@ -155,17 +155,21 @@ def areas_set
                'sports_centre', 'stadium', 'swimming_pool', 'track'] },
     { key: 'tourism',
       values: ['camp_site', 'caravan_site', 'picnic_site', 'theme_park'] },
+    { key: 'railway',
+      values: ['platform', 'station'] },
+    { key: 'man_made',
+      values: ['breakwater', 'groyne'] },
+    { key: 'barrier',
+      values: ['hedge'] },
   ]
+end
+
+def areas_set
   returned = []
   returned.push({ 'fixme' => 'yes' })
-  data.each[:values].each do |value|
+  get_landuse_data.each[:values].each do |value|
     returned.push({ landuses[:key] => value, 'name' => value })
   end
-  returned.push({ 'railway' => 'platform' })
-  returned.push({ 'railway' => 'station' })
-  returned.push({ 'man_made' => 'breakwater' })
-  returned.push({ 'man_made' => 'groyne' })
-  returned.push({ 'barrier' => 'hedge' })
   returned.push({ 'building' => Heuristic.get_generic_tag_value })
   returned.push({ 'building' => Heuristic.get_generic_tag_value, 'amenity' => 'place_of_worship' })
   returned.push({ 'amenity' => 'grave_yard', 'religion' => 'jewish' })

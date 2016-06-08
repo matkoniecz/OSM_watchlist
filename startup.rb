@@ -67,6 +67,19 @@ def set_paths(tilemill_project_location)
   CartoCSSHelper::Configuration.set_path_to_folder_for_cache(File.join(ENV['HOME'], 'Documents', 'OSM', 'CartoCSSHelper-tmp', ''))
 end
 
+def warn_about_live_git_repository
+  puts 'WARNING WARNING WARNING'
+  puts 'WARNING WARNING WARNING'
+  puts 'WARNING WARNING WARNING'
+  puts 'WARNING WARNING WARNING'
+  puts 'running on live git repository'
+  puts 'using it may result in generated images for wrong versions of code'
+  puts 'WARNING WARNING WARNING'
+  puts 'WARNING WARNING WARNING'
+  puts 'WARNING WARNING WARNING'
+  puts 'WARNING WARNING WARNING'
+end
+
 def init(create_copy = true, index = '')
   raise 'loaded_not_generic_database' if working_on_wrong_database
 
@@ -76,16 +89,7 @@ def init(create_copy = true, index = '')
   if create_copy
     destination = create_frozen_copy(project, index)
   else
-    puts 'WARNING WARNING WARNING'
-    puts 'WARNING WARNING WARNING'
-    puts 'WARNING WARNING WARNING'
-    puts 'WARNING WARNING WARNING'
-    puts 'running on live git repository'
-    puts 'using it may result in generated images for wrong versions of code'
-    puts 'WARNING WARNING WARNING'
-    puts 'WARNING WARNING WARNING'
-    puts 'WARNING WARNING WARNING'
-    puts 'WARNING WARNING WARNING'
+    warn_about_live_git_repository
   end
 
   set_paths(destination)
