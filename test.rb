@@ -123,6 +123,16 @@ def barrier_names
   # CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 13..22, 'tourism_way', 'master', 'tourism_way', 0.1)
 end
 
+def missing_labels
+    # missing name - see https://github.com/gravitystorm/openstreetmap-carto/issues/1797
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'natural' => 'peak', 'ele' => '4'}, 'node', false, 22..22, 'v2.31.0', 'v2.30.0') # 24, 29 - 34
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'natural' => 'peak', 'ele' => '4', 'name' => 'name'}, 'node', false, 22..22, 'v2.34.0', 'v2.34.0')
+
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'aeroway' => 'gate', 'ref' => '4'}, 'node', false, 22..22, 'v2.31.0', 'v2.30.0') # 20, 27, 29, 30 - 31 34
+    before_after_from_loaded_databases({'aeroway' => 'gate', 'ref' => :any_value}, 'v2.31.0', 'v2.30.0', 22..22, 100, 2)
+    CartoCSSHelper.test_tag_on_real_data({'aeroway' => 'gate', 'ref' => :any_value}, 'v2.31.0', 'v2.30.0', 22..22, ['way'], 2)
+end
+
 module CartoCSSHelper
   def main
     before_after_from_loaded_databases({ 'man_made' => 'obelisk' }, 'master', 'master', 14..18, 300, 10, 0)
@@ -141,38 +151,6 @@ module CartoCSSHelper
       puts highway
       before_after_from_loaded_databases({ 'highway' => highway, 'ref' => :any_value }, 'nebulon/road-shields', 'master', 13..22, 1000, 5)
     end
-
-# https://github.com/gravitystorm/openstreetmap-carto/issues/1781 - tweaking water colour
-# TODO - from world database
-# before_after_from_loaded_databases({'waterway' => 'river'}, 'water', 'master', 9..19, 1000)
-# before_after_from_loaded_databases({'waterway' => 'stream'}, 'water', 'master', 9..19, 1000)
-# before_after_from_loaded_databases({'waterway' => 'ditch'}, 'water', 'master', 9..19, 1000)
-# before_after_from_loaded_databases({'waterway' => 'riverbank'}, 'water', 'master', 9..19, 1000)
-
-# before_after_from_loaded_databases({'natural' => 'coastline'}, 'water', 'master', 9..19, 1000)
-# final
-
-# TODO: watchlist
-=begin
-
-rescue todo - watchlist for rare landuse values in Kraków, ; w surface
-http://wiki.openstreetmap.org/wiki/Tag%3Alanduse%3Ddepot - update
-http://overpass-turbo.eu/s/aJA access=public eliminator
-    #http://overpass-turbo.eu/s/aJm - reduce impact before rendering proposal
-    CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'parking', 'access'=>'public'}, 'public', 'master', 13..19, 'way', 2)
-    CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'parking', 'access'=>'private'}, 'public', 'master', 13..19, 'way', 2)
-    CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'parking', 'access'=>'yes'}, 'public', 'master', 13..19, 'way', 2)
-=end
-
-    # CartoCSSHelper::Validator.run_tests('v2.34.0')
-
-    # missing name
-    # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'natural' => 'peak', 'ele' => '4'}, 'node', false, 22..22, 'v2.31.0', 'v2.30.0') # 24, 29 - 34
-    # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'natural' => 'peak', 'ele' => '4', 'name' => 'name'}, 'node', false, 22..22, 'v2.34.0', 'v2.34.0')
-
-    # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'aeroway' => 'gate', 'ref' => '4'}, 'node', false, 22..22, 'v2.31.0', 'v2.30.0') # 20, 27, 29, 30 - 31 34
-    # before_after_from_loaded_databases({'aeroway' => 'gate', 'ref' => :any_value}, 'v2.31.0', 'v2.30.0', 22..22, 100, 2)
-    # CartoCSSHelper.test_tag_on_real_data({'aeroway' => 'gate', 'ref' => :any_value}, 'v2.31.0', 'v2.30.0', 22..22, ['way'], 2)
 
     final
 
@@ -218,6 +196,28 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
     CartoCSSHelper::Validator.run_tests('v2.32.0')
   end
 end
+
+def test_water_color
+# https://github.com/gravitystorm/openstreetmap-carto/issues/1781 - tweaking water colour
+# TODO - from world database
+before_after_from_loaded_databases({'waterway' => 'river'}, 'water', 'master', 9..19, 1000)
+before_after_from_loaded_databases({'waterway' => 'stream'}, 'water', 'master', 9..19, 1000)
+before_after_from_loaded_databases({'waterway' => 'ditch'}, 'water', 'master', 9..19, 1000)
+before_after_from_loaded_databases({'waterway' => 'riverbank'}, 'water', 'master', 9..19, 1000)
+
+before_after_from_loaded_databases({'natural' => 'coastline'}, 'water', 'master', 9..19, 1000)
+end
+
+# TODO: watchlist
+=begin
+rescue todo - watchlist for rare landuse values in Kraków, ; w surface
+http://wiki.openstreetmap.org/wiki/Tag%3Alanduse%3Ddepot - update
+http://overpass-turbo.eu/s/aJA access=public eliminator
+    #http://overpass-turbo.eu/s/aJm - reduce impact before rendering proposal
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'parking', 'access'=>'public'}, 'public', 'master', 13..19, 'way', 2)
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'parking', 'access'=>'private'}, 'public', 'master', 13..19, 'way', 2)
+    CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'parking', 'access'=>'yes'}, 'public', 'master', 13..19, 'way', 2)
+=end
 
 def notify(text, silent = $silent)
   return if silent
