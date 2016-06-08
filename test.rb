@@ -66,8 +66,6 @@ module CartoCSSHelper
     # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'amenity' => 'parking'}.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'closed_way', false, 22..22, 'eternal_710', 'master')
     # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'amenity' => 'motorcycle_parking'}.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'closed_way', false, 22..22, 'eternal_710', 'master')
 
-    # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'amenity' => 'car_rental'}.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'node', false, 17..22, 'eternal_710', 'master')
-    # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'amenity' => 'car_rental'}.merge({'name' => 'RV Rental Outlet'}), 'node', false, 17..22, 'eternal_710', 'master')
     affected = [
       # was 11
       { 'leisure' => 'miniature_golf' },
@@ -302,55 +300,14 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
         before_after_directly_from_database('world', 64.1173, -21.8688, branch, branch, z..z, image_size, "Iceland, Reykjavik #{branch}")
       end
     end
-    image_size = 780
-    [6, 5, 7].each do |z|
-      ['55c4b27', master].each do |branch|
-        # get_single_image_from_database('world', branch, 50.8288, 4.3684, z, 300, "Brussels #{branch}")
-        # get_single_image_from_database('world', branch, -36.84870, 174.76135, z, 300, "Auckland #{branch}")
-        # get_single_image_from_database('world', branch, 39.9530, -75.1858, z, 300, "New Jersey #{branch}")
-        # get_single_image_from_database('world', branch, 55.39276, 13.29790, z, 300, "Malmo - fields #{branch}")
-        get_single_image_from_database('world', branch, 50, 40, z, image_size, "Russia interior #{branch}")
-        get_single_image_from_database('world', branch, 50, 20, z, image_size, "Krakow #{branch}")
-        get_single_image_from_database('world', branch, 35.07851, 137.684848, z, image_size, "Japan #{branch}")
-        if z < 10
-          # nothing interesting on z11+
-          get_single_image_from_database('world', branch, -12.924, -67.841, z, image_size, "South America #{branch}")
-          get_single_image_from_database('world', branch, 50, 0, z, image_size, "UK, France #{branch}")
-        end
-        get_single_image_from_database('world', branch, 16.820, 79.915, z, image_size, "India #{branch}")
-        before_after_directly_from_database('world', 53.8656, -0.6659, branch, branch, z..z, image_size, "rural UK #{branch}")
-        before_after_directly_from_database('world', 64.1173, -21.8688, branch, branch, z..z, image_size, "Iceland, Reykjavik #{branch}")
-      end
-    end
     CartoCSSHelper::VisualDiff.shuffle_jobs(8)
     final
 
-    CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=53.149497&mlon=-6.3292126', 16..16, branch, 'master', 'bog', 0.1)
-    before_after_directly_from_database('world', 47.1045, -122.5882, branch, 'master', 9..10, 375)
 
-    before_after_directly_from_database('rome', 41.92054, 12.48020, branch, 'master', 12..19, 375)
-    before_after_directly_from_database('rome', 41.85321, 12.44090, branch, 'master', 12..19, 375)
-    large_scale_diff(branch, 'master')
-    before_after_directly_from_database('krakow', 50.08987, 19.89922, branch, 'master', 12..19, 375)
-    generate_preview([branch])
-
-    CartoCSSHelper::VisualDiff.enable_job_pooling
-    gsoc_places(branch, branch, 7..17)
-    CartoCSSHelper::VisualDiff.run_jobs
-
-    gsoc_full(branch, branch, 7..17)
-    CartoCSSHelper::VisualDiff.shuffle_jobs(4)
-    CartoCSSHelper::VisualDiff.run_jobs
 
     (5..19).each do |zlevel|
       CartoCSSHelper::Grid.new(zlevel, branch, road_set(true, true), areas_set)
     end
-
-    test_all_road_types(branch)
-
-    CartoCSSHelper::VisualDiff.run_jobs
-
-    base_test(to)
 
     CartoCSSHelper::VisualDiff.run_jobs
 

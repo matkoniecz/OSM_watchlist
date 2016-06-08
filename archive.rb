@@ -195,6 +195,51 @@ def multicolider(fast = true)
 end
 
 def various_from_gsoc
+    CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=53.149497&mlon=-6.3292126', 16..16, branch, 'master', 'bog', 0.1)
+    before_after_directly_from_database('world', 47.1045, -122.5882, branch, 'master', 9..10, 375)
+
+    before_after_directly_from_database('rome', 41.92054, 12.48020, branch, 'master', 12..19, 375)
+    before_after_directly_from_database('rome', 41.85321, 12.44090, branch, 'master', 12..19, 375)
+    large_scale_diff(branch, 'master')
+    before_after_directly_from_database('krakow', 50.08987, 19.89922, branch, 'master', 12..19, 375)
+    generate_preview([branch])
+
+    image_size = 780
+    [6, 5, 7].each do |z|
+      ['55c4b27', master].each do |branch|
+        # get_single_image_from_database('world', branch, 50.8288, 4.3684, z, 300, "Brussels #{branch}")
+        # get_single_image_from_database('world', branch, -36.84870, 174.76135, z, 300, "Auckland #{branch}")
+        # get_single_image_from_database('world', branch, 39.9530, -75.1858, z, 300, "New Jersey #{branch}")
+        # get_single_image_from_database('world', branch, 55.39276, 13.29790, z, 300, "Malmo - fields #{branch}")
+        get_single_image_from_database('world', branch, 50, 40, z, image_size, "Russia interior #{branch}")
+        get_single_image_from_database('world', branch, 50, 20, z, image_size, "Krakow #{branch}")
+        get_single_image_from_database('world', branch, 35.07851, 137.684848, z, image_size, "Japan #{branch}")
+        if z < 10
+          # nothing interesting on z11+
+          get_single_image_from_database('world', branch, -12.924, -67.841, z, image_size, "South America #{branch}")
+          get_single_image_from_database('world', branch, 50, 0, z, image_size, "UK, France #{branch}")
+        end
+        get_single_image_from_database('world', branch, 16.820, 79.915, z, image_size, "India #{branch}")
+        before_after_directly_from_database('world', 53.8656, -0.6659, branch, branch, z..z, image_size, "rural UK #{branch}")
+        before_after_directly_from_database('world', 64.1173, -21.8688, branch, branch, z..z, image_size, "Iceland, Reykjavik #{branch}")
+      end
+    end
+
+    CartoCSSHelper::VisualDiff.enable_job_pooling
+    gsoc_places(branch, branch, 7..17)
+    CartoCSSHelper::VisualDiff.run_jobs
+
+    gsoc_full(branch, branch, 7..17)
+    CartoCSSHelper::VisualDiff.shuffle_jobs(4)
+    CartoCSSHelper::VisualDiff.run_jobs
+
+    test_all_road_types(branch)
+
+    CartoCSSHelper::VisualDiff.run_jobs
+
+    base_test(to)
+
+
   # test_ministop('mediumstop', 'ministop')
   # ['e6', 'e4', 'e2', 'e0'].each {|branch|
   #  CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/157403305#map=18/41.6974955/44.81631', zlevels, branch, branch, 'conflict with landuse=residential - church collision_with_residential')
