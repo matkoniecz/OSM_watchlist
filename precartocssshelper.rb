@@ -39,14 +39,6 @@ module CartoCSSHelper
     end
   end
 
-  def visualise_changes_on_real_data_pair(tags_a, tags_b, type_a, type_b, latitude, longitude, zlevels, new_branch, old_branch, image_size)
-    latitude, longitude = OverpassQueryGenerator.find_data_pair(tags_a, tags_b, latitude, longitude, type_a, type_b)
-    return false if latitude.nil?
-    header = "#{latitude} #{longitude} - #{VisualDiff.dict_to_pretty_tag_list(tags_a)} near #{VisualDiff.dict_to_pretty_tag_list(tags_b)}"
-    VisualDiff.visualise_changes_for_location(latitude, longitude, zlevels, header, new_branch, old_branch, 0.4, image_size)
-    return true
-  end
-
   def fits_in_database_bb?(database, latitude, longitude)
     return false if latitude < database[:bottom]
     return false if latitude > database[:top]
