@@ -43,7 +43,6 @@ module CartoCSSHelper
     CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'shop' => 'fishmonger', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ' }, 'node', false, 22..22, 'fishmonger', 'master')
     before_after_from_loaded_databases({ 'shop' => 'fishmonger' }, 'fishmonger', 'master', 17..18, 300, 2, 8)
 
-
     # before_after_from_loaded_databases({'highway' => 'pedestrian', 'area'=>'yes', 'name' => :any_value}, 'pnorman/road_areas', 'v2.38.0', 16..18, 400, 2, 0)
 
     # before_after_from_loaded_databases({'highway' => :any_value, 'name' => :any_value}, 'pnorman/road_areas', 'v2.38.0', 16..18, 1000, 2, 0)
@@ -122,7 +121,7 @@ module CartoCSSHelper
 # create_databases
 # reload_databases()
 
-# PR puiblished
+# PR to redo
 # CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 18..18, 'barrier_way', 'master', 'tourism_way', 0.1)
 # CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 15..22, 'barrier_way', 'master', 'tourism_way', 0.1)
 # CartoCSSHelper.probe({'barrier' => 'wall', 'name' => :any_value, 'landuse' => 'cemetery'}, 'barrier_way', 'master', 19..19)
@@ -152,8 +151,6 @@ module CartoCSSHelper
     # CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 18..18, 'tourism_way', 'master', 'tourism_way', 0.1)
     # CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 13..22, 'tourism_way', 'master', 'tourism_way', 0.1)
 
-    final
-
 # https://github.com/gravitystorm/openstreetmap-carto/issues/1781 - tweaking water colour
 # TODO - from world database
 # before_after_from_loaded_databases({'waterway' => 'river'}, 'water', 'master', 9..19, 1000)
@@ -163,9 +160,6 @@ module CartoCSSHelper
 
 # before_after_from_loaded_databases({'natural' => 'coastline'}, 'water', 'master', 9..19, 1000)
 # final
-
-# CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'barrier' => 'lift_gate', 'name' => 'a'}, 'closed_way', false, 22..22, 'master', 'master')
-# catcha-all for areas
 
 # TODO: watchlist
 =begin
@@ -185,8 +179,6 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
     # before_after_from_loaded_databases({'amenity' => 'car_wash'}, 'kocio/car_wash', 'master', 14..22, 375, 5)
     # CartoCSSHelper.test ({'amenity' => 'car_wash'}), 'kocio/car_wash', 'master', 14..22
 
-    z = 14..18
-
     # missing name
     # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'natural' => 'peak', 'ele' => '4'}, 'node', false, 22..22, 'v2.31.0', 'v2.30.0') # 24, 29 - 34
     # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'natural' => 'peak', 'ele' => '4', 'name' => 'name'}, 'node', false, 22..22, 'v2.34.0', 'v2.34.0')
@@ -197,9 +189,7 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
 
     final
 
-    show_fixed_bugs(branch)
     large_scale_diff(branch, master)
-    test_low_invisible(branch, master)
 
     generate_preview(['master'])
     final

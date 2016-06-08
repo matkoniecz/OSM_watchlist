@@ -47,29 +47,7 @@ Metrics/LineLength:
 # Offense count: 33
 # Configuration parameters: CountComments.
 Metrics/MethodLength:
-  Max: 300
-
-# Offense count: 1
-
-# Offense count: 28
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: braces, no_braces, context_dependent
-Style/BracesAroundHashParameters:
-  Exclude:
-    - 'archive.rb'
-    - 'precartocssshelper.rb'
-    - 'road_grid.rb'
-    - 'test.rb'
-
-# Offense count: 3
-Style/Documentation:
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
-    - 'precartocssshelper.rb'
-    - 'road_grid.rb'
-    - 'test.rb'
+  Max: 250
 
 # Offense count: 2
 # Configuration parameters: AllowedVariables.

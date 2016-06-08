@@ -52,5 +52,13 @@ Lint/ShadowingOuterLocalVariable:
   Exclude:
     - 'archive.rb'
 
+Metrics/MethodLength:
+  Exclude:
+    - 'archive.rb'
+
+Lint/NestedMethodDefinition:
+  Exclude:
+    - 'archive.rb'
+
 Style/BracesAroundHashParameters:
   Enabled: false
