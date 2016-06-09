@@ -54,30 +54,21 @@ Metrics/AbcSize:
     - 'road_grid.rb'
     - 'archive/**'
 
+Metrics/MethodLength:
+  Exclude:
+    - 'road_grid.rb'
+    - 'archive/**'
+
 # Offense count: 679
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes.
 # URISchemes: http, https
 Metrics/LineLength:
   Max: 365
 
-# Offense count: 20
-# Configuration parameters: CountComments.
-Metrics/MethodLength:
-  Max: 40
-
-# Offense count: 1
-# Configuration parameters: CountComments.
-Metrics/ModuleLength:
-  Max: 210
-
 # Offense count: 7
 # Configuration parameters: CountKeywordArgs.
 Metrics/ParameterLists:
-  Max: 10
-
-# Offense count: 1
-Metrics/PerceivedComplexity:
-  Max: 8
+  Max: 9
 
 # Offense count: 2
 Style/Documentation:
@@ -92,10 +83,4 @@ Style/Documentation:
 Style/GlobalVars:
   Exclude:
     - 'startup.rb'
-    - 'test.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/InfiniteLoop:
-  Exclude:
     - 'test.rb'

@@ -48,10 +48,6 @@ Lint/ShadowingOuterLocalVariable:
   Exclude:
     - 'archive/**'
 
-Metrics/MethodLength:
-  Exclude:
-    - 'archive/**'
-
 Lint/NestedMethodDefinition:
   Exclude:
     - 'archive/**'
@@ -69,4 +65,8 @@ Style/GuardClause:
     - 'archive/**'
 
 Style/BracesAroundHashParameters:
+  Enabled: false
+
+#https://github.com/bbatsov/rubocop/issues/3207
+Style/InfiniteLoop:
   Enabled: false

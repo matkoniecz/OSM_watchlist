@@ -11,6 +11,7 @@ require_relative 'startup'
 require_relative 'precartocssshelper'
 require_relative 'location_generator'
 require_relative 'location_to_image'
+require_relative 'notify'
 
 include CartoCSSHelper
 
@@ -99,11 +100,6 @@ def test_imagic_sport_color_pr
   before_after_from_loaded_databases({ 'leisure' => 'stadium' }, 'imagico/sport-colors', 'master', 14..18, 500, n, skip)
 end
 
-def database_cleaning
-  create_databases
-  reload_databases
-end
-
 def barrier_names
   before_after_from_loaded_databases({ 'barrier' => 'wall', 'name' => :any_value }, 'barrier_way', 'master', 15..19, 600, 1)
   before_after_from_loaded_databases({ 'barrier' => 'wall', 'name' => :any_value }, 'barrier_way', 'master', 15..19)
@@ -160,6 +156,8 @@ def test_forest
   diff_on_loaded_database(location_provider: locator, to: 'forest', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
 end
 
+# https://github.com/gravitystorm/openstreetmap-carto/issues/2097
+
 module CartoCSSHelper
   def main
     # test_forest
@@ -208,6 +206,11 @@ def test_water_color
   before_after_from_loaded_databases({ 'natural' => 'coastline' }, 'water', 'master', 9..19, 1000)
 end
 
+def database_cleaning
+  create_databases
+  reload_databases
+end
+
 # TODO: watchlist
 =begin
 rescue todo - watchlist for rare landuse values in Kraków, ; w surface
@@ -218,23 +221,6 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
     CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'parking', 'access'=>'private'}, 'public', 'master', 13..19, 'way', 2)
     CartoCSSHelper.test_tag_on_real_data_for_this_type({'amenity' => 'parking', 'access'=>'yes'}, 'public', 'master', 13..19, 'way', 2)
 =end
-
-def notify(text, silent = $silent)
-  return if silent
-  puts "Notification: #{text}"
-  system("notify-send '#{text}'")
-end
-
-def notify_spam(text)
-  while true
-    notify text
-    sleep 10
-  end
-end
-
-def done_segment
-  notify 'Computed!'
-end
 
 def final
   CartoCSSHelper::VisualDiff.run_jobs

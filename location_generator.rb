@@ -1,27 +1,22 @@
 # frozen_string_literal: true
 module CartoCSSHelper
   def land_locations(skip)
+    n = 0
     Enumerator.new do |yielder|
-      n = 0
-      get_list_of_databases.each do |_database|
-        n + +
-        if skip > 0
-          skip -= 1
-        else
-          lat, lon = CartoCSSHelper.get_nth_location(n)
-          yielder.yield lat, lon
-        end
+      n += 1
+      if skip > 0
+        skip -= 1
+      else
+        lat, lon = CartoCSSHelper.get_nth_location(n)
+        yielder.yield lat, lon
       end
     end
   end
 
   def loaded_database_centers(skip)
     Enumerator.new do |yielder|
-      get_list_of_databases.each do |database|
-        if skip > 0
-          skip -= 1
-          next
-        end
+      databases = get_list_of_databases.drop(skip)
+      databases.each do |database|
         lat, lon = get_database_center(database)
         yielder.yield lat, lon
       end
