@@ -149,10 +149,10 @@ def test_office(n)
 end
 
 def test_power(branch, n)
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'power' => 'tower' }, 0, ['node'])
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'power' => 'tower' }, types: ['node'])
   diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 13..19, image_size: 1000, count: n)
 
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'power' => 'pole' }, 0, ['node'])
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'power' => 'pole' }, types: ['node'])
   diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 1000, count: n)
 end
 
@@ -164,9 +164,9 @@ end
 # https://github.com/gravitystorm/openstreetmap-carto/issues/assigned/matkoniecz
 module CartoCSSHelper
   def main
-    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'office' => 'government' })
-    diff_on_loaded_database(location_provider: locator, to: 'office', from: 'master', zlevels: 19..19, image_size: 375, count: 1)
-    test_library_book_shop_prs
+    #locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'office' => 'government' })
+    #diff_on_loaded_database(location_provider: locator, to: 'office', from: 'master', zlevels: 19..19, image_size: 375, count: 1)
+    #test_library_book_shop_prs
 
     test_power('thin_power', 9)
 
@@ -247,6 +247,7 @@ def final
 end
 
 def encoutered_exception(e)
+  puts e.class
   puts e
   puts
   puts e.backtrace
