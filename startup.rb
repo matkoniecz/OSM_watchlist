@@ -34,7 +34,7 @@ end
 
 def working_on_wrong_database_check(name)
   list = execute_command('echo "\l" | psql postgres')
-  if !list.include?(name)
+  unless list.include?(name)
     puts "Database #{name} is missing!"
     switch_databases(name, 'gis_test')
   end
