@@ -4,7 +4,8 @@ require_relative '../CartoCSSHelper/lib/cartocss_helper'
 require_relative '../CartoCSSHelper/lib/cartocss_helper/configuration'
 require_relative '../CartoCSSHelper/lib/cartocss_helper/visualise_changes_image_generation'
 require_relative '../CartoCSSHelper/lib/cartocss_helper/util/filehelper'
-require_relative 'archive/gsoc2015'
+require_relative 'archive/old_archive_before_generators/gsoc2015'
+require_relative 'archive/old_archive_before_generators/archive'
 require_relative 'archive/archive'
 require_relative 'road_grid'
 require_relative 'startup'
@@ -76,15 +77,11 @@ def test_rail_pr
 end
 
 def test_library_book_shop_prs
-  # CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 15..22, 'master', 'pnorman/osm2pgsql_style_update', 'master', 0.1)
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'amenity' => 'library', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ' }, 'node', false, 22..22, 'library11', 'master')
   CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'shop' => 'books', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ' }, 'node', false, 22..22, 'also_shop', 'master')
   n = 6
   skip = 3
-  before_after_from_loaded_databases({ 'amenity' => 'library' }, 'library11', 'master', 16..18, 300, n, skip)
-  n = 6
-  skip = 0
-  before_after_from_loaded_databases({ 'shop' => 'books' }, 'also_shop', 'master', 16..18, 300, n, skip)
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'shop' => 'books' }, skip: skip)
+  diff_on_loaded_database(location_provider: locator, to: 'also_shop', from: 'master', zlevels: 16..19, image_size: 375, count: n)
 end
 
 def switch_to_krakow_database
@@ -143,26 +140,68 @@ def missing_labels
   CartoCSSHelper.test_tag_on_real_data({ 'aeroway' => 'gate', 'ref' => :any_value }, 'v2.31.0', 'v2.30.0', 22..22, ['way'], 2)
 end
 
-def test_forest
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'natural' => 'valley', 'landuse' => 'forest' }, 'closed_way', false, 22..22, 'forest', 'master')
+def test_office(n)
+  # https://github.com/gravitystorm/openstreetmap-carto/issues/1697 https://github.com/gravitystorm/openstreetmap-carto/issues/108
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'office' => :any_value })
+  diff_on_loaded_database(location_provider: locator, to: 'office', from: 'master', zlevels: 15..19, image_size: 375, count: n)
 
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'natural' => :any_value, 'landuse' => 'forest' })
-  diff_on_loaded_database(location_provider: locator, to: 'forest', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'office' => 'government' })
+  diff_on_loaded_database(location_provider: locator, to: 'office', from: 'master', zlevels: 15..19, image_size: 375, count: n)
 
-  locator = CartoCSSHelper::LocateTags.new({ 'natural' => :any_value, 'landuse' => 'forest' })
-  diff_on_loaded_database(location_provider: locator, to: 'forest', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'office' => 'company' })
+  diff_on_loaded_database(location_provider: locator, to: 'office', from: 'master', zlevels: 15..19, image_size: 375, count: n)
 
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'natural' => 'wood' })
-  diff_on_loaded_database(location_provider: locator, to: 'forest', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'office' => 'insurance' })
+  diff_on_loaded_database(location_provider: locator, to: 'office', from: 'master', zlevels: 15..19, image_size: 375, count: n)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'office' => 'administrative' })
+  diff_on_loaded_database(location_provider: locator, to: 'office', from: 'master', zlevels: 15..19, image_size: 375, count: n)
+
+  # https://github.com/gravitystorm/openstreetmap-carto/issues/1922
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'office' => 'lawyer' })
+  diff_on_loaded_database(location_provider: locator, to: 'office', from: 'master', zlevels: 15..19, image_size: 375, count: n)
+
+  # ?
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'office' => 'yes' })
+  diff_on_loaded_database(location_provider: locator, to: 'office', from: 'master', zlevels: 15..19, image_size: 375, count: n)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'office' => 'estate' })
+  diff_on_loaded_database(location_provider: locator, to: 'office', from: 'master', zlevels: 15..19, image_size: 375, count: n)
 end
 
-# https://github.com/gravitystorm/openstreetmap-carto/issues/2097
+def test_power(branch, n)
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'power' => 'tower' }, 0, ['node'])
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 13..19, image_size: 1000, count: n)
 
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'power' => 'pole' }, 0, ['node'])
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 1000, count: n)
+end
+
+# TODO:
+# https://github.com/gravitystorm/openstreetmap-carto/issues/2097
+# https://github.com/gravitystorm/openstreetmap-carto/issues/1899
+# https://github.com/gravitystorm/openstreetmap-carto/issues/1661
+# https://github.com/gravitystorm/openstreetmap-carto/issues/1285
+# https://github.com/gravitystorm/openstreetmap-carto/issues/assigned/matkoniecz
 module CartoCSSHelper
   def main
-    # test_forest
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'office' => 'government' })
+    diff_on_loaded_database(location_provider: locator, to: 'office', from: 'master', zlevels: 19..19, image_size: 375, count: 1)
+    test_library_book_shop_prs
+
+    test_power('thin_power', 9)
+
+    test_power('thin_power', 15)
+    test_power('thinner_power', 15)
+    test_office(15)
+
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'military' => 'danger_area' }, 0, ['way'])
+    diff_on_loaded_database(location_provider: locator, to: 'master', from: 'master', zlevels: 9..19, image_size: 375, count: 10)
+
+    # https://github.com/gravitystorm/openstreetmap-carto/issues/2126
     # before_after_from_loaded_databases({ 'man_made' => 'obelisk' }, 'master', 'master', 14..18, 300, 10, 0)
 
+    # https://github.com/gravitystorm/openstreetmap-carto/issues/2115
     # before_after_from_loaded_databases({ 'tourism' => 'alpine_hut' }, 'master', 'master', 12..15, 500, 10)
     test_turning_circle
     test_eternal_710_text_resize

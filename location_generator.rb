@@ -23,6 +23,12 @@ module CartoCSSHelper
     end
   end
 
+  def get_database_center(database)
+    lat = (database[:top] + database[:bottom]) / 2
+    lon = (database[:left] + database[:right]) / 2
+    return lat, lon
+  end
+
   class LocatePairedTagsInsideLoadedDatabases
     def initialize(tags_a, tags_b, type_a, type_b, skip)
       seed_generator = loaded_database_centers(skip)
@@ -40,9 +46,9 @@ module CartoCSSHelper
   end
 
   class LocateTagsInsideLoadedDatabases
-    def initialize(tags, skip = 0)
+    def initialize(tags, skip: 0, types: ['node', 'way'])
       seed_generator = loaded_database_centers(skip)
-      locator = LocateTags.new(tags, seed_generator)
+      locator = LocateTags.new(tags, seed_generator, types)
       @inner = AllowOnlyLoadedAreas.new(location_provider: locator)
     end
 
@@ -65,14 +71,18 @@ module CartoCSSHelper
       Enumerator.new do |yielder|
         loop do
           latitude, longitude = inner_locator.next
-          # puts "#{latitude} #{longitude}"
-          get_list_of_databases.each do |database|
-            next unless fits_in_database_bb?(database, latitude, longitude)
+          if get_database_containing(latitude, longitude) != nil
             yielder.yield latitude, longitude
-            next
           end
         end
       end
+    end
+
+    def get_database_containing(latitude, longitude)
+      get_list_of_databases.each do |database|
+        return database if fits_in_database_bb?(database, latitude, longitude)
+      end
+      return nil
     end
 
     def description
@@ -93,11 +103,9 @@ module CartoCSSHelper
       Enumerator.new do |yielder|
         loop do
           lat, lon = @seed_generator.next
-          ['node', 'way'].each do |_type|
-            latitude, longitude = OverpassQueryGenerator.find_data_pair(@tags_a, @tags_b, lat, lon, @type_a, @type_b)
-            next if latitude.nil?
-            yielder.yield latitude, longitude
-          end
+          latitude, longitude = OverpassQueryGenerator.find_data_pair(@tags_a, @tags_b, lat, lon, @type_a, @type_b)
+          next if latitude.nil?
+          yielder.yield latitude, longitude
         end
       end
     end
@@ -108,9 +116,10 @@ module CartoCSSHelper
   end
 
   class LocateTags
-    def initialize(tags, seed_generator = land_locations)
+    def initialize(tags, seed_generator = land_locations, types = ['node', 'way'])
       @tags = tags
       @seed_generator = seed_generator
+      @types = types
     end
 
     def locator
@@ -118,7 +127,7 @@ module CartoCSSHelper
         max_range_in_km_for_radius = 400
         loop do
           lat, lon = @seed_generator.next
-          ['node', 'way'].each do |type|
+          @types.each do |type|
             latitude, longitude = OverpassQueryGenerator.locate_element_with_given_tags_and_type @tags, type, lat, lon, max_range_in_km_for_radius
             yielder.yield latitude, longitude
           end
@@ -129,11 +138,5 @@ module CartoCSSHelper
     def description
       return VisualDiff.dict_to_pretty_tag_list(@tags)
     end
-  end
-
-  def get_database_center(database)
-    lat = (database[:top] + database[:bottom]) / 2
-    lon = (database[:left] + database[:right]) / 2
-    return lat, lon
   end
 end

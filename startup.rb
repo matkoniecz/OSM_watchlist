@@ -17,15 +17,18 @@ def create_frozen_copy(project)
   FileUtils.copy_entry source, destination, false, false, true
 end
 
-def expect_empty_stdout_sterr(command)
-  return execute_command(command) == ''
+def execute_and_expect_no_output(command)
+  output = execute_command(command)
+  if output != ''
+    raise "#{command} was supposed to give no output but it resulted in #{output}"
+  end
 end
 
 def with_uncommitted_changes
   Dir.chdir(CartoCSSHelper::Configuration.get_path_to_tilemill_project_folder) do
     system 'git stash > /dev/null'
     command = 'git diff @'
-    return expect_empty_stdout_sterr(command)
+    return execute_and_expect_no_output(command)
   end
 end
 
@@ -79,7 +82,6 @@ def warn_about_live_git_repository
 end
 
 def init(create_copy = true)
-  $silent = false
   project = 'osm-carto'
   destination = get_project_location(project)
   if create_copy

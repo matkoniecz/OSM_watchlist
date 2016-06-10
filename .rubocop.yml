@@ -30,39 +30,39 @@ AllCops:
 
 Metrics/CyclomaticComplexity:
   Exclude:
-    - 'archive/**'
+    - 'archive/**/*'
 
 Metrics/PerceivedComplexity:
   Exclude:
-    - 'archive/**'
+    - 'archive/**/*'
 
 Lint/UselessAssignment:
   Exclude:
-    - 'archive/**'
+    - 'archive/**/*'
 
 Metrics/ParameterLists:
   Exclude:
-    - 'archive/**'
+    - 'archive/**/*'
 
 Lint/ShadowingOuterLocalVariable:
   Exclude:
-    - 'archive/**'
+    - 'archive/**/*'
 
 Lint/NestedMethodDefinition:
   Exclude:
-    - 'archive/**'
+    - 'archive/**/*'
 
 Lint/UnreachableCode:
   Exclude:
-    - 'archive/**'
+    - 'archive/**/*'
 
 Style/FileName:
   Exclude:
-    - 'archive/**'
+    - 'archive/**/*'
 
 Style/GuardClause:
   Exclude:
-    - 'archive/**'
+    - 'archive/**/*'
 
 Style/BracesAroundHashParameters:
   Enabled: false
@@ -70,3 +70,6 @@ Style/BracesAroundHashParameters:
 #https://github.com/bbatsov/rubocop/issues/3207
 Style/InfiniteLoop:
   Enabled: false
+
+Metrics/MethodLength:
+  Max: 15

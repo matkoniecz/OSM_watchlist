@@ -13,37 +13,14 @@ module CartoCSSHelper
     switch_databases(database_name, 'gis_test')
   end
 
-  def mapzen_databases
-    return [
-      { database_name: 'krakow', mapzen_name: 'krakow_poland' },
-      { database_name: 'rome', mapzen_name: 'rome_italy' },
-      { database_name: 'vienna', mapzen_name: 'vienna_austria' },
-      { database_name: 'abidjan_ivory_coast', mapzen_name: 'abidjan_ivory-coast' },
-      { database_name: 'london', mapzen_name: 'london_england' },
-      { database_name: 'reykjavik', mapzen_name: 'reykjavik_iceland' },
-      { database_name: 'tokyo', mapzen_name: 'tokyo_japan' },
-      { database_name: 'abuja_nigeria', mapzen_name: 'abuja_nigeria' },
-      { database_name: 'accra_ghana', mapzen_name: 'accra_ghana' },
-      # {:database_name => 'new_york', :mapzen_name =>'new-york_new-york'},
-      # {:database_name => 'warsaw', :mapzen_name =>'warsaw_poland'},
-    ]
-  end
-
   def reload_databases
     mapzen_databases.each do |entry|
       reload_database_using_mapzen_extract(entry[:database_name], entry[:mapzen_name])
     end
 
-    # footways on natural=bare_rock
-    reload_database_sourced_as_osm_url('well_mapped_rocky_mountains', 'http://www.openstreetmap.org/?mlat=47.56673&mlon=12.32377#map=19/47.56673/12.32377', 1)
-
-    reload_database_sourced_as_osm_url('market', 'http://www.openstreetmap.org/#map=19/53.86360/-0.66369', 0.4)
-    reload_database_sourced_as_osm_url('rosenheim', 'http://www.openstreetmap.org/?mlat=47.82989&mlon=12.07764#map=19/47.82989/12.07764', 1)
-    reload_database_sourced_as_osm_url('south_mountain', 'http://www.openstreetmap.org/?mlat=33.32792&mlon=-112.08914#map=19/33.32792/-112.08914', 1)
-    reload_database_sourced_as_osm_url('bridleway', 'http://www.openstreetmap.org/?mlat=53.2875&mlon=-1.5254#map=15/53.2875/-1.5254', 1)
-    reload_database_sourced_as_osm_url('vineyards', 'http://www.openstreetmap.org/?mlat=48.08499&mlon=7.64856#map=19/48.08499/7.64856', 0.8)
-    reload_database_sourced_as_osm_url('monte_lozzo', 'http://www.openstreetmap.org/?mlat=45.2952&mlon=11.6215#map=14/45.2952/11.6215', 0.8)
-    reload_database_sourced_as_osm_url('danube_sinkhole', 'https://www.openstreetmap.org/?mlat=47.932173&mlon=8.763528&zoom=16#map=16/47.9337/8.7667', 1)
+    osm_link_databases.each do |entry|
+      reload_database_sourced_as_osm_url(entry[:database_name], entry[:link], entry[:size])
+    end
   end
 
   def create_databases
@@ -105,10 +82,51 @@ module CartoCSSHelper
     databases << { top: 48.4337, left: 8.2667, bottom: 47.4337, right: 9.2667, name: 'danube_sinkhole' }
 
     databases.insert(1, { top: 48.06673, left: 11.82377, bottom: 47.06673, right: 12.82377, name: 'well_mapped_rocky_mountains' })
-=begin
-    databases << {:top => , :left => , :bottom => , :right => , :name => ''}
-=end
     return databases
+  end
+
+  def mapzen_databases
+    return [
+      { database_name: 'krakow', mapzen_name: 'krakow_poland' },
+      { database_name: 'rome', mapzen_name: 'rome_italy' },
+      { database_name: 'vienna', mapzen_name: 'vienna_austria' },
+      { database_name: 'abidjan_ivory_coast', mapzen_name: 'abidjan_ivory-coast' },
+      { database_name: 'london', mapzen_name: 'london_england' },
+      { database_name: 'reykjavik', mapzen_name: 'reykjavik_iceland' },
+      { database_name: 'tokyo', mapzen_name: 'tokyo_japan' },
+      { database_name: 'abuja_nigeria', mapzen_name: 'abuja_nigeria' },
+      { database_name: 'accra_ghana', mapzen_name: 'accra_ghana' },
+      # {:database_name => 'new_york', :mapzen_name =>'new-york_new-york'},
+      # {:database_name => 'warsaw', :mapzen_name =>'warsaw_poland'},
+    ]
+  end
+
+  def osm_link_databases
+    return [
+      { database_name: 'well_mapped_rocky_mountains', link: 'http://www.openstreetmap.org/?mlat=47.56673&mlon=12.32377#map=19/47.56673/12.32377', size: 1 }, # footways on natural=bare_rock
+
+      { database_name: 'market', link: 'http://www.openstreetmap.org/#map=19/53.86360/-0.66369', size: 0.4 },
+      { database_name: 'rosenheim', link: 'http://www.openstreetmap.org/?mlat=47.82989&mlon=12.07764#map=19/47.82989/12.07764', size: 1 },
+      { database_name: 'south_mountain', link: 'http://www.openstreetmap.org/?mlat=33.32792&mlon=-112.08914#map=19/33.32792/-112.08914', size: 1 },
+      { database_name: 'bridleway', link: 'http://www.openstreetmap.org/?mlat=53.2875&mlon=-1.5254#map=15/53.2875/-1.5254', size: 1 },
+      { database_name: 'vineyards', link: 'http://www.openstreetmap.org/?mlat=48.08499&mlon=7.64856#map=19/48.08499/7.64856', size: 0.8 },
+      { database_name: 'monte_lozzo', link: 'http://www.openstreetmap.org/?mlat=45.2952&mlon=11.6215#map=14/45.2952/11.6215', size: 0.8 },
+      { database_name: 'danube_sinkhole', link: 'https://www.openstreetmap.org/?mlat=47.932173&mlon=8.763528&zoom=16#map=16/47.9337/8.7667', size: 1 },
+    ]
+  end
+
+  def verify
+    osm_link_databases.each do |entry|
+      get_list_of_databases.each do |split|
+        break if split[:name] == entry[:database_name]
+      end
+      size = split[:top] - split[:bottom]
+      puts size
+      size = split[:right] - split[:left]
+      puts size
+      link = "https://www.openstreetmap.org/?mlat="
+      puts "mismatch" if entry[:link] != link
+    end
   end
 
   def create_new_gis_database(name)

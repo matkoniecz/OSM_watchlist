@@ -52,12 +52,13 @@ Lint/UnusedMethodArgument:
 Metrics/AbcSize:
   Exclude:
     - 'road_grid.rb'
-    - 'archive/**'
+    - 'archive/**/*'
 
 Metrics/MethodLength:
   Exclude:
     - 'road_grid.rb'
-    - 'archive/**'
+    - 'archive/**/*'
+    - 'test.rb'
 
 # Offense count: 679
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes.

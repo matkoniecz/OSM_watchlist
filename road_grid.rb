@@ -1,6 +1,5 @@
 # encoding: UTF-8
 # frozen_string_literal: true
-require_relative 'archive/gsoc2015'
 require_relative '../CartoCSSHelper/lib/cartocss_helper'
 require_relative '../CartoCSSHelper/lib/cartocss_helper/configuration'
 require_relative '../CartoCSSHelper/lib/cartocss_helper/visualise_changes_image_generation'
