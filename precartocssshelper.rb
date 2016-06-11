@@ -22,14 +22,6 @@ module CartoCSSHelper
     before_after_directly_from_database('tokyo', 35.31782, 139.50708, to, from, zlevels, image_size, 'tokyo')
   end
 
-  def fits_in_database_bb?(database, latitude, longitude)
-    return false if latitude < database[:bottom]
-    return false if latitude > database[:top]
-    return false if longitude < database[:left]
-    return false if longitude > database[:right]
-    return true
-  end
-
   def compare_presense_of_tag(branch, old_branch, key, value)
     # TODO: use it more in standard tests
     CartoCSSHelper::Git.checkout(old_branch)

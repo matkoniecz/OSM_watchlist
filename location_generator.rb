@@ -78,13 +78,6 @@ module CartoCSSHelper
       end
     end
 
-    def get_database_containing(latitude, longitude)
-      get_list_of_databases.each do |database|
-        return database if fits_in_database_bb?(database, latitude, longitude)
-      end
-      return nil
-    end
-
     def description
       @inner.description
     end

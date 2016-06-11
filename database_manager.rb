@@ -144,4 +144,19 @@ alter database #{switched_into_for_gis} rename to gis;
     puts "gis -> #{new_name_for_gis}, #{switched_into_for_gis} -> gis"
     system command
   end
+
+  def fits_in_database_bb?(database, latitude, longitude)
+    return false if latitude < database[:bottom]
+    return false if latitude > database[:top]
+    return false if longitude < database[:left]
+    return false if longitude > database[:right]
+    return true
+  end
+
+  def get_database_containing(latitude, longitude)
+    get_list_of_databases.each do |database|
+      return database if fits_in_database_bb?(database, latitude, longitude)
+    end
+    return nil
+  end
 end

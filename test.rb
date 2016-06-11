@@ -21,7 +21,7 @@ require 'fileutils'
 # TODO: w renderowaniu miejsc przeskocz nad tymi gdzie miejsce jest znane a plik jest nadal do pobrania - oznacza to iż jest on wileki, został skasowany przy czyszczeniu nadmiaru a będzie się
 
 def make_copy_of_repository
-  true # true #false
+  false # true #false
 end
 
 def test_turning_circle
@@ -119,6 +119,8 @@ end
 
 def test_office(n)
   # https://github.com/gravitystorm/openstreetmap-carto/issues/1697 https://github.com/gravitystorm/openstreetmap-carto/issues/108
+
+  #example of node http://www.openstreetmap.org/node/3042848835#map=19/50.02626/19.91366
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'office' => :any_value })
   diff_on_loaded_database(location_provider: locator, to: 'office', from: 'master', zlevels: 15..19, image_size: 375, count: n)
 
@@ -154,22 +156,22 @@ def test_power(branch, n)
   diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 1000, count: n)
 
   locator = CartoCSSHelper::LocatePairedTagsInsideLoadedDatabases.new({ 'power' => 'tower' }, { 'natural' => 'bare_rock' }, 'node', 'way', 0)
-  diff_on_loaded_database(location_provider: locator, to: 'turning', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 375, count: 6)
 
   locator = CartoCSSHelper::LocatePairedTagsInsideLoadedDatabases.new({ 'power' => 'tower' }, { 'natural' => 'wetland' }, 'node', 'way', 0)
-  diff_on_loaded_database(location_provider: locator, to: 'turning', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 375, count: 6)
 
   locator = CartoCSSHelper::LocatePairedTagsInsideLoadedDatabases.new({ 'power' => 'tower' }, { 'landuse' => 'cemetery' }, 'node', 'way', 0)
-  diff_on_loaded_database(location_provider: locator, to: 'turning', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 375, count: 6)
 
   locator = CartoCSSHelper::LocatePairedTagsInsideLoadedDatabases.new({ 'power' => 'pole' }, { 'natural' => 'bare_rock' }, 'node', 'way', 0)
-  diff_on_loaded_database(location_provider: locator, to: 'turning', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 375, count: 6)
 
   locator = CartoCSSHelper::LocatePairedTagsInsideLoadedDatabases.new({ 'power' => 'pole' }, { 'natural' => 'wetland' }, 'node', 'way', 0)
-  diff_on_loaded_database(location_provider: locator, to: 'turning', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 375, count: 6)
 
   locator = CartoCSSHelper::LocatePairedTagsInsideLoadedDatabases.new({ 'power' => 'pole' }, { 'landuse' => 'cemetery' }, 'node', 'way', 0)
-  diff_on_loaded_database(location_provider: locator, to: 'turning', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 375, count: 6)
 end
 
 # TODO:
@@ -192,15 +194,12 @@ end
 
 module CartoCSSHelper
   def main
-    # locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'office' => 'government' })
-    # diff_on_loaded_database(location_provider: locator, to: 'office', from: 'master', zlevels: 19..19, image_size: 375, count: 1)
-
-    test_rail
-
     locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'military' => 'danger_area' }, types: ['way'])
     diff_on_loaded_database(location_provider: locator, to: 'master', from: 'master', zlevels: 9..19, image_size: 375, count: 10)
 
     test_power('thin_power', 5)
+
+    test_rail
 
     test_turning_circle
 
