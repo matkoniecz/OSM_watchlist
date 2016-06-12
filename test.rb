@@ -190,7 +190,7 @@ end
 
 def test_rail
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'railway' => 'rail' }, types: ['way'])
-  diff_on_loaded_database(location_provider: locator, to: 'rail', from: 'master', zlevels: 9..19, image_size: 1000, count: 10)
+  diff_on_loaded_database(location_provider: locator, to: 'rail', from: 'master', zlevels: 12..19, image_size: 1000, count: 12)
 end
 
 def show_military_danger_areas
@@ -202,9 +202,17 @@ def show_military_danger_areas
   # diff_on_overpass_data(location_provider: locator, to: 'master', from: 'master', zlevels: 9..19, image_size: 375, count: 10)
 end
 
+def subway_service
+  # http://www.openstreetmap.org/way/129520909#map=19/41.83566/12.57786
+  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'railway' => 'subway', 'service' => 'yard' }, 'way', false, 22..22, 'master', 'master')
+  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'railway' => 'subway' }, 'way', false, 22..22, 'master', 'master')
+end
+
 module CartoCSSHelper
   def main
     verify
+
+    subway_service
 
     test_power('thin_power', 5)
 

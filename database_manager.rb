@@ -118,7 +118,7 @@ module CartoCSSHelper
   def verify
     osm_link_databases.each do |entry|
       get_list_of_databases.each do |split|
-        break if split[:name] == entry[:database_name]
+        next unless split[:name] == entry[:database_name]
         size = split[:top] - split[:bottom]
         puts size
         size = split[:right] - split[:left]
