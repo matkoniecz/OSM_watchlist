@@ -13,7 +13,7 @@ module CartoCSSHelper
           puts "locator returned location outside any available loaded database"
         end
       end
-    rescue StopIteration => e
+    rescue StopIteration
       puts "Supply of places in the database exhausted for <#{location_provider.description}>"
     end
   end

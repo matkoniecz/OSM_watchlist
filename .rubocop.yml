@@ -73,3 +73,9 @@ Style/InfiniteLoop:
 
 Metrics/MethodLength:
   Max: 15
+
+Metrics/MethodLength:
+  Exclude:
+    - 'road_grid.rb' #this should be fixed but due to rubocop bug may not be placed in todo
+    - 'archive/**/*'
+    - 'test.rb'

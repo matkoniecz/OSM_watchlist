@@ -271,7 +271,7 @@ def edelta_run # 'older_master_but_after_last_landcover_change'
     end
   end
 
-  return
+=begin
 
   areas = areas_set
   [13, 20, 10].each do |zlevel|
@@ -294,4 +294,5 @@ def edelta_run # 'older_master_but_after_last_landcover_change'
   return
 
   # check_color('#fbecd7', 'lch(94, 12, 80)')
+=end
 end
