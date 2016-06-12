@@ -202,18 +202,8 @@ def show_military_danger_areas
   # diff_on_overpass_data(location_provider: locator, to: 'master', from: 'master', zlevels: 9..19, image_size: 375, count: 10)
 end
 
-def subway_service
-  # http://www.openstreetmap.org/way/129520909#map=19/41.83566/12.57786
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'railway' => 'subway', 'service' => 'yard' }, 'way', false, 22..22, 'master', 'master')
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'railway' => 'subway' }, 'way', false, 22..22, 'master', 'master')
-end
-
 module CartoCSSHelper
   def main
-    verify
-
-    subway_service
-
     test_power('thin_power', 5)
 
     test_rail
@@ -223,6 +213,9 @@ module CartoCSSHelper
     test_power('thin_power', 15)
     test_power('thinner_power', 15)
     test_office(15)
+
+    #add_mapzen_extract('las_vegas' 'las-vegas_nevada')
+    #add_mapzen_extract('ateny' 'athens_greece')
 
     # https://github.com/gravitystorm/openstreetmap-carto/issues/2126
     # before_after_from_loaded_databases({ 'man_made' => 'obelisk' }, 'master', 'master', 14..18, 300, 10, 0)
@@ -236,23 +229,18 @@ module CartoCSSHelper
   end
 end
 
+#do not return always center location of loaded database"
+#post post about looking for a new test locations - prepare make post
+
 def waiting_pr
   test_library_book_shop_prs
 end
 
-def test_library_book_shop_prs
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'shop' => 'books', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ' }, 'node', false, 22..22, 'also_shop', 'master')
-  n = 6
-  skip = 3
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'shop' => 'books' }, skip: skip)
-  diff_on_loaded_database(location_provider: locator, to: 'also_shop', from: 'master', zlevels: 16..19, image_size: 375, count: n)
-end
-
-def show_road_grid
-  # TODO: code is broken, requires updates
-  (5..19).each do |zlevel|
-    CartoCSSHelper::Grid.new(zlevel, branch, road_set(true, true), areas_set)
-  end
+def subway_service
+  #write code
+  # http://www.openstreetmap.org/way/129520909#map=19/41.83566/12.57786
+  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'railway' => 'subway', 'service' => 'yard' }, 'way', false, 22..22, 'master', 'master')
+  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'railway' => 'subway' }, 'way', false, 22..22, 'master', 'master')
 end
 
 def run_tests
@@ -309,6 +297,8 @@ end
 
 start_time = nil
 begin
+  init(false) # frozen copy making
+verify
   init(make_copy_of_repository) # frozen copy making
   # CartoCSSHelper::Configuration.set_known_alternative_overpass_url
   start_time = Time.now

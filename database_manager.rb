@@ -101,17 +101,24 @@ module CartoCSSHelper
     ]
   end
 
+
+  def add_mapzen_extract(database_name, mapzen_extract_name)
+    create_new_gis_database(database_name)
+    reload_database_using_mapzen_extract(database_name, mapzen_extract_name)
+    puts "remember to ad its entry to mapzen_databases\n"*20
+  end
+
   def osm_link_databases
     return [
-      { database_name: 'well_mapped_rocky_mountains', link: 'http://www.openstreetmap.org/?mlat=47.56673&mlon=12.32377#map=19/47.56673/12.32377', size: 1 }, # footways on natural=bare_rock
+      { database_name: 'well_mapped_rocky_mountains', link: 'http://www.openstreetmap.org/#map=/47.56673/12.32377', size: 1 }, # footways on natural=bare_rock
 
-      { database_name: 'market', link: 'http://www.openstreetmap.org/#map=19/53.86360/-0.66369', size: 0.4 },
-      { database_name: 'rosenheim', link: 'http://www.openstreetmap.org/?mlat=47.82989&mlon=12.07764#map=19/47.82989/12.07764', size: 1 },
-      { database_name: 'south_mountain', link: 'http://www.openstreetmap.org/?mlat=33.32792&mlon=-112.08914#map=19/33.32792/-112.08914', size: 1 },
-      { database_name: 'bridleway', link: 'http://www.openstreetmap.org/?mlat=53.2875&mlon=-1.5254#map=15/53.2875/-1.5254', size: 1 },
-      { database_name: 'vineyards', link: 'http://www.openstreetmap.org/?mlat=48.08499&mlon=7.64856#map=19/48.08499/7.64856', size: 0.8 },
-      { database_name: 'monte_lozzo', link: 'http://www.openstreetmap.org/?mlat=45.2952&mlon=11.6215#map=14/45.2952/11.6215', size: 0.8 },
-      { database_name: 'danube_sinkhole', link: 'https://www.openstreetmap.org/?mlat=47.932173&mlon=8.763528&zoom=16#map=16/47.9337/8.7667', size: 1 },
+      { database_name: 'market', link: 'https://www.openstreetmap.org/#map=/53.86360/-0.66369', size: 0.4 },
+      { database_name: 'rosenheim', link: 'https://www.openstreetmap.org/#map=/47.82989/12.07764', size: 1 },
+      { database_name: 'south_mountain', link: 'https://www.openstreetmap.org/?#map=/33.32792/-112.08914', size: 1 },
+      { database_name: 'bridleway', link: 'https://www.openstreetmap.org/#map=/53.2875/-1.5254', size: 1 },
+      { database_name: 'vineyards', link: 'https://www.openstreetmap.org/#map=/48.08499/7.64856', size: 0.8 },
+      { database_name: 'monte_lozzo', link: 'https://www.openstreetmap.org/#map=/45.2952/11.6215', size: 0.8 },
+      { database_name: 'danube_sinkhole', link: 'https://www.openstreetmap.org/#map=/47.9337/8.7667', size: 1 },
     ]
   end
 
@@ -123,8 +130,14 @@ module CartoCSSHelper
         puts size
         size = split[:right] - split[:left]
         puts size
-        link = "https://www.openstreetmap.org/?mlat="
-        puts "mismatch" if entry[:link] != link
+        central_lat = ((split[:top] + split[:bottom])/2)
+        central_lon = ((split[:right] + split[:left])/2)
+        link = "https://www.openstreetmap.org/#map=/#{central_lat.round(5)}/#{central_lon.round(5)}"
+        if entry[:link] != link
+          puts entry[:link]
+          puts link
+          puts "mismatch"
+        end
       end
     end
   end
