@@ -197,6 +197,9 @@ module CartoCSSHelper
     locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'military' => 'danger_area' }, types: ['way'])
     diff_on_loaded_database(location_provider: locator, to: 'master', from: 'master', zlevels: 9..19, image_size: 375, count: 10)
 
+    #locator = CartoCSSHelper::LocateTags.new({ 'military' => 'danger_area' }, types: ['way'])
+    #diff_on_overpass_data(location_provider: locator, to: 'master', from: 'master', zlevels: 9..19, image_size: 375, count: 10)
+
     test_power('thin_power', 5)
 
     test_rail
@@ -279,22 +282,26 @@ def final
   exit
 end
 
-def encoutered_exception(e)
+def encoutered_exception(e, start_time, end_time)
   puts e.class
   puts e
   puts
   puts e.backtrace
-  notify "Crash during map generation! (after #{(Time.now - start_time).to_i/60} min)"
+  min_of_work = (end_time - start_time).to_i/60
+  min_of_errors = (Time.now - end_time).to_i/60
+  notify "Crash during map generation! (after #{min_of_work} min of work and #{min_of_errors} min of errors)"
   sleep 10
 end
 
+start_time = nil
 begin
   init(make_copy_of_repository) # frozen copy making
   # CartoCSSHelper::Configuration.set_known_alternative_overpass_url
-  start = Time.now
+  start_time = Time.now
   main
 rescue => e
-  encoutered_exception(e) while true
+	end_time = Time.now
+  encoutered_exception(e, start_time, end_time) while true
 end
 
 # poszukać carto w efektywność
