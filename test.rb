@@ -284,13 +284,14 @@ def encoutered_exception(e)
   puts e
   puts
   puts e.backtrace
-  notify 'Crash during map generation!'
+  notify "Crash during map generation! (after #{(Time.now - start_time).to_i/60} min)"
   sleep 10
 end
 
 begin
   init(make_copy_of_repository) # frozen copy making
   # CartoCSSHelper::Configuration.set_known_alternative_overpass_url
+  start = Time.now
   main
 rescue => e
   encoutered_exception(e) while true
