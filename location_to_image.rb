@@ -20,7 +20,7 @@ module CartoCSSHelper
 
   def try_to_render(location_provider:, database:, latitude:, longitude:, to:, from:, zlevels:, image_size:)
     if fits_in_database_bb?(database, latitude, longitude)
-      description = "#{database[:name]} - #{location_provider.description} [#{latitude}, #{longitude}]"
+      description = "#{location_provider.description} on #{database[:name]} [#{latitude}, #{longitude}]"
       before_after_directly_from_database(database[:name], latitude, longitude, to, from, zlevels, image_size, description)
       return true
     end
@@ -32,8 +32,8 @@ module CartoCSSHelper
     count.times do
       latitude, longitude = locator.next
       puts latitude, longitude
-      header = "#{database[:name]} - #{location_provider.description} [#{latitude}, #{longitude}]"
-      VisualDiff.visualise_changes_for_location(latitude, longitude, zlevels, header, to, from, 0.4, image_size)
+      description = "#{location_provider.description} on overpass data [#{latitude}, #{longitude}]"
+      VisualDiff.visualise_changes_for_location(latitude, longitude, zlevels, description, to, from, 0.4, image_size)
     end
   end
 end

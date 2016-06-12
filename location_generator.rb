@@ -108,7 +108,7 @@ module CartoCSSHelper
     end
 
     def description
-      return VisualDiff.dict_to_pretty_tag_list(@tags_a) + @type_a + VisualDiff.dict_to_pretty_tag_list(@tags_b) + @type_b
+      return VisualDiff.dict_to_pretty_tag_list(@tags_a) + " " + @type_a + " " + VisualDiff.dict_to_pretty_tag_list(@tags_b) + " " + @type_b
     end
   end
 
