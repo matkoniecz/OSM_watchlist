@@ -21,7 +21,7 @@ require 'fileutils'
 # TODO: w renderowaniu miejsc przeskocz nad tymi gdzie miejsce jest znane a plik jest nadal do pobrania - oznacza to iż jest on wileki, został skasowany przy czyszczeniu nadmiaru a będzie się
 
 def make_copy_of_repository
-  false # true #false
+  true # true #false
 end
 
 def test_turning_circle
@@ -120,7 +120,7 @@ end
 def test_office(n)
   # https://github.com/gravitystorm/openstreetmap-carto/issues/1697 https://github.com/gravitystorm/openstreetmap-carto/issues/108
 
-  #example of node http://www.openstreetmap.org/node/3042848835#map=19/50.02626/19.91366
+  # example of node http://www.openstreetmap.org/node/3042848835#map=19/50.02626/19.91366
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'office' => :any_value })
   diff_on_loaded_database(location_provider: locator, to: 'office', from: 'master', zlevels: 15..19, image_size: 375, count: n)
 
@@ -155,6 +155,7 @@ def test_power(branch, n)
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'power' => 'pole' }, types: ['node'])
   diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 1000, count: n)
 
+  branch = 'master'
   locator = CartoCSSHelper::LocatePairedTagsInsideLoadedDatabases.new({ 'power' => 'tower' }, { 'natural' => 'bare_rock' }, 'node', 'way', 0)
   diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 375, count: 6)
 
@@ -192,13 +193,18 @@ def test_rail
   diff_on_loaded_database(location_provider: locator, to: 'rail', from: 'master', zlevels: 9..19, image_size: 1000, count: 10)
 end
 
+def show_military_danger_areas
+  # czarnobyl - www.openstreetmap.org/?mlat=51.5&mlon=30.1&zoom=12#map=12/51.5000/30.1000 (lat =-0.5, lon+-0.7)
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'military' => 'danger_area' }, types: ['way'])
+  diff_on_loaded_database(location_provider: locator, to: 'master', from: 'master', zlevels: 9..19, image_size: 375, count: 10)
+
+  # locator = CartoCSSHelper::LocateTags.new({ 'military' => 'danger_area' }, types: ['way'])
+  # diff_on_overpass_data(location_provider: locator, to: 'master', from: 'master', zlevels: 9..19, image_size: 375, count: 10)
+end
+
 module CartoCSSHelper
   def main
-    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'military' => 'danger_area' }, types: ['way'])
-    diff_on_loaded_database(location_provider: locator, to: 'master', from: 'master', zlevels: 9..19, image_size: 375, count: 10)
-
-    #locator = CartoCSSHelper::LocateTags.new({ 'military' => 'danger_area' }, types: ['way'])
-    #diff_on_overpass_data(location_provider: locator, to: 'master', from: 'master', zlevels: 9..19, image_size: 375, count: 10)
+    verify
 
     test_power('thin_power', 5)
 
@@ -287,8 +293,8 @@ def encoutered_exception(e, start_time, end_time)
   puts e
   puts
   puts e.backtrace
-  min_of_work = (end_time - start_time).to_i/60
-  min_of_errors = (Time.now - end_time).to_i/60
+  min_of_work = (end_time - start_time).to_i / 60
+  min_of_errors = (Time.now - end_time).to_i / 60
   notify "Crash during map generation! (after #{min_of_work} min of work and #{min_of_errors} min of errors)"
   sleep 10
 end
@@ -300,7 +306,7 @@ begin
   start_time = Time.now
   main
 rescue => e
-	end_time = Time.now
+  end_time = Time.now
   encoutered_exception(e, start_time, end_time) while true
 end
 

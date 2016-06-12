@@ -96,12 +96,12 @@ module CartoCSSHelper
       Enumerator.new do |yielder|
         loop do
           begin
-          lat, lon = @seed_generator.next
-	          latitude, longitude = OverpassQueryGenerator.find_data_pair(@tags_a, @tags_b, lat, lon, @type_a, @type_b)        	
-	          next if latitude.nil?
-	          yielder.yield latitude, longitude
+            lat, lon = @seed_generator.next
+            latitude, longitude = OverpassQueryGenerator.find_data_pair(@tags_a, @tags_b, lat, lon, @type_a, @type_b)
+            next if latitude.nil?
+            yielder.yield latitude, longitude
           rescue OverpassDownloader::OverpassRefusedResponse => e
-          	puts "Overpass refused response"
+            puts "Overpass refused response"
           end
         end
       end
@@ -125,12 +125,12 @@ module CartoCSSHelper
         loop do
           lat, lon = @seed_generator.next
           @types.each do |type|
-          	begin
-	            latitude, longitude = OverpassQueryGenerator.locate_element_with_given_tags_and_type @tags, type, lat, lon, max_range_in_km_for_radius
-	            yielder.yield latitude, longitude
-	          rescue OverpassDownloader::OverpassRefusedResponse => e
-	          	puts "Overpass refused response"
-	          end
+            begin
+              latitude, longitude = OverpassQueryGenerator.locate_element_with_given_tags_and_type @tags, type, lat, lon, max_range_in_km_for_radius
+              yielder.yield latitude, longitude
+            rescue OverpassDownloader::OverpassRefusedResponse => e
+              puts "Overpass refused response"
+            end
           end
         end
       end

@@ -119,13 +119,13 @@ module CartoCSSHelper
     osm_link_databases.each do |entry|
       get_list_of_databases.each do |split|
         break if split[:name] == entry[:database_name]
+        size = split[:top] - split[:bottom]
+        puts size
+        size = split[:right] - split[:left]
+        puts size
+        link = "https://www.openstreetmap.org/?mlat="
+        puts "mismatch" if entry[:link] != link
       end
-      size = split[:top] - split[:bottom]
-      puts size
-      size = split[:right] - split[:left]
-      puts size
-      link = "https://www.openstreetmap.org/?mlat="
-      puts "mismatch" if entry[:link] != link
     end
   end
 

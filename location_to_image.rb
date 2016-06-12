@@ -9,7 +9,7 @@ module CartoCSSHelper
         latitude, longitude = locator.next
         puts latitude, longitude
         database = get_database_containing(latitude, longitude)
-        if !try_to_render(location_provider: location_provider, database: database, latitude: latitude, longitude: longitude, to: to, from: from, zlevels: zlevels, image_size: image_size)
+        unless try_to_render(location_provider: location_provider, database: database, latitude: latitude, longitude: longitude, to: to, from: from, zlevels: zlevels, image_size: image_size)
           puts "locator returned location outside any available loaded database"
         end
       end
