@@ -72,7 +72,7 @@ def warn_about_live_git_repository
 end
 
 def init(create_copy = true)
-  project = 'osm-carto'
+  project = 'openstreetmap-carto'
   destination = get_project_location(project)
   if create_copy
     destination = destination_of_frozen_copy(project)

@@ -1,11 +1,7 @@
 # frozen_string_literal: true
-module CartoCSSHelper
-  def reload_database_using_mapzen_extract(database_name, mapzen_extract_name)
-    switch_databases('gis_test', database_name)
-    load_remote_file("https://s3.amazonaws.com/metro-extracts.mapzen.com/#{mapzen_extract_name}.osm.pbf", true)
-    switch_databases(database_name, 'gis_test')
-  end
+require_relative 'database_manager_mapzen.rb'
 
+module CartoCSSHelper
   def reload_database_sourced_as_osm_url(database_name, url, download_bbox_size)
     switch_databases('gis_test', database_name)
     # TODO: - is it really flushing cache without manually deleting overpass cache?
@@ -31,43 +27,6 @@ module CartoCSSHelper
     end
   end
 
-  def raw_json_describing_mapzen_databases
-    # https://github.com/mapzen/metroextractor-cities/blob/master/cities.json
-    url = 'https://raw.githubusercontent.com/mapzen/metroextractor-cities/master/cities.json'
-    clear_cache = false
-    CartoCSSHelper.download_remote_file(url, clear_cache)
-    filename = CartoCSSHelper.get_place_of_storage_of_resource_under_url(url)
-    json_string = ''
-    File.open(filename, "r") do |file|
-      json_string = file.read
-    end
-    require 'json'
-    obj = JSON.parse(json_string)
-    return obj
-  end
-
-  def json_describing_mapzen_databases
-    returned = []
-    raw_json_describing_mapzen_databases['regions'].each do |region|
-      region[1]['cities'].each do |city|
-        returned << city
-      end
-    end
-    return returned
-  end
-
-  def mapzen_database_data(mapzen_name)
-    json_describing_mapzen_databases.each do |city|
-      return city[1]["bbox"] if city[0] == mapzen_name
-    end
-    raise "not found"
-  end
-
-  def bbox_from_mapzen_data(database_name, mapzen_name)
-    bbox = mapzen_database_data(mapzen_name)
-    return { top: bbox["top"].to_f, left: bbox["left"].to_f, bottom: bbox["bottom"].to_f, right: bbox["right"].to_f, name: database_name }
-  end
-
   def get_list_of_databases
     databases = []
     mapzen_databases.each do |entry|
@@ -87,6 +46,7 @@ module CartoCSSHelper
 
   def mapzen_databases
     return [
+      # TODO: - databases should be registered or something, not hardcoded
       { database_name: 'krakow', mapzen_name: 'krakow_poland' },
       { database_name: 'rome', mapzen_name: 'rome_italy' },
       { database_name: 'vienna', mapzen_name: 'vienna_austria' },
@@ -101,20 +61,19 @@ module CartoCSSHelper
     ]
   end
 
-
   def add_mapzen_extract(database_name, mapzen_extract_name)
     create_new_gis_database(database_name)
     reload_database_using_mapzen_extract(database_name, mapzen_extract_name)
-    puts "remember to ad its entry to mapzen_databases\n"*20
+    puts "remember to add its entry to mapzen_databases\n" * 20
   end
 
   def osm_link_databases
     return [
-      { database_name: 'well_mapped_rocky_mountains', link: 'http://www.openstreetmap.org/#map=/47.56673/12.32377', size: 1 }, # footways on natural=bare_rock
+      { database_name: 'well_mapped_rocky_mountains', link: 'https://www.openstreetmap.org/#map=/47.56673/12.32377', size: 1 }, # footways on natural=bare_rock
 
       { database_name: 'market', link: 'https://www.openstreetmap.org/#map=/53.86360/-0.66369', size: 0.4 },
       { database_name: 'rosenheim', link: 'https://www.openstreetmap.org/#map=/47.82989/12.07764', size: 1 },
-      { database_name: 'south_mountain', link: 'https://www.openstreetmap.org/?#map=/33.32792/-112.08914', size: 1 },
+      { database_name: 'south_mountain', link: 'https://www.openstreetmap.org/#map=/33.32792/-112.08914', size: 1 },
       { database_name: 'bridleway', link: 'https://www.openstreetmap.org/#map=/53.2875/-1.5254', size: 1 },
       { database_name: 'vineyards', link: 'https://www.openstreetmap.org/#map=/48.08499/7.64856', size: 0.8 },
       { database_name: 'monte_lozzo', link: 'https://www.openstreetmap.org/#map=/45.2952/11.6215', size: 0.8 },
@@ -130,24 +89,24 @@ module CartoCSSHelper
         puts size
         size = split[:right] - split[:left]
         puts size
-        central_lat = ((split[:top] + split[:bottom])/2)
-        central_lon = ((split[:right] + split[:left])/2)
+        central_lat = ((split[:top] + split[:bottom]) / 2)
+        central_lon = ((split[:right] + split[:left]) / 2)
         link = "https://www.openstreetmap.org/#map=/#{central_lat.round(5)}/#{central_lon.round(5)}"
-        if entry[:link] != link
-          puts entry[:link]
-          puts link
-          puts "mismatch"
-        end
+        next unless entry[:link] != link
+        puts entry[:link]
+        puts link
+        puts "mismatch"
       end
     end
   end
 
   def create_new_gis_database(name)
-    puts "Creating gis dayabase <#{name}>"
+    puts "Creating gis database <#{name}>"
     command = "createdb #{name}"
     system command
     command = "psql -d #{name} -c 'CREATE EXTENSION hstore; CREATE EXTENSION postgis;'"
     system command
+    # TODO: move to execute_command (but add test before that)
   end
 
   def switch_databases(new_name_for_gis, switched_into_for_gis)
@@ -156,6 +115,7 @@ alter database #{switched_into_for_gis} rename to gis;
 \\q\" | psql postgres > /dev/null"
     puts "gis -> #{new_name_for_gis}, #{switched_into_for_gis} -> gis"
     system command
+    # TODO: move to execute_command (but add test before that)
   end
 
   def fits_in_database_bb?(database, latitude, longitude)

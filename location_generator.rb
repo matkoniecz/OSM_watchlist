@@ -30,9 +30,9 @@ module CartoCSSHelper
   end
 
   class LocatePairedTagsInsideLoadedDatabases
-    def initialize(tags_a, tags_b, type_a, type_b, skip)
+    def initialize(tags_a, tags_b, type_a, type_b, skip: 0, distance_in_meters: 20)
       seed_generator = loaded_database_centers(skip)
-      locator = LocatePairedTags.new(tags_a, tags_b, type_a, type_b, seed_generator)
+      locator = LocatePairedTags.new(tags_a, tags_b, type_a, type_b, seed_generator, distance_in_meters: distance_in_meters)
       @inner = AllowOnlyLoadedAreas.new(location_provider: locator)
     end
 
@@ -84,12 +84,13 @@ module CartoCSSHelper
   end
 
   class LocatePairedTags
-    def initialize(tags_a, tags_b, type_a, type_b, seed_generator = land_locations)
+    def initialize(tags_a, tags_b, type_a, type_b, seed_generator = land_locations, distance_in_meters: 20)
       @tags_a = tags_a
       @tags_b = tags_b
       @type_a = type_a
       @type_b = type_b
       @seed_generator = seed_generator
+      @distance_in_meters = distance_in_meters
     end
 
     def locator
@@ -97,7 +98,7 @@ module CartoCSSHelper
         loop do
           begin
             lat, lon = @seed_generator.next
-            latitude, longitude = OverpassQueryGenerator.find_data_pair(@tags_a, @tags_b, lat, lon, @type_a, @type_b)
+            latitude, longitude = OverpassQueryGenerator.find_data_pair(@tags_a, @tags_b, lat, lon, @type_a, @type_b, distance_in_meters: @distance_in_meters)
             next if latitude.nil?
             yielder.yield latitude, longitude
           rescue OverpassDownloader::OverpassRefusedResponse
