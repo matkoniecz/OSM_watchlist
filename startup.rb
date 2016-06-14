@@ -44,6 +44,7 @@ end
 def working_on_wrong_database
   database_list = get_list_of_databases
   database_list << { name: "world" } # TODO: what about world database???
+  database_list << { name: "entire_world" } # TODO: what about world database???
 
   database_list.each do |name|
     working_on_wrong_database_check(name[:name])
