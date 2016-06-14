@@ -5,108 +5,12 @@ require_relative 'require.rb'
 include CartoCSSHelper
 
 def make_copy_of_repository
-  true # true #false
-end
-
-def test_turning_circle(branch, count, zlevels, location_finder_mode = false)
-  # https://github.com/gravitystorm/openstreetmap-carto/issues/1931
-  tags_a = { 'highway' => 'turning_circle' }
-  tags = [
-    { tags: { 'highway' => 'residential' }, skip: 0 },
-    { tags: { 'highway' => 'living_street' }, skip: 0 },
-    { tags: { 'highway' => 'service' }, skip: 2 },
-    { tags: { 'highway' => 'service', 'service' => 'driveway' }, skip: 2 },
-    { tags: { 'highway' => 'service', 'service' => 'parking_aisle' }, skip: 0 },
-    { tags: { 'highway' => 'tertiary' }, skip: 0 }, # minor service on 0
-  ]
-
-  tags.each do |set|
-    tags_b = set[:tags]
-    puts tags_b
-    locator = CartoCSSHelper::LocatePairedTagsInsideLoadedDatabases.new(tags_a, tags_b, 'node', 'way', skip: set[:skip], distance_in_meters: 0)
-    if location_finder_mode
-      next if tags_b == { 'highway' => 'residential' }
-      next if tags_b == { 'highway' => 'living_street' }
-    end
-    diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: zlevels, image_size: 375, count: count)
-  end
-end
-
-def switch_to_krakow_database
-  # switch_databases('gis_test', 'krakow')
-  # switch_databases('gis_test', 'new_york')
-  # final
-end
-
-def barrier_names(branch, n)
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'barrier' => 'wall', 'name' => :any_value }, types: ['way'])
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 19..19, image_size: 375, count: n)
-
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'barrier' => 'wall', 'name' => :any_value }, types: ['way'])
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 375, count: n)
-
-  barriers = ['city_wall', 'chain', 'embankment', 'ditch', 'fence', 'guard_rail', 'handrail', 'hedge', 'kerb', 'retaining_wall', 'wall']
-  skip = 0
-  barriers.each do |barrier|
-    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'barrier' => barrier }, skip: skip)
-    diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 375, count: n)
-    skip += 1
-  end
-
-  CartoCSSHelper.probe({ 'barrier' => 'wall', 'name' => :any_value, 'landuse' => 'cemetery' }, branch, 'master', 19..19)
-  CartoCSSHelper.probe({ 'barrier' => 'wall', 'name' => :any_value }, branch, 'master', 19..19)
-  CartoCSSHelper.probe({ 'barrier' => 'wall', 'name' => :any_value }, branch, 'master', 8..8)
-  CartoCSSHelper.probe({ 'barrier' => 'wall', 'name' => :any_value }, branch, 'master')
-  CartoCSSHelper.test({ 'barrier' => 'wall', 'name' => :any_value }, branch, 'master')
-
-  [branch].each do |branch|
-    CartoCSSHelper.probe({ 'tourism' => 'attraction' }, branch, 'master')
-    CartoCSSHelper.probe({ 'waterway' => 'dam' }, branch, 'master')
-    CartoCSSHelper.probe({ 'waterway' => 'weir' }, branch, 'master')
-    CartoCSSHelper.probe({ 'natural' => 'cliff' }, branch, 'master')
-    CartoCSSHelper.probe({ 'natural' => 'hedge' }, branch, 'master')
-    CartoCSSHelper.probe({ 'barrier' => 'aajaiaa' }, branch, 'master')
-    CartoCSSHelper.probe({ 'tourism' => 'attraction' }, branch, 'master')
-  end
-
-  CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 18..18, 'barrier_way', 'master', branch, 0.1)
-  CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 15..22, 'barrier_way', 'master', branch, 0.1)
-  # CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 18..18, 'tourism_way', 'master', 'tourism_way', 0.1)
-  # CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 13..22, 'tourism_way', 'master', 'tourism_way', 0.1)
+  false # true #false
 end
 
 module CartoCSSHelper
   def main
-    barrier_names('new_barrier_name', 1)
-
-    begin
-      barrier_names('new_barrier_name', 3)
-    rescue => e
-    	puts "=====\n"*20
-      puts e
-    	puts "=====\n"*20
-    end
-
-    begin
-      barrier_names('new_barrier_name', 10)
-    rescue => e
-    	puts "=====\n"*20
-      puts e
-    	puts "=====\n"*20
-    end
-
-    begin
-      #test_turning_circle('turning_circle_squashed', 1, 14..20)
-      #test_turning_circle('turning_circle_squashed', 5, 14..20)
-    rescue => e
-    	puts "=====\n"*20
-      puts e
-    	puts "=====\n"*20
-    end
-
-    # test_turning_circle('turning_with_service')
-    # test_turning_circle('turning')
-
+  	final
     begin
       test_office(15)
     rescue => e
@@ -127,6 +31,15 @@ module CartoCSSHelper
     CartoCSSHelper::VisualDiff.shuffle_jobs(8)
     CartoCSSHelper::VisualDiff.run_jobs
   end
+end
+
+def switch_to_krakow_database
+  #init(false) # frozen copy making
+  #switch_databases('gis_test', 'entire_world')
+  #final
+  # switch_databases('gis_test', 'krakow')
+  # switch_databases('gis_test', 'new_york')
+  # final
 end
 
 def test_office(n)
@@ -200,6 +113,35 @@ end
 # TODO: w renderowaniu miejsc przeskocz nad tymi gdzie miejsce jest znane a plik jest nadal do pobrania - oznacza to iż jest on wileki, został skasowany przy czyszczeniu nadmiaru a będzie się
 
 def waiting_pr
+    barrier_names('new_barrier_name', 1)
+
+    begin
+      barrier_names('new_barrier_name', 3)
+    rescue => e
+    	puts "=====\n"*20
+      puts e
+    	puts "=====\n"*20
+    end
+
+    begin
+      barrier_names('new_barrier_name', 10)
+    rescue => e
+    	puts "=====\n"*20
+      puts e
+    	puts "=====\n"*20
+    end
+
+    begin
+      #test_turning_circle('turning_circle_squashed', 1, 14..20)
+      #test_turning_circle('turning_circle_squashed', 5, 14..20)
+    rescue => e
+    	puts "=====\n"*20
+      puts e
+    	puts "=====\n"*20
+    end
+
+    # test_turning_circle('turning_with_service')
+    # test_turning_circle('turning')
   test_library_book_shop_prs
   test_power(branch, n)
   test_fishmonger
@@ -277,9 +219,6 @@ end
 
 start_time = Time.now
 begin
-  init(false) # frozen copy making
-  switch_databases('gis_test', 'entire_world')
-  final
   # verify
   init(make_copy_of_repository) # frozen copy making
   # CartoCSSHelper::Configuration.set_known_alternative_overpass_url
