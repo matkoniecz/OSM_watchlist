@@ -101,8 +101,10 @@ module CartoCSSHelper
             latitude, longitude = OverpassQueryGenerator.find_data_pair(@tags_a, @tags_b, lat, lon, @type_a, @type_b, distance_in_meters: @distance_in_meters)
             next if latitude.nil?
             yielder.yield latitude, longitude
-          rescue OverpassDownloader::OverpassRefusedResponse
-            puts "Overpass refused response"
+          rescue OverpassDownloader::OverpassRefusedResponse => e
+            puts "Overpass refused response (#{e}, #{e.class})"
+          rescue OverpassQueryGenerator::NoLocationFound => e
+            puts "Overpass failed to find given tag (#{e}, #{e.class})"
           end
         end
       end
@@ -129,8 +131,10 @@ module CartoCSSHelper
             begin
               latitude, longitude = OverpassQueryGenerator.locate_element_with_given_tags_and_type @tags, type, lat, lon, max_range_in_km_for_radius
               yielder.yield latitude, longitude
-            rescue OverpassDownloader::OverpassRefusedResponse
-              puts "Overpass refused response"
+            rescue OverpassDownloader::OverpassRefusedResponse => e
+              puts "Overpass refused response (#{e}, #{e.class})"
+            rescue OverpassQueryGenerator::NoLocationFound => e
+              puts "Overpass failed to find given tag (#{e}, #{e.class})"
             end
           end
         end
