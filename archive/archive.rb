@@ -106,7 +106,6 @@ def test_library_book_shop_prs
   diff_on_loaded_database(location_provider: locator, to: 'also_shop', from: 'master', zlevels: 16..19, image_size: 375, count: n)
 end
 
-
 def show_road_grid
   # TODO: code is broken, requires updates
   (5..19).each do |zlevel|
@@ -125,8 +124,6 @@ def test_fishmonger
 
   # before_after_from_loaded_databases({'shop' => 'fishmonger'}, 'fishmonger', 'master', 17..18, 300, 2, 8)
 end
-
-
 
 def test_forest
   CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'natural' => 'valley', 'landuse' => 'forest' }, 'closed_way', false, 22..22, 'forest', 'master')

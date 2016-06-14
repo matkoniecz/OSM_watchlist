@@ -10,7 +10,21 @@ end
 
 module CartoCSSHelper
   def main
-      test_office(15)
+    divider = 500
+    Dir.chdir(Configuration.get_path_to_tilemill_project_folder) do
+      revisions = execute_command("git rev-list master")
+      revisions = revisions.split("\n").reverse
+      revisions.each_index do |index|
+        revisions_filtered << revisions[index] if index % x == divider
+      end
+      index = 0
+      revisions_filtered.each do |line|
+        puts line
+        # because the first wiki map - http://wiki.openstreetmap.org/wiki/History_of_OpenStreetMap
+        render_single_image(line.strip, 51.3685, -0.4419, 14, 450, (index * divider).to_s)
+      end
+    end
+    test_office(15)
     CartoCSSHelper.add_mapzen_extract('las_vegas', 'las-vegas_nevada')
     CartoCSSHelper.add_mapzen_extract('ateny', 'athens_greece')
 
@@ -26,23 +40,21 @@ module CartoCSSHelper
 end
 
 def switch_database
-  #init(false) # frozen copy making
-  #switch_databases('gis_test', 'entire_world')
-  #final
+  # init(false) # frozen copy making
+  # switch_databases('gis_test', 'entire_world')
+  # final
   # switch_databases('gis_test', 'krakow')
   # switch_databases('gis_test', 'new_york')
   # final
 end
 
 def wrpped
-    begin
-      test_office(15)
-    rescue => e
-    	puts "=====\n"*20
-      puts e
-    	puts "=====\n"*20
-    end
-	end
+  test_office(15)
+  rescue => e
+    puts "=====\n" * 20
+    puts e
+    puts "=====\n" * 20
+  end
 
 def test_office(n)
   # https://github.com/gravitystorm/openstreetmap-carto/issues/1697 https://github.com/gravitystorm/openstreetmap-carto/issues/108
@@ -115,35 +127,35 @@ end
 # TODO: w renderowaniu miejsc przeskocz nad tymi gdzie miejsce jest znane a plik jest nadal do pobrania - oznacza to iż jest on wileki, został skasowany przy czyszczeniu nadmiaru a będzie się
 
 def waiting_pr
-    barrier_names('new_barrier_name', 1)
+  barrier_names('new_barrier_name', 1)
 
-    begin
-      barrier_names('new_barrier_name', 3)
-    rescue => e
-    	puts "=====\n"*20
-      puts e
-    	puts "=====\n"*20
-    end
+  begin
+    barrier_names('new_barrier_name', 3)
+  rescue => e
+    puts "=====\n" * 20
+    puts e
+    puts "=====\n" * 20
+  end
 
-    begin
-      barrier_names('new_barrier_name', 10)
-    rescue => e
-    	puts "=====\n"*20
-      puts e
-    	puts "=====\n"*20
-    end
+  begin
+    barrier_names('new_barrier_name', 10)
+  rescue => e
+    puts "=====\n" * 20
+    puts e
+    puts "=====\n" * 20
+  end
 
-    begin
-      #test_turning_circle('turning_circle_squashed', 1, 14..20)
-      #test_turning_circle('turning_circle_squashed', 5, 14..20)
-    rescue => e
-    	puts "=====\n"*20
-      puts e
-    	puts "=====\n"*20
-    end
+  begin
+    # test_turning_circle('turning_circle_squashed', 1, 14..20)
+    # test_turning_circle('turning_circle_squashed', 5, 14..20)
+  rescue => e
+    puts "=====\n" * 20
+    puts e
+    puts "=====\n" * 20
+  end
 
-    # test_turning_circle('turning_with_service')
-    # test_turning_circle('turning')
+  # test_turning_circle('turning_with_service')
+  # test_turning_circle('turning')
   test_library_book_shop_prs
   test_power(branch, n)
   test_fishmonger
@@ -208,8 +220,8 @@ def final
 end
 
 def get_minutes_spend_on(start, finish)
-	return nil if finish.nil?
-	return nil if start.nil?
+  return nil if finish.nil?
+  return nil if start.nil?
   return (finish - start).to_i / 60
 end
 
