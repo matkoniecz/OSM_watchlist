@@ -10,15 +10,7 @@ end
 
 module CartoCSSHelper
   def main
-  	final
-    begin
       test_office(15)
-    rescue => e
-    	puts "=====\n"*20
-      puts e
-    	puts "=====\n"*20
-    end
-
     CartoCSSHelper.add_mapzen_extract('las_vegas', 'las-vegas_nevada')
     CartoCSSHelper.add_mapzen_extract('ateny', 'athens_greece')
 
@@ -33,7 +25,7 @@ module CartoCSSHelper
   end
 end
 
-def switch_to_krakow_database
+def switch_database
   #init(false) # frozen copy making
   #switch_databases('gis_test', 'entire_world')
   #final
@@ -41,6 +33,16 @@ def switch_to_krakow_database
   # switch_databases('gis_test', 'new_york')
   # final
 end
+
+def wrpped
+    begin
+      test_office(15)
+    rescue => e
+    	puts "=====\n"*20
+      puts e
+    	puts "=====\n"*20
+    end
+	end
 
 def test_office(n)
   # https://github.com/gravitystorm/openstreetmap-carto/issues/1697 https://github.com/gravitystorm/openstreetmap-carto/issues/108
@@ -205,14 +207,20 @@ def final
   exit
 end
 
+def get_minutes_spend_on(start, finish)
+	return nil if finish.nil?
+	return nil if start.nil?
+  return (finish - start).to_i / 60
+end
+
 def encoutered_exception(e, start_time, load_end, end_time)
   puts e.class
   puts e
   puts
   puts e.backtrace
-  min_of_loading = (load_end - start_time).to_i / 60
-  min_of_work = (end_time - load_end).to_i / 60
-  min_of_errors = (Time.now - end_time).to_i / 60
+  min_of_loading = get_minutes_spend_on(start_time, load_end)
+  min_of_work = get_minutes_spend_on(load_end, end_time)
+  min_of_errors = get_minutes_spend_on(end_time, Time.now)
   notify "Crash during map generation! (after #{min_of_work} min of work and #{min_of_errors} min of errors with #{min_of_loading} min of loading before)"
   sleep 10
 end
@@ -220,6 +228,7 @@ end
 start_time = Time.now
 begin
   # verify
+  switch_database
   init(make_copy_of_repository) # frozen copy making
   # CartoCSSHelper::Configuration.set_known_alternative_overpass_url
   load_end = Time.now
