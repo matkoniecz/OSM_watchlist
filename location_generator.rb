@@ -29,6 +29,19 @@ module CartoCSSHelper
     return lat, lon
   end
 
+  class RecordLocation
+    def initialize(lat, lon)
+      @lat = lat
+      @lon = lon
+    end
+
+    def locator
+      Enumerator.new do |yielder|
+        yielder.yield @lat, @lon
+      end
+    end
+  end
+
   class LocatePairedTagsInsideLoadedDatabases
     def initialize(tags_a, tags_b, type_a, type_b, skip: 0, distance_in_meters: 20)
       seed_generator = loaded_database_centers(skip)
