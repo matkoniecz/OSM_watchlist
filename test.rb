@@ -38,12 +38,18 @@ def switch_to_krakow_database
   # final
 end
 
-def barrier_names(branch)
-  barriers = ['chain', 'city_wall', 'embankment', 'ditch', 'fence', 'guard_rail', 'handrail', 'hedge', 'kerb', 'retaining_wall', 'wall']
+def barrier_names(branch, n)
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'barrier' => 'wall', 'name' => :any_value }, types: ['way'])
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 19..19, image_size: 375, count: n)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'barrier' => 'wall', 'name' => :any_value }, types: ['way'])
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 375, count: n)
+
+  barriers = ['city_wall', 'chain', 'embankment', 'ditch', 'fence', 'guard_rail', 'handrail', 'hedge', 'kerb', 'retaining_wall', 'wall']
   skip = 0
   barriers.each do |barrier|
-    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'barrier' => barrier })
-    diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 375, count: n, skip: skip)
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'name' => :any_value, 'barrier' => barrier }, skip: skip)
+    diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 375, count: n)
     skip += 1
   end
 
@@ -52,10 +58,6 @@ def barrier_names(branch)
   CartoCSSHelper.probe({ 'barrier' => 'wall', 'name' => :any_value }, branch, 'master', 8..8)
   CartoCSSHelper.probe({ 'barrier' => 'wall', 'name' => :any_value }, branch, 'master')
   CartoCSSHelper.test({ 'barrier' => 'wall', 'name' => :any_value }, branch, 'master')
-
-  n = 1
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'barrier' => 'wall', 'name' => :any_value }, types: ['way'])
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 19..19, image_size: 1000, count: n)
 
   [branch].each do |branch|
     CartoCSSHelper.probe({ 'tourism' => 'attraction' }, branch, 'master')
@@ -67,9 +69,6 @@ def barrier_names(branch)
     CartoCSSHelper.probe({ 'tourism' => 'attraction' }, branch, 'master')
   end
 
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'barrier' => 'wall', 'name' => :any_value }, types: ['way'])
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 1000, count: n)
-
   CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 18..18, 'barrier_way', 'master', branch, 0.1)
   CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 15..22, 'barrier_way', 'master', branch, 0.1)
   # CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 18..18, 'tourism_way', 'master', 'tourism_way', 0.1)
@@ -78,17 +77,31 @@ end
 
 module CartoCSSHelper
   def main
+    barrier_names('new_barrier_name', 1)
+
     begin
-      barrier_names('new_barrier_name')
+      barrier_names('new_barrier_name', 3)
     rescue => e
+    	puts "=====\n"*20
       puts e
+    	puts "=====\n"*20
     end
 
     begin
-      test_turning_circle('turning_circle_squashed', 1, 14..20)
-      test_turning_circle('turning_circle_squashed', 5, 14..20)
+      barrier_names('new_barrier_name', 10)
     rescue => e
+    	puts "=====\n"*20
       puts e
+    	puts "=====\n"*20
+    end
+
+    begin
+      #test_turning_circle('turning_circle_squashed', 1, 14..20)
+      #test_turning_circle('turning_circle_squashed', 5, 14..20)
+    rescue => e
+    	puts "=====\n"*20
+      puts e
+    	puts "=====\n"*20
     end
 
     # test_turning_circle('turning_with_service')
@@ -97,11 +110,13 @@ module CartoCSSHelper
     begin
       test_office(15)
     rescue => e
+    	puts "=====\n"*20
       puts e
+    	puts "=====\n"*20
     end
 
-    add_mapzen_extract('las_vegas' 'las-vegas_nevada')
-    add_mapzen_extract('ateny' 'athens_greece')
+    CartoCSSHelper.add_mapzen_extract('las_vegas', 'las-vegas_nevada')
+    CartoCSSHelper.add_mapzen_extract('ateny', 'athens_greece')
 
     # https://github.com/gravitystorm/openstreetmap-carto/issues/2126
     # before_after_from_loaded_databases({ 'man_made' => 'obelisk' }, 'master', 'master', 14..18, 300, 10, 0)
@@ -262,9 +277,9 @@ end
 
 start_time = Time.now
 begin
-  # init(false) # frozen copy making
-  # switch_databases('gis_test', 'world')
-  # final
+  init(false) # frozen copy making
+  switch_databases('gis_test', 'entire_world')
+  final
   # verify
   init(make_copy_of_repository) # frozen copy making
   # CartoCSSHelper::Configuration.set_known_alternative_overpass_url
