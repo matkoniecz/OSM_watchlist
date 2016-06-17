@@ -9,24 +9,25 @@ def make_copy_of_repository
 end
 
 def test_ne_removal
-    #lat, lon = 51.01155, 14.93786 #Poland
-    lat, lon = 46.2008, 33.6460 #Crimea
-    #get_single_image_from_database('entire_world', 'd77af25', lat, lon, 3, 60)
-    #get_single_image_from_database('entire_world', 'd5b4551', lat, lon, 3, 60)
-    get_single_image_from_database('entire_world', 'ne', lat, lon, 3, 40)
-    get_single_image_from_database('entire_world', 'master', lat, lon, 3, 40)
-    return
+  # lat, lon = 51.01155, 14.93786 #Poland
+  lat = 46.2008
+  lon = 33.6460 # Crimea
+  # get_single_image_from_database('entire_world', 'd77af25', lat, lon, 3, 60)
+  # get_single_image_from_database('entire_world', 'd5b4551', lat, lon, 3, 60)
+  get_single_image_from_database('entire_world', 'ne', lat, lon, 3, 40)
+  get_single_image_from_database('entire_world', 'master', lat, lon, 3, 40)
+  return
 
-    get_single_image_from_database('entire_world', 'd77af25', 51.66243, -0.58722, 2, 20)
-    get_single_image_from_database('entire_world', 'ne', 51.66243, -0.58722, 2, 20)
+  get_single_image_from_database('entire_world', 'd77af25', 51.66243, -0.58722, 2, 20)
+  get_single_image_from_database('entire_world', 'ne', 51.66243, -0.58722, 2, 20)
 
-    get_single_image_from_database('entire_world', 'd77af25', 51.66243, -0.58722, 1, 20)
-    get_single_image_from_database('entire_world', 'ne', 51.66243, -0.58722, 1, 20)
+  get_single_image_from_database('entire_world', 'd77af25', 51.66243, -0.58722, 1, 20)
+  get_single_image_from_database('entire_world', 'ne', 51.66243, -0.58722, 1, 20)
 end
 
 def test_xml_low
-	branch='xml_low'
-	count = 3
+  branch = 'xml_low'
+  count = 3
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'parking' }, skip: 0)
   diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
 
@@ -46,31 +47,31 @@ def test_xml_low
   diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
 
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'highway' => 'mini_roundabout' }, skip: 0)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count) 
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
 
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'barrier' => 'bollard' }, skip: 0)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count) 
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
 end
 
 def aeroway_is_not_road
-	branch = 'master'
-  CartoCSSHelper.probe({ 'aeroway' => 'taxiway', 'bridge' => 'yes'}, branch, 'master')
-  CartoCSSHelper.probe({ 'aeroway' => 'runway', 'bridge' => 'yes'}, branch, 'master')
-  CartoCSSHelper.probe({ 'aeroway' => 'taxiway'}, branch, 'master')
-  CartoCSSHelper.probe({ 'aeroway' => 'runway'}, branch, 'master')
+  branch = 'master'
+  CartoCSSHelper.probe({ 'aeroway' => 'taxiway', 'bridge' => 'yes' }, branch, 'master')
+  CartoCSSHelper.probe({ 'aeroway' => 'runway', 'bridge' => 'yes' }, branch, 'master')
+  CartoCSSHelper.probe({ 'aeroway' => 'taxiway' }, branch, 'master')
+  CartoCSSHelper.probe({ 'aeroway' => 'runway' }, branch, 'master')
 
-	count = 5
+  count = 5
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'aeroway' => 'taxiway' }, skip: 0)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count) 
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
 
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'aeroway' => 'runway' }, skip: 0)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count) 
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
 end
 
 module CartoCSSHelper
   def main
-  	aeroway_is_not_road
-  	test_xml_low
+    aeroway_is_not_road
+    test_xml_low
 
     test_office(15, 'master')
     return

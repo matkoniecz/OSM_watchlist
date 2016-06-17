@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 def test_low
-  lat, lon = 51.01155, 14.93786 #Poland
+  lat = 51.01155
+  lon = 14.93786 # Poland
   get_single_image_from_database('entire_world', 'faster_z3', lat, lon, 3, 140)
   get_single_image_from_database('entire_world', 'master', lat, lon, 3, 140)
 end
@@ -51,11 +52,11 @@ def barrier_names(branch, n)
 end
 
 def test_low_dot
-    locator = CartoCSSHelper::RecordLocation.new(51.37245, -0.45807)
-    diff_on_loaded_database(location_provider: locator, to: 'lowdot', from: 'master', zlevels: 16..19, image_size: 575, count: 1)
+  locator = CartoCSSHelper::RecordLocation.new(51.37245, -0.45807)
+  diff_on_loaded_database(location_provider: locator, to: 'lowdot', from: 'master', zlevels: 16..19, image_size: 575, count: 1)
 
-    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'shop' => :any_value }, skip: 0)
-    diff_on_loaded_database(location_provider: locator, to: 'lowdot', from: 'master', zlevels: 16..19, image_size: 575, count: 10)
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'shop' => :any_value }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: 'lowdot', from: 'master', zlevels: 16..19, image_size: 575, count: 10)
 end
 
 def test_turning_circle(branch, count, zlevels, location_finder_mode = false)
