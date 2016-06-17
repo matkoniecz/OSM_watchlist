@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require_relative 'database_manager_mapzen.rb'
+require_relative 'database_manager_psql_handler.rb'
 
 module CartoCSSHelper
   def reload_database_sourced_as_osm_url(database_name, url, download_bbox_size)
@@ -98,24 +99,6 @@ module CartoCSSHelper
         puts "mismatch"
       end
     end
-  end
-
-  def create_new_gis_database(name)
-    puts "Creating gis database <#{name}>"
-    command = "createdb #{name}"
-    system command
-    command = "psql -d #{name} -c 'CREATE EXTENSION hstore; CREATE EXTENSION postgis;'"
-    system command
-    # TODO: move to execute_command (but add test before that)
-  end
-
-  def switch_databases(new_name_for_gis, switched_into_for_gis)
-    command = "echo \"alter database gis rename to #{new_name_for_gis};
-alter database #{switched_into_for_gis} rename to gis;
-\\q\" | psql postgres > /dev/null"
-    puts "gis -> #{new_name_for_gis}, #{switched_into_for_gis} -> gis"
-    system command
-    # TODO: move to execute_command (but add test before that)
   end
 
   def fits_in_database_bb?(database, latitude, longitude)

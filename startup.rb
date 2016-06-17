@@ -32,16 +32,8 @@ def with_uncommitted_changes
   end
 end
 
-def database_exists(name)
-  # based on
-  # http://stackoverflow.com/questions/14549270/check-if-database-exists-in-postgresql-using-shell/16783253#16783253
-  # http://stackoverflow.com/questions/6550484/avoid-grep-returning-error-when-input-doesnt-match
-  database = execute_command('psql -lqt | cut -d \| -f 1 | grep -w ' + name + ' | cat')
-  return database.include?(name)
-end
-
 def working_on_wrong_database_check(name)
-  return if database_exists(name)
+  return if psql_database_exists(name)
   puts "Database #{name} is missing!"
   switch_databases(name, 'gis_test')
 end

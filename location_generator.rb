@@ -40,6 +40,10 @@ module CartoCSSHelper
         yielder.yield @lat, @lon
       end
     end
+
+    def description
+      return "#{@lat},#{@lon}"
+    end
   end
 
   class LocatePairedTagsInsideLoadedDatabases

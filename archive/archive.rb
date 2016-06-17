@@ -1,5 +1,18 @@
 # frozen_string_literal: true
 
+def test_low
+  lat, lon = 51.01155, 14.93786 #Poland
+  get_single_image_from_database('entire_world', 'faster_z3', lat, lon, 3, 140)
+  get_single_image_from_database('entire_world', 'master', lat, lon, 3, 140)
+end
+
+def all_roads
+  get_all_road_types.each do |tag|
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'highway' => tag, }, skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: 'pnorman/road_reformat', from: 'v2.38.0', zlevels: 10..19, image_size: 375, count: 1)
+  end
+end
+
 def barrier_names(branch, n)
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'barrier' => 'wall', 'name' => :any_value }, types: ['way'])
   diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 19..19, image_size: 375, count: n)
@@ -35,6 +48,14 @@ def barrier_names(branch, n)
   CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 15..22, 'barrier_way', 'master', branch, 0.1)
   # CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 18..18, 'tourism_way', 'master', 'tourism_way', 0.1)
   # CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 13..22, 'tourism_way', 'master', 'tourism_way', 0.1)
+end
+
+def test_low_dot
+    locator = CartoCSSHelper::RecordLocation.new(51.37245, -0.45807)
+    diff_on_loaded_database(location_provider: locator, to: 'lowdot', from: 'master', zlevels: 16..19, image_size: 575, count: 1)
+
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'shop' => :any_value }, skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: 'lowdot', from: 'master', zlevels: 16..19, image_size: 575, count: 10)
 end
 
 def test_turning_circle(branch, count, zlevels, location_finder_mode = false)

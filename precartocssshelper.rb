@@ -63,11 +63,6 @@ module CartoCSSHelper
     return cache_filename
   end
 
-  def render_single_image(branch, latitude, longitude, zlevel, image_size, header = '')
-    database_name = get_database_containing(latitude, longitude)
-    get_single_image_from_database(database_name, branch, latitude, longitude, zlevel, image_size, header)
-  end
-
   def get_single_image_from_database(database_name, branch, latitude, longitude, zlevel, image_size, header = '')
     switch_databases('gis_test', database_name)
     zlevel_text = zlevel.to_s
