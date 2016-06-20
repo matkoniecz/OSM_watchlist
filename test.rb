@@ -5,81 +5,172 @@ require_relative 'require.rb'
 include CartoCSSHelper
 
 def make_copy_of_repository
-  true # true #false
+  false # true #false
 end
 
-def test_ne_removal
-  # lat, lon = 51.01155, 14.93786 #Poland
-  lat = 46.2008
-  lon = 33.6460 # Crimea
-  # get_single_image_from_database('entire_world', 'd77af25', lat, lon, 3, 60)
-  # get_single_image_from_database('entire_world', 'd5b4551', lat, lon, 3, 60)
-  get_single_image_from_database('entire_world', 'ne', lat, lon, 3, 40)
-  get_single_image_from_database('entire_world', 'master', lat, lon, 3, 40)
-  return
-
-  get_single_image_from_database('entire_world', 'd77af25', 51.66243, -0.58722, 2, 20)
-  get_single_image_from_database('entire_world', 'ne', 51.66243, -0.58722, 2, 20)
-
-  get_single_image_from_database('entire_world', 'd77af25', 51.66243, -0.58722, 1, 20)
-  get_single_image_from_database('entire_world', 'ne', 51.66243, -0.58722, 1, 20)
+def test_placename(branch)
+  coords = [[53.245, -2.274], [50, 20], [39.1205, -94.4913], [16.820, 79.915], [64.1173, -21.8688], [50, 80], [50, 100]]
+  coords.each do |coord|
+    lat, lon = coord
+    [750].each do |image_size|
+      [11,10,9,8,7,6,5].each do |z|
+        puts z
+        #get_single_image_from_database('entire_world', branch, lat, lon, z, image_size)
+        #get_single_image_from_database('entire_world', 'master', lat, lon, z, image_size)
+      end
+      description = "#on entire_world [#{lat}, #{lon}]"
+      before_after_directly_from_database('entire_world', lat, lon, branch, 'master', 5..10, image_size, description)
+    end
+  end
 end
 
-def test_xml_low
-  branch = 'xml_low'
-  count = 3
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'parking' }, skip: 0)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+def test_710_variants(count = 1)
+  tags = [{ 'amenity' => 'pub', 'name' => :any_value }, { 'tourism' => 'museum', 'name' => :any_value }]
+  zlevels = 17..17
 
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'bicycle_parking' }, skip: 0)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+  tags.each do |tag|
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: 'medium-halo', from: 'master', zlevels: zlevels, image_size: 700, count: count)
 
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'motorcycle_parking' }, skip: 0)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: 'small-halo', from: 'master', zlevels: zlevels, image_size: 700, count: count)
 
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'railway' => 'crossing' }, skip: 0)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: 'halo', from: 'master', zlevels: zlevels, image_size: 700, count: count)
 
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'man_made' => 'cross' }, skip: 0)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: 'bold_710', from: 'master', zlevels: zlevels, image_size: 700, count: count)
 
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'historic' => 'wayside_cross' }, skip: 0)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
-
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'highway' => 'mini_roundabout' }, skip: 0)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
-
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'barrier' => 'bollard' }, skip: 0)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: 'book_710', from: 'master', zlevels: zlevels, image_size: 700, count: count)
+  end
 end
 
-def aeroway_is_not_road
-  branch = 'master'
-  CartoCSSHelper.probe({ 'aeroway' => 'taxiway', 'bridge' => 'yes' }, branch, 'master')
-  CartoCSSHelper.probe({ 'aeroway' => 'runway', 'bridge' => 'yes' }, branch, 'master')
-  CartoCSSHelper.probe({ 'aeroway' => 'taxiway' }, branch, 'master')
-  CartoCSSHelper.probe({ 'aeroway' => 'runway' }, branch, 'master')
+def watchlist_entries
+  watchlist = []
+  
+  beton_variation = "Beton"
+  tags = { 'surface' => beton_variation}
+  beton_problem = "surface=#{beton_variation}? 'beton' is word for concrete in some languages but not in the English"
+  overpass_code = 'gT2'
+  message = beton_problem +"\n\n" + "See http://overpass-turbo.eu/s/#{overpass_code} for more problems of this type"
+  watchlist << {list: get_list(tags), message: message}
 
-  count = 5
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'aeroway' => 'taxiway' }, skip: 0)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+  beton_variation = "beton"
+  tags = { 'surface' => beton_variation}
+  beton_problem = "surface=#{beton_variation}? 'beton' is word for concrete in some languages but not in the English"
+  overpass_code = 'gT4'
+  message = beton_problem +"\n\n" + "See http://overpass-turbo.eu/s/#{overpass_code} for more problems of this type"
+  watchlist << {list: get_list(tags), message: message}
 
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'aeroway' => 'runway' }, skip: 0)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+  return watchlist  
+end
+
+def run_watchlist
+  empty = '<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="OpenStreetMap server">
+</osm>'
+
+  puts "plac zabaw: http://overpass-turbo.eu/s/gTo http://overpass-turbo.eu/s/gTs" #more https://github.com/osmlab/name-suggestion-index/blob/master/filter.json https://lists.openstreetmap.org/pipermail/talk/2015-May/072923.html
+
+  watchlist_entries.each do |entry|
+    mentioned = false
+    entry[:list].each do |data|
+      notes = CartoCSSHelper::NotesDownloader.run_note_query(data[:lat], data[:lon], 0.005)
+      if notes.strip == empty
+        if !mentioned
+          puts
+          puts
+          puts entry[:message]
+          mentioned = true
+        end
+        puts "# #{data[:url]}"
+      end
+    end
+  end
+end
+
+def get_query_for_location_and_id(tags)
+  filter = OverpassQueryGenerator.turn_list_of_tags_in_overpass_filter(tags)
+  query = '[timeout:25][out:json];
+(
+  node'+filter+';
+  way'+filter+';
+  relation'+filter+';
+);
+out body;
+>;
+out skel qt;'
+  return query
+end
+
+def get_data(required_tags)
+  query = get_query_for_location_and_id(required_tags)
+  json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, "for watchlist")
+  require 'json'
+  obj = JSON.parse(json_string)
+  return obj
+end
+
+def get_node_database(json_obj)
+  locations = {}
+  json_obj["elements"].each do |entry|
+    if entry["type"] == "node"
+      locations[entry["id"]] = entry["lat"].to_f, entry["lon"].to_f
+    end
+  end
+  return locations
+end
+
+def get_list(required_tags)
+  list = []
+  obj = get_data(required_tags)
+
+  locations = get_node_database(obj)
+  elements = obj["elements"]
+
+  elements.each do |entry|
+    tags = entry["tags"]
+    next if tags == nil
+    mismatch = false
+    required_tags.each do |tag|
+      mismatch = true if tags[tag[0]] != tag[1]
+    end
+    next if mismatch == true
+    if entry["type"] == "way"
+      lat, lon = locations[entry["nodes"][0]]
+      url = "https://www.openstreetmap.org/#{entry["type"]}/#{entry["id"]}"
+      list << {lat: lat, lon: lon, url: url}
+    end
+  end
+  return list
 end
 
 module CartoCSSHelper
   def main
-    aeroway_is_not_road
-    test_xml_low
+    required_tags = {'surface' => 'beton'}
+    #query = CartoCSSHelper::OverpassQueryGenerator.get_query_to_get_location_set_format(required_tags, 'way', 0, 0, :infinity, '[out:json]')
 
-    test_office(15, 'master')
-    return
+    run_watchlist
+    puts "-----"
+    test_710_variants(1)
+    test_alpine_hut
+    test_710_variants(10)
+    test_710_variants(15)
+    test_710_variants(5)
+
+
+    #show_military_danger_areas('danger')
+		#execute_command("echo \"layer, time, sample, branch\" > tested_file.txt", true)
+  	#compare_time('master', 'speedtest', 5, 'new_data.txt')
+    #test_office(15, 'master')
+		#railway_station_areas_label('area_station')
+    missing_labels
     CartoCSSHelper.add_mapzen_extract('las_vegas', 'las-vegas_nevada')
     CartoCSSHelper.add_mapzen_extract('ateny', 'athens_greece')
 
-    # https://github.com/gravitystorm/openstreetmap-carto/issues/2126
-    # before_after_from_loaded_databases({ 'man_made' => 'obelisk' }, 'master', 'master', 14..18, 300, 10, 0)
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'pub', 'name' => :any_value }, skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: 'noto_710', from: 'master', zlevels: 16..18, image_size: 700, count: count)
 
     final
 
@@ -89,30 +180,24 @@ module CartoCSSHelper
   end
 end
 
-def test_kocio_parking_pr
-  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'parking' }, skip: 0)
-  diff_on_loaded_database(location_provider: locator, to: 'kocio/parking-size', from: 'master', zlevels: 16..18, image_size: 375, count: 10)
-end
-
 def switch_database
-  # init(false) # frozen copy making
-  # switch_databases('gis_test', 'entire_world')
-  # final
-  # switch_databases('gis_test', 'krakow')
+  #switch_databases('placenames', 'gis_test') #out
+  
+  #init(false) # frozen copy making
+   #switch_databases('gis_test', 'entire_world')
+   #final
+
+ # switch_databases('gis_test', 'krakow')
   # switch_databases('gis_test', 'new_york')
-  # final
+  #final
+
+  #create_new_gis_database('new_gis')
+  #CartoCSSHelper::DataFileLoader.load_data_into_database("/home/mateusz/Downloads/export.osm", true)
+  #switch_databases('placenames', 'new_gis')
 end
 
-def wrpped
-  test_office(15, 'office')
-  rescue => e
-    puts "=====\n" * 20
-    puts e
-    puts "=====\n" * 20
-  end
 
 # TODO:
-# https://github.com/gravitystorm/openstreetmap-carto/issues/2097
 # https://github.com/gravitystorm/openstreetmap-carto/issues/1899
 # https://github.com/gravitystorm/openstreetmap-carto/issues/1661
 # https://github.com/gravitystorm/openstreetmap-carto/issues/1285
@@ -125,9 +210,17 @@ def missing_labels
   CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'natural' => 'peak', 'ele' => '4', 'name' => 'name' }, 'node', false, 22..22, 'v2.34.0', 'v2.34.0')
 
   CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'aeroway' => 'gate', 'ref' => '4' }, 'node', false, 22..22, 'v2.31.0', 'v2.30.0') # 20, 27, 29, 30 - 31 34
-  before_after_from_loaded_databases({ 'aeroway' => 'gate', 'ref' => :any_value }, 'v2.31.0', 'v2.30.0', 22..22, 100, 2)
-  CartoCSSHelper.test_tag_on_real_data({ 'aeroway' => 'gate', 'ref' => :any_value }, 'v2.31.0', 'v2.30.0', 22..22, ['way'], 2)
+  #before_after_from_loaded_databases({ 'aeroway' => 'gate', 'ref' => :any_value }, 'v2.31.0', 'v2.30.0', 22..22, 100, 2)
+  #CartoCSSHelper.test_tag_on_real_data({ 'aeroway' => 'gate', 'ref' => :any_value }, 'v2.31.0', 'v2.30.0', 22..22, ['way'], 2)
 end
+
+def wrpped
+  test_office(15, 'office')
+  rescue => e
+    puts "=====\n" * 20
+    puts e
+    puts "=====\n" * 20
+  end
 
 def test_office(n, branch)
   # https://github.com/gravitystorm/openstreetmap-carto/issues/1697 https://github.com/gravitystorm/openstreetmap-carto/issues/108
@@ -160,10 +253,41 @@ def test_office(n, branch)
   diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 15..19, image_size: 375, count: n)
 end
 
-def show_military_danger_areas
+def aeroway_is_not_road
+  branch = 'master'
+
+  count = 5
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'aeroway' => 'taxiway', 'bridge' => 'yes' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'aeroway' => 'runway', 'bridge' => 'yes' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+
+  skip = 0
+  seed_generator = land_locations(skip)
+  locator = CartoCSSHelper::LocateTags.new({ 'aeroway' => 'taxiway', 'bridge' => 'yes' }, seed_generator: seed_generator)
+  diff_on_overpass_data(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+  locator = CartoCSSHelper::LocateTags.new({ 'aeroway' => 'runway', 'bridge' => 'yes' }, seed_generator: seed_generator)
+  diff_on_overpass_data(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+
+  CartoCSSHelper.probe({ 'aeroway' => 'taxiway', 'bridge' => 'yes' }, branch, 'master')
+  CartoCSSHelper.probe({ 'aeroway' => 'runway', 'bridge' => 'yes' }, branch, 'master')
+  CartoCSSHelper.probe({ 'aeroway' => 'taxiway' }, branch, 'master')
+  CartoCSSHelper.probe({ 'aeroway' => 'runway' }, branch, 'master')
+
+  return
+
+  count = 5
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'aeroway' => 'taxiway' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'aeroway' => 'runway' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+end
+
+def show_military_danger_areas(branch)
   # czarnobyl - www.openstreetmap.org/?mlat=51.5&mlon=30.1&zoom=12#map=12/51.5000/30.1000 (lat =-0.5, lon+-0.7)
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'military' => 'danger_area' }, types: ['way'])
-  diff_on_loaded_database(location_provider: locator, to: 'master', from: 'master', zlevels: 9..19, image_size: 375, count: 10)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 9..19, image_size: 375, count: 10)
 
   # locator = CartoCSSHelper::LocateTags.new({ 'military' => 'danger_area' }, types: ['way'])
   # diff_on_overpass_data(location_provider: locator, to: 'master', from: 'master', zlevels: 9..19, image_size: 375, count: 10)
@@ -171,7 +295,21 @@ end
 
 def test_alpine_hut
   # https://github.com/gravitystorm/openstreetmap-carto/issues/2115
-  # before_after_from_loaded_databases({ 'tourism' => 'alpine_hut' }, 'master', 'master', 12..15, 500, 10)
+  branch = 'master'
+  hut = { 'tourism' => 'alpine_hut', 'name' => :any_value}
+  zlevels = 9..19
+  count = 5
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(hut)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: zlevels, image_size: 375, count: count)
+
+  locator = CartoCSSHelper::LocatePairedTagsInsideLoadedDatabases.new(hut, {'natural' => 'peak'}, 'way', 'node', skip: 0, distance_in_meters: 1000)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: zlevels, image_size: 375, count: count)
+
+  locator = CartoCSSHelper::LocatePairedTagsInsideLoadedDatabases.new(hut, hut, 'way', 'way', skip: 0, distance_in_meters: 1000)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: zlevels, image_size: 375, count: count)
+
+  locator = CartoCSSHelper::LocatePairedTagsInsideLoadedDatabases.new(hut, {'natural' => 'volcano'}, 'way', 'node', skip: 0, distance_in_meters: 1000)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: zlevels, image_size: 375, count: count)
   # find alpine hut nearby alpine hut
 end
 
@@ -183,46 +321,40 @@ end
 # TODO: w renderowaniu miejsc przeskocz nad tymi gdzie miejsce jest znane a plik jest nadal do pobrania - oznacza to iż jest on wileki, został skasowany przy czyszczeniu nadmiaru a będzie się
 
 def waiting_pr
-  barrier_names('new_barrier_name', 1)
-
-  begin
-    barrier_names('new_barrier_name', 3)
-  rescue => e
-    puts "=====\n" * 20
-    puts e
-    puts "=====\n" * 20
-  end
-
-  begin
-    barrier_names('new_barrier_name', 10)
-  rescue => e
-    puts "=====\n" * 20
-    puts e
-    puts "=====\n" * 20
-  end
-
-  begin
-    # test_turning_circle('turning_circle_squashed', 1, 14..20)
-    # test_turning_circle('turning_circle_squashed', 5, 14..20)
-  rescue => e
-    puts "=====\n" * 20
-    puts e
-    puts "=====\n" * 20
-  end
-
-  # test_turning_circle('turning_with_service')
-  # test_turning_circle('turning')
-  test_library_book_shop_prs
-  test_power(branch, n)
-  test_fishmonger
-  test_rail
+  	obelisk('obelisk')
+    test_xml_low
+    test_eternal_710_on_real_data("book_710")
+    test_eternal_710_on_real_data("bold_710")
+    test_eternal_710_dy("book_710")
+    test_eternal_710_dy("bold_710")
+    test_placename('placename_without_dots')
 end
 
 def subway_service
   # write code
   # http://www.openstreetmap.org/way/129520909#map=19/41.83566/12.57786
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'railway' => 'subway', 'service' => :any_value })
+  diff_on_loaded_database(location_provider: locator, to: 'master', from: 'master', zlevels: 15..19, image_size: 375, count: 10)
+
   CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'railway' => 'subway', 'service' => 'yard' }, 'way', false, 22..22, 'master', 'master')
   CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'railway' => 'subway' }, 'way', false, 22..22, 'master', 'master')
+end
+
+def test_ne_removal
+  # lat, lon = 51.01155, 14.93786 #Poland
+  lat = 46.2008
+  lon = 33.6460 # Crimea
+  # get_single_image_from_database('entire_world', 'd77af25', lat, lon, 3, 60)
+  # get_single_image_from_database('entire_world', 'd5b4551', lat, lon, 3, 60)
+  get_single_image_from_database('entire_world', 'ne', lat, lon, 3, 40)
+  get_single_image_from_database('entire_world', 'master', lat, lon, 3, 40)
+  return
+
+  get_single_image_from_database('entire_world', 'd77af25', 51.66243, -0.58722, 2, 20)
+  get_single_image_from_database('entire_world', 'ne', 51.66243, -0.58722, 2, 20)
+
+  get_single_image_from_database('entire_world', 'd77af25', 51.66243, -0.58722, 1, 20)
+  get_single_image_from_database('entire_world', 'ne', 51.66243, -0.58722, 1, 20)
 end
 
 def run_tests
@@ -249,6 +381,17 @@ def test_water_color
   before_after_from_loaded_databases({ 'waterway' => 'riverbank' }, 'water', 'master', 9..19, 1000)
 
   before_after_from_loaded_databases({ 'natural' => 'coastline' }, 'water', 'master', 9..19, 1000)
+end
+
+
+def railway_station_areas_label(branch)
+  # https://github.com/gravitystorm/openstreetmap-carto/issues/2097
+  tags = { 'railway' => 'station' }
+  CartoCSSHelper.probe(tags, branch, 'master', 22..22, ['closed_way'])
+  CartoCSSHelper.probe(tags, branch, 'master', 12..22, ['closed_way'])
+  CartoCSSHelper.probe(tags, branch, 'master')
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tags, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 14..19, image_size: 375, count: 10)
 end
 
 def database_cleaning

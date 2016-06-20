@@ -29,11 +29,15 @@ module CartoCSSHelper
 
   def diff_on_overpass_data(location_provider:, to:, from: 'master', zlevels:, image_size: 375, count: 2)
     locator = location_provider.locator
-    count.times do
-      latitude, longitude = locator.next
-      puts latitude, longitude
-      description = "#{location_provider.description} on overpass data [#{latitude}, #{longitude}]"
-      VisualDiff.visualise_changes_for_location(latitude, longitude, zlevels, description, to, from, 0.4, image_size)
+    begin
+      count.times do
+        latitude, longitude = locator.next
+        puts latitude, longitude
+        description = "#{location_provider.description} on overpass data [#{latitude}, #{longitude}]"
+        VisualDiff.visualise_changes_for_location(latitude, longitude, zlevels, description, to, from, 0.4, image_size)
+      end
+    rescue StopIteration
+      puts "Supply of places in the database exhausted for <#{location_provider.description}>"
     end
   end
 end

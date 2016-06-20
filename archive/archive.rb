@@ -1,4 +1,9 @@
 # frozen_string_literal: true
+def test_kocio_parking_pr
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'parking' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: 'kocio/parking-size', from: 'master', zlevels: 16..18, image_size: 375, count: 10)
+end
+
 
 def test_low
   lat = 51.01155
@@ -51,6 +56,16 @@ def barrier_names(branch, n)
   # CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/way/256157138#map=18/50.94165/6.96538', 13..22, 'tourism_way', 'master', 'tourism_way', 0.1)
 end
 
+def obelisk(branch)
+  #https://github.com/gravitystorm/openstreetmap-carto/issues/2126
+
+  CartoCSSHelper.probe({ 'historic' => 'monument' }, branch, 'master')
+  CartoCSSHelper.probe({ 'man_made' => 'obelisk' }, branch, 'master')
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'man_made' => 'obelisk' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 14..19, image_size: 375, count: 10)
+end
+
 def test_low_dot
   locator = CartoCSSHelper::RecordLocation.new(51.37245, -0.45807)
   diff_on_loaded_database(location_provider: locator, to: 'lowdot', from: 'master', zlevels: 16..19, image_size: 575, count: 1)
@@ -81,6 +96,102 @@ def test_turning_circle(branch, count, zlevels, location_finder_mode = false)
     end
     diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: zlevels, image_size: 375, count: count)
   end
+end
+
+def test_eternal_710_on_real_data(branch)
+  #tourism_theme_park tourism_zoo are special
+  werebold_710.each do |tag|
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag.merge({ 'name' => :any_value }), skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..18, image_size: 700, count: 1)
+  end
+  tags_for_710.each do |tag|
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag.merge({ 'name' => :any_value }), skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..18, image_size: 700, count: 1)
+  end
+end
+
+def test_eternal_710_dy(branch)
+  tags_for_710.each do |tag|
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test(tag.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'node', false, 22..22, branch, branch)
+  end
+end
+
+def werebold_710
+  [
+    { 'amenity' => 'pub' },
+    { 'amenity' => 'restaurant'},
+    { 'amenity' => 'food_court'},
+    { 'amenity' => 'cafe'},
+    { 'amenity' => 'fast_food'},
+    { 'amenity' => 'biergarten'},
+    { 'amenity' => 'bar'},
+    { 'amenity' => 'ice_cream'},
+    { 'amenity' => 'nightclub'},
+    { 'amenity' => 'library'},
+    { 'tourism' => 'museum'},
+    { 'amenity' => 'theatre'},
+    { 'amenity' => 'courthouse'},
+    { 'amenity' => 'townhall'},
+    { 'amenity' => 'cinema'},
+ ]
+end
+
+def tags_for_710 ()
+  [
+    # was 11
+    { 'leisure' => 'miniature_golf' },
+    { 'leisure' => 'golf_course' },
+    { 'leisure' => 'playground' },
+    { 'leisure' => 'water_park' },
+    # was 9
+    { 'amenity' => 'car_rental' },
+    { 'amenity' => 'bicycle_rental' },
+    { 'leisure' => 'slipway' },
+    { 'amenity' => 'parking' },
+    { 'amenity' => 'bicycle_parking' },
+    { 'amenity' => 'motorcycle_parking' },
+    { 'historic' => 'memorial' },
+    { 'historic' => 'monument' },
+    { 'historic' => 'archaeological_site' },
+    { 'amenity' => 'embassy' },
+    { 'amenity' => 'taxi' },
+    { 'highway' => 'bus_stop' },
+    { 'amenity' => 'fuel' },
+    { 'amenity' => 'bus_station' },
+    { 'amenity' => 'fountain' },
+    { 'man_made' => 'lighthouse' },
+    { 'man_made' => 'windmill' },
+    { 'amenity' => 'recycling' },
+    { 'natural' => 'tree' },
+
+    # was 8
+    { 'aeroway' => 'helipad' },
+    { 'aeroway' => 'aerodrome' },
+    { 'amenity' => 'hospital' },
+    { 'amenity' => 'clinic' },
+    { 'amenity' => 'pharmacy' },
+    { 'amenity' => 'doctors' },
+    { 'amenity' => 'dentist' },
+    { 'amenity' => 'veterinary' },
+
+    # was 10, partial list
+    { 'shop' => 'books' },
+    { 'place' => 'island' },
+    { 'amenity' => 'pub' },
+    { 'amenity' => 'police' },
+    { 'amenity' => 'car_wash' },
+    { 'tourism' => 'museum' },
+    { 'amenity' => 'place_of_worship' },
+    { 'natural' => 'peak' },
+    { 'historic' => 'wayside_cross' },
+    { 'amenity' => 'bank' },
+    { 'amenity' => 'atm' },
+    { 'tourism' => 'alpine_hut' },
+    { 'amenity' => 'prison' },
+    { 'shop' => 'bakery' },
+    { 'shop' => 'supermarket' },
+    { 'amenity' => 'hunting_stand' },
+  ]
 end
 
 def test_power(branch, n)
@@ -160,9 +271,58 @@ def test_forest
   diff_on_loaded_database(location_provider: locator, to: 'forest', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
 end
 
+def test_xml_low
+  branch = 'xml_low'
+  count = 10
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'parking' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'bicycle_parking' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'motorcycle_parking' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'bench' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'waste_basket' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+
+  count = 1
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'railway' => 'crossing' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'man_made' => 'cross' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'historic' => 'wayside_cross' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'highway' => 'mini_roundabout' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'barrier' => 'bollard' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'barrier' => 'gate' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'barrier' => 'lift_gate' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'barrier' => 'swing_gate' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'barrier' => 'block' }, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..19, image_size: 375, count: count)
+end
+
 def debris
   get_all_road_types.each do |highway|
     puts highway
     before_after_from_loaded_databases({ 'highway' => highway, 'ref' => :any_value }, 'nebulon/road-shields', 'master', 13..22, 1000, 5)
   end
 end
+
+
