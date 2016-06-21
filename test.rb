@@ -1,27 +1,33 @@
 # Encoding: utf-8
 # frozen_string_literal: true
 require_relative 'require.rb'
+require_relative 'watchlist.rb'
 
 include CartoCSSHelper
 
 def make_copy_of_repository
-  false # true #false
+  true # true #false
 end
 
-def test_placename(branch)
-  coords = [[53.245, -2.274], [50, 20], [39.1205, -94.4913], [16.820, 79.915], [64.1173, -21.8688], [50, 80], [50, 100]]
+def iterate_over(branch, base_branch, z_levels)
+  coords = [[50, 20, "KRK"], [53.245, -2.274, "UK"], [39.1205, -94.4913], [16.820, 79.915], [64.1173, -21.8688], [50, 80], [50, 100]]
   coords.each do |coord|
-    lat, lon = coord
+    lat, lon ,name = coord
     [750].each do |image_size|
-      [11,10,9,8,7,6,5].each do |z|
+      z_levels.reverse_each do |z|
         puts z
-        #get_single_image_from_database('entire_world', branch, lat, lon, z, image_size)
-        #get_single_image_from_database('entire_world', 'master', lat, lon, z, image_size)
+        get_single_image_from_database('entire_world', branch, lat, lon, z, image_size)
+        get_single_image_from_database('entire_world', base_branch, lat, lon, z, image_size) if base_branch != branch
       end
       description = "#on entire_world [#{lat}, #{lon}]"
-      before_after_directly_from_database('entire_world', lat, lon, branch, 'master', 5..10, image_size, description)
+      before_after_directly_from_database('entire_world', lat, lon, branch, base_branch, z_levels, image_size, description)
     end
   end
+end
+
+def test_placename(branch, z_levels=4..11)
+  iterate_over(branch, branch, z_levels)
+  iterate_over(branch, 'master', z_levels)
 end
 
 def test_710_variants(count = 1)
@@ -46,115 +52,33 @@ def test_710_variants(count = 1)
   end
 end
 
-def watchlist_entries
-  watchlist = []
-  
-  beton_variation = "Beton"
-  tags = { 'surface' => beton_variation}
-  beton_problem = "surface=#{beton_variation}? 'beton' is word for concrete in some languages but not in the English"
-  overpass_code = 'gT2'
-  message = beton_problem +"\n\n" + "See http://overpass-turbo.eu/s/#{overpass_code} for more problems of this type"
-  watchlist << {list: get_list(tags), message: message}
-
-  beton_variation = "beton"
-  tags = { 'surface' => beton_variation}
-  beton_problem = "surface=#{beton_variation}? 'beton' is word for concrete in some languages but not in the English"
-  overpass_code = 'gT4'
-  message = beton_problem +"\n\n" + "See http://overpass-turbo.eu/s/#{overpass_code} for more problems of this type"
-  watchlist << {list: get_list(tags), message: message}
-
-  return watchlist  
-end
-
-def run_watchlist
-  empty = '<?xml version="1.0" encoding="UTF-8"?>
-<osm version="0.6" generator="OpenStreetMap server">
-</osm>'
-
-  puts "plac zabaw: http://overpass-turbo.eu/s/gTo http://overpass-turbo.eu/s/gTs" #more https://github.com/osmlab/name-suggestion-index/blob/master/filter.json https://lists.openstreetmap.org/pipermail/talk/2015-May/072923.html
-
-  watchlist_entries.each do |entry|
-    mentioned = false
-    entry[:list].each do |data|
-      notes = CartoCSSHelper::NotesDownloader.run_note_query(data[:lat], data[:lon], 0.005)
-      if notes.strip == empty
-        if !mentioned
-          puts
-          puts
-          puts entry[:message]
-          mentioned = true
-        end
-        puts "# #{data[:url]}"
-      end
-    end
-  end
-end
-
-def get_query_for_location_and_id(tags)
-  filter = OverpassQueryGenerator.turn_list_of_tags_in_overpass_filter(tags)
-  query = '[timeout:25][out:json];
-(
-  node'+filter+';
-  way'+filter+';
-  relation'+filter+';
-);
-out body;
->;
-out skel qt;'
-  return query
-end
-
-def get_data(required_tags)
-  query = get_query_for_location_and_id(required_tags)
-  json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, "for watchlist")
-  require 'json'
-  obj = JSON.parse(json_string)
-  return obj
-end
-
-def get_node_database(json_obj)
-  locations = {}
-  json_obj["elements"].each do |entry|
-    if entry["type"] == "node"
-      locations[entry["id"]] = entry["lat"].to_f, entry["lon"].to_f
-    end
-  end
-  return locations
-end
-
-def get_list(required_tags)
-  list = []
-  obj = get_data(required_tags)
-
-  locations = get_node_database(obj)
-  elements = obj["elements"]
-
-  elements.each do |entry|
-    tags = entry["tags"]
-    next if tags == nil
-    mismatch = false
-    required_tags.each do |tag|
-      mismatch = true if tags[tag[0]] != tag[1]
-    end
-    next if mismatch == true
-    if entry["type"] == "way"
-      lat, lon = locations[entry["nodes"][0]]
-      url = "https://www.openstreetmap.org/#{entry["type"]}/#{entry["id"]}"
-      list << {lat: lat, lon: lon, url: url}
-    end
-  end
-  return list
-end
-
 module CartoCSSHelper
   def main
-    required_tags = {'surface' => 'beton'}
-    #query = CartoCSSHelper::OverpassQueryGenerator.get_query_to_get_location_set_format(required_tags, 'way', 0, 0, :infinity, '[out:json]')
+    
+    test_placename('wat', 7..12)
+    test_placename('gradual_forest', 6..12)
 
     run_watchlist
+    test_placename('placename_large_way_area')
+
+    test_placename('debug')
+
+    test_placename('spurious')
+    get_single_image_from_database('entire_world', 'spurious', 0, 0, 3, 300)
+    get_single_image_from_database('entire_world', 'master', 0, 0, 3, 300)
+    get_single_image_from_database('entire_world', 'spurious', 0, 0, 2, 300)
+    get_single_image_from_database('entire_world', 'master', 0, 0, 2, 300)
+    
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'pub', 'name' => :any_value }, skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: 'noto_710', from: 'master', zlevels: 16..18, image_size: 700, count: 1)
+
+    bus_guideway_in_tunnel('show_guideway_tunnel')
+
+    final
+
     puts "-----"
-    test_710_variants(1)
     test_alpine_hut
+    test_710_variants(1)
     test_710_variants(10)
     test_710_variants(15)
     test_710_variants(5)
@@ -166,11 +90,9 @@ module CartoCSSHelper
     #test_office(15, 'master')
 		#railway_station_areas_label('area_station')
     missing_labels
-    CartoCSSHelper.add_mapzen_extract('las_vegas', 'las-vegas_nevada')
-    CartoCSSHelper.add_mapzen_extract('ateny', 'athens_greece')
+    #CartoCSSHelper.add_mapzen_extract('las_vegas', 'las-vegas_nevada')
+    #CartoCSSHelper.add_mapzen_extract('ateny', 'athens_greece')
 
-    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'pub', 'name' => :any_value }, skip: 0)
-    diff_on_loaded_database(location_provider: locator, to: 'noto_710', from: 'master', zlevels: 16..18, image_size: 700, count: count)
 
     final
 
@@ -187,7 +109,7 @@ def switch_database
    #switch_databases('gis_test', 'entire_world')
    #final
 
- # switch_databases('gis_test', 'krakow')
+  #switch_databases('gis_test', 'krakow')
   # switch_databases('gis_test', 'new_york')
   #final
 
@@ -322,12 +244,11 @@ end
 
 def waiting_pr
   	obelisk('obelisk')
-    test_xml_low
     test_eternal_710_on_real_data("book_710")
     test_eternal_710_on_real_data("bold_710")
     test_eternal_710_dy("book_710")
     test_eternal_710_dy("bold_710")
-    test_placename('placename_without_dots')
+    buildinglessz12
 end
 
 def subway_service
@@ -399,9 +320,17 @@ def database_cleaning
   reload_databases
 end
 
-# TODO: watchlist
+def bus_guideway_in_tunnel(branch)
+  tags = {'highway' => 'bus_guideway', 'tunnel' => 'yes'}
+  CartoCSSHelper.probe(tags, 'show_guideway_tunnel', 'master', 22..22, ['way'])
+  tags = {'highway' => 'bus_guideway'}
+  CartoCSSHelper.probe(tags, 'show_guideway_tunnel', 'master', 22..22, ['way'])
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tags, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 14..19, image_size: 375, count: 10)
+end
+
+#
 =begin
-rescue todo - watchlist for rare landuse values in Kraków, ; w surface
 http://wiki.openstreetmap.org/wiki/Tag%3Alanduse%3Ddepot - update
 http://overpass-turbo.eu/s/aJA access=public eliminator
     #http://overpass-turbo.eu/s/aJm - reduce impact before rendering proposal
