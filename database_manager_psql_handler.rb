@@ -3,9 +3,9 @@ module CartoCSSHelper
   def create_new_gis_database(name)
     puts "Creating gis database <#{name}>"
     command = "createdb #{name}"
-    system command
+    execute_command command
     command = "psql -d #{name} -c 'CREATE EXTENSION hstore; CREATE EXTENSION postgis;'"
-    system command
+    execute_command command
     # TODO: move to execute_command (but add test before that)
   end
 
@@ -14,7 +14,7 @@ module CartoCSSHelper
 alter database #{switched_into_for_gis} rename to gis;
 \\q\" | psql postgres > /dev/null"
     puts "gis -> #{new_name_for_gis}, #{switched_into_for_gis} -> gis"
-    system command
+    execute_command command
     # TODO: move to execute_command (but add test before that)
   end
 
