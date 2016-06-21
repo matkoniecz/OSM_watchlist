@@ -98,6 +98,20 @@ def test_turning_circle(branch, count, zlevels, location_finder_mode = false)
   end
 end
 
+def buildinglessz12
+    puts "bbb"
+    before_after_directly_from_database('entire_world', 50, 20, 'master', 'master', 12..12, 1534, "description")
+    puts
+
+    puts "aaaa"
+    before_after_directly_from_database('entire_world', 50, 20, 'buildingless_z12', 'buildingless_z12', 12..12, 1534, "description")
+    puts
+
+    puts "cccc"
+    before_after_directly_from_database('entire_world', 50, 20, 'buildingless_z12', 'master', 11..13, 661, "description")
+    puts
+end
+
 def test_eternal_710_on_real_data(branch)
   #tourism_theme_park tourism_zoo are special
   werebold_710.each do |tag|
