@@ -1,5 +1,5 @@
 def gather_data(branch, sample, filename)
-	Dir.chdir(Configuration.get_path_to_tilemill_project_folder) do
+	Dir.chdir(Configuration.get_path_to_cartocss_project_folder) do
 		Git.checkout(branch)
 		command = "carto -b project.mml 2>&1"
 		filters = " | egrep -B1 'Inheritance time: ' | sed -e 's/processing layer: //g' | sed -e 's/Inheritance time://g' "

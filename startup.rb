@@ -11,10 +11,12 @@ def destination_of_frozen_copy(project)
 end
 
 def create_frozen_copy(project)
+  puts "copy start"
   source = get_project_location(project)
   destination = destination_of_frozen_copy(project)
   FileUtils.remove_entry destination, true
   FileUtils.copy_entry source, destination, false, false, true
+  puts "copy end"
 end
 
 def execute_and_expect_no_output(command)
@@ -25,7 +27,7 @@ def execute_and_expect_no_output(command)
 end
 
 def with_uncommitted_changes
-  Dir.chdir(CartoCSSHelper::Configuration.get_path_to_tilemill_project_folder) do
+  Dir.chdir(CartoCSSHelper::Configuration.get_path_to_cartocss_project_folder) do
     system 'git stash > /dev/null'
     command = 'git diff @'
     return execute_and_expect_no_output(command)
@@ -49,9 +51,9 @@ def working_on_wrong_database
   return false
 end
 
-def set_paths(tilemill_project_location)
+def set_paths(cartocss_project_location)
   CartoCSSHelper::Configuration.set_style_specific_data(CartoCSSHelper::StyleDataForDefaultOSM.get_style_data)
-  CartoCSSHelper::Configuration.set_path_to_tilemill_project_folder(tilemill_project_location)
+  CartoCSSHelper::Configuration.set_path_to_cartocss_project_folder(cartocss_project_location)
   CartoCSSHelper::Configuration.set_path_to_folder_for_output(File.join(ENV['HOME'], 'Documents', 'OSM', 'CartoCSSHelper-output', ''))
   CartoCSSHelper::Configuration.set_path_to_folder_for_cache(File.join(ENV['HOME'], 'Documents', 'OSM', 'CartoCSSHelper-tmp', ''))
 end
