@@ -16,7 +16,7 @@ def generate_files_for_style_animation_for_given_revision(revision, r)
 end
 
 def get_all_revisions(_branch)
-  Dir.chdir(Configuration.get_path_to_tilemill_project_folder) do
+  Dir.chdir(Configuration.get_path_to_cartocss_project_folder) do
     revisions = execute_command("git rev-list master", true)
     revisions = revisions.split("\n").reverse
     return revisions

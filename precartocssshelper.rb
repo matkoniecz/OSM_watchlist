@@ -54,13 +54,11 @@ module CartoCSSHelper
   def make_image_from_loaded_database(branch, latitude, longitude, zlevel, image_size, header = '')
     CartoCSSHelper::Git.checkout(branch)
     render_bbox_size = VisualDiff.get_render_bbox_size(zlevel, image_size, latitude)
-    cache_folder = CartoCSSHelper::Configuration.get_path_to_folder_for_branch_specific_cache
     get_timestamp = '<<<manual file generation>>>'
-    cache_filename = (cache_folder + "#{latitude} #{longitude} #{zlevel}zlevel #{image_size}px #{get_timestamp} #{render_bbox_size}.png").to_s
-    unless File.exist?(cache_filename)
-      TilemillHandler.run_tilemill_export_image(latitude, longitude, zlevel, render_bbox_size, image_size, cache_filename)
-    end
-    return cache_filename
+    cache_filename = "#{latitude} #{longitude} #{zlevel}zlevel #{image_size}px #{get_timestamp} #{render_bbox_size}.png"
+    cache_location = RendererHandler.request_image_from_renderer(latitude, longitude, zlevel, render_bbox_size, image_size, cache_filename)
+    puts cache_location
+    return cache_location
   end
 
   def get_single_image_from_database(database_name, branch, latitude, longitude, zlevel, image_size, header = '')
@@ -69,17 +67,17 @@ module CartoCSSHelper
     zlevel_text = "0#{zlevel}" if zlevel < 10
     header = branch if header == ''
     header += ' '
-    cache_filename = make_image_from_loaded_database(branch, latitude, longitude, zlevel, image_size)
+    cache_location = make_image_from_loaded_database(branch, latitude, longitude, zlevel, image_size)
     output_filename = CartoCSSHelper::Configuration.get_path_to_folder_for_output + "#{header} [#{latitude}, #{longitude}] z#{zlevel_text} #{image_size}px #{CartoCSSHelper::Git.get_commit_hash} #{image_size}px.png"
-    FileUtils.copy_entry cache_filename, output_filename, false, false, true
+    FileUtils.copy_entry cache_location, output_filename, false, false, true
     switch_databases(database_name, 'gis_test')
   end
 
   def x(branch, latitude, longitude, zlevels = 7..18, image_size = 550)
     collection = []
     zlevels.each do |zlevel|
-      cache_filename = make_image_from_loaded_database(branch, latitude, longitude, zlevel, image_size, branch)
-      collection.push(ImageForComparison.new(cache_filename, "z#{zlevel}"))
+      cache_location = make_image_from_loaded_database(branch, latitude, longitude, zlevel, image_size, branch)
+      collection.push(ImageForComparison.new(cache_location, "z#{zlevel}"))
     end
     return collection
   end

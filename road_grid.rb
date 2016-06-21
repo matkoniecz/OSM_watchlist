@@ -4,7 +4,7 @@ require_relative '../CartoCSSHelper/lib/cartocss_helper'
 require_relative '../CartoCSSHelper/lib/cartocss_helper/configuration'
 require_relative '../CartoCSSHelper/lib/cartocss_helper/visualise_changes_image_generation'
 require_relative '../CartoCSSHelper/lib/cartocss_helper/util/filehelper'
-# include CartoCSSHelper::TilemillHandler
+# include CartoCSSHelper::RendererHandler
 
 module CartoCSSHelper
   class Grid
@@ -38,12 +38,10 @@ module CartoCSSHelper
       data_hash = Digest::SHA1.hexdigest(data)
       output_filename = Configuration.get_path_to_folder_for_output + "road grid #{new_branch} #{zlevel_text} #{Git.get_commit_hash} #{header}.png"
       cache_filename = Configuration.get_path_to_folder_for_branch_specific_cache + "road grid v8 #{zlevel_text} #{data_hash}.png"
-      unless File.exist?(cache_filename)
-        image_size = 3000
-        render_bbox_size = VisualDiff.get_render_bbox_size(zlevel, image_size, @lat)
-        TilemillHandler.run_tilemill_export_image(@lat, @lon, zlevel, render_bbox_size, image_size, cache_filename, debug)
-      end
-      FileUtils.copy_entry cache_filename, output_filename, false, false, true
+      image_size = 3000
+      render_bbox_size = VisualDiff.get_render_bbox_size(zlevel, image_size, @lat)
+      cache_location = RendererHandler.request_image_from_renderer(@lat, @lon, zlevel, render_bbox_size, image_size, cache_filename, debug)
+      FileUtils.copy_entry cache_location, output_filename, false, false, true
     end
 
     def add_ways(way_tag_list)

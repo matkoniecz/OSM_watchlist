@@ -6,7 +6,7 @@ require_relative 'watchlist.rb'
 include CartoCSSHelper
 
 def make_copy_of_repository
-  true # true #false
+  false # true #false
 end
 
 def iterate_over(branch, base_branch, z_levels)
@@ -54,12 +54,17 @@ end
 
 module CartoCSSHelper
   def main
-    
-    test_placename('wat', 7..12)
-    test_placename('gradual_forest', 6..12)
+    CartoCSSHelper::Configuration.set_renderer(:kosmtik)
+    bus_guideway_in_tunnel('show_guideway_tunnel')
+    CartoCSSHelper::Configuration.set_renderer(:tilemill)
+    bus_guideway_in_tunnel('show_guideway_tunnel')
 
     run_watchlist
     test_placename('placename_large_way_area')
+
+    test_placename('wat', 7..12)
+    test_placename('gradual_forest', 6..12)
+
 
     test_placename('debug')
 
@@ -72,7 +77,6 @@ module CartoCSSHelper
     locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'pub', 'name' => :any_value }, skip: 0)
     diff_on_loaded_database(location_provider: locator, to: 'noto_710', from: 'master', zlevels: 16..18, image_size: 700, count: 1)
 
-    bus_guideway_in_tunnel('show_guideway_tunnel')
 
     final
 

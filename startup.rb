@@ -56,6 +56,7 @@ def set_paths(cartocss_project_location)
   CartoCSSHelper::Configuration.set_path_to_cartocss_project_folder(cartocss_project_location)
   CartoCSSHelper::Configuration.set_path_to_folder_for_output(File.join(ENV['HOME'], 'Documents', 'OSM', 'CartoCSSHelper-output', ''))
   CartoCSSHelper::Configuration.set_path_to_folder_for_cache(File.join(ENV['HOME'], 'Documents', 'OSM', 'CartoCSSHelper-tmp', ''))
+  CartoCSSHelper::Configuration.set_path_to_kosmtik(File.join(ENV['HOME'], 'Documents', 'Desktop', 'kosmtik', ''))
 end
 
 def warn_about_live_git_repository
