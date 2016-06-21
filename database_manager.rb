@@ -57,6 +57,8 @@ module CartoCSSHelper
       { database_name: 'tokyo', mapzen_name: 'tokyo_japan' },
       { database_name: 'abuja_nigeria', mapzen_name: 'abuja_nigeria' },
       { database_name: 'accra_ghana', mapzen_name: 'accra_ghana' },
+      { database_name: 'las_vegas', mapzen_name: 'athens_greece' },
+      { database_name: 'ateny', mapzen_name: 'las-vegas_nevada' },
       # {:database_name => 'new_york', :mapzen_name =>'new-york_new-york'},
       # {:database_name => 'warsaw', :mapzen_name =>'warsaw_poland'},
     ]
