@@ -104,3 +104,19 @@ def load_remote_file(url, clear_cache = False)
   scene = CartoCSSHelper::VisualDiff::FileDataSource.new(nil, nil, 0.3, filename)
   scene.load
 end
+
+def iterate_over(branch, base_branch, z_levels, coords)
+  coords.each do |coord|
+    lat, lon ,name = coord
+    [750].each do |image_size|
+      z_levels.reverse_each do |z|
+        puts z
+        get_single_image_from_database('entire_world', branch, lat, lon, z, image_size)
+        get_single_image_from_database('entire_world', base_branch, lat, lon, z, image_size) if base_branch != branch
+      end
+      description = "#on entire_world [#{lat}, #{lon}]"
+      before_after_directly_from_database('entire_world', lat, lon, branch, base_branch, z_levels, image_size, description)
+    end
+  end
+end
+

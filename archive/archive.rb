@@ -1,4 +1,22 @@
 # frozen_string_literal: true
+
+def missing_labels(branch='v2.31.0', old_branch='v2.30.0')
+  # missing name - see https://github.com/gravitystorm/openstreetmap-carto/issues/1797
+  tags = [
+    { 'natural' => 'peak', 'ele' => '4' }, 
+    { 'natural' => 'volcano', 'ele' => '4' }, 
+    { 'natural' => 'saddle', 'ele' => '4' }, 
+    { 'tourism' => 'alpine_hut', 'ele' => '4' }, 
+    { 'aeroway' => 'gate', 'ref' => '4' },
+  ]
+  tags.each do |tag|
+    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test(tag, 'node', false, 22..22, branch, old_branch) # 20, 27, 29, 30 - 31 34
+  end
+  tags.each do |tag|
+    CartoCSSHelper.probe(tag, branch, old_branch)
+  end
+end
+
 def test_kocio_parking_pr
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'parking' }, skip: 0)
   diff_on_loaded_database(location_provider: locator, to: 'kocio/parking-size', from: 'master', zlevels: 16..18, image_size: 375, count: 10)
@@ -17,6 +35,15 @@ def all_roads
     locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'highway' => tag, }, skip: 0)
     diff_on_loaded_database(location_provider: locator, to: 'pnorman/road_reformat', from: 'v2.38.0', zlevels: 10..19, image_size: 375, count: 1)
   end
+end
+
+def bus_guideway_in_tunnel(branch)
+  tags = {'highway' => 'bus_guideway', 'tunnel' => 'yes'}
+  CartoCSSHelper.probe(tags, 'show_guideway_tunnel', 'master', 22..22, ['way'])
+  tags = {'highway' => 'bus_guideway'}
+  CartoCSSHelper.probe(tags, 'show_guideway_tunnel', 'master', 22..22, ['way'])
+  locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tags, skip: 0)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 14..19, image_size: 375, count: 10)
 end
 
 def barrier_names(branch, n)
