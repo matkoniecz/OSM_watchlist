@@ -205,7 +205,7 @@ end
 
 def test_unpaved(tested_branch, base_branch = 'master', zlevels = 16..16)
   gsoc_places_unpaved(tested_branch, base_branch)
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'surface' => 'unpaved', 'highway' => 'primary', 'access' => 'destination' }, 'way', false, zlevels, tested_branch, base_branch)
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'surface' => 'unpaved', 'highway' => 'primary', 'access' => 'destination' }, 'way', false, zlevels, tested_branch, base_branch)
 
   CartoCSSHelper.test_tag_on_real_data_for_this_type({ 'surface' => 'unpaved' }, tested_branch, base_branch, zlevels, 'way')
   CartoCSSHelper.test_tag_on_real_data_for_this_type({ 'surface' => 'unpaved', 'highway' => 'residential' }, tested_branch, base_branch, zlevels, 'way')
@@ -218,7 +218,7 @@ def test_unpaved(tested_branch, base_branch = 'master', zlevels = 16..16)
     CartoCSSHelper.test_tag_on_real_data_for_this_type({ 'surface' => 'unpaved', 'highway' => highway_value, 'access' => 'destination' }, tested_branch, base_branch, zlevels, 'way')
     # CartoCSSHelper.test_tag_on_real_data_for_this_type({'surface' => 'unpaved', 'highway'=> highway_value, 'access'=> 'no'}, tested_branch, base_branch, zlevels, 'way')
   end
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'surface' => 'unpaved', 'highway' => 'primary' }, 'way', false, zlevels, tested_branch, base_branch)
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'surface' => 'unpaved', 'highway' => 'primary' }, 'way', false, zlevels, tested_branch, base_branch)
   CartoCSSHelper.visualise_place_by_file('test-clean.osm', 50.08690, 19.80704, zlevels, tested_branch, base_branch, 'testowy plik na bazie węzła balickiego')
 end
 

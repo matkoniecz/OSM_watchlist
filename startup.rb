@@ -56,7 +56,7 @@ def set_paths(cartocss_project_location)
   CartoCSSHelper::Configuration.set_path_to_cartocss_project_folder(cartocss_project_location)
   CartoCSSHelper::Configuration.set_path_to_folder_for_output(File.join(ENV['HOME'], 'Documents', 'OSM', 'CartoCSSHelper-output', ''))
   CartoCSSHelper::Configuration.set_path_to_folder_for_cache(File.join(ENV['HOME'], 'Documents', 'OSM', 'CartoCSSHelper-tmp', ''))
-  #CartoCSSHelper::Configuration.set_path_to_kosmtik(File.join(ENV['HOME'], 'Desktop', 'kosmtik', ''))
+  CartoCSSHelper::Configuration.set_path_to_kosmtik(File.join(ENV['HOME'], 'Desktop', 'kosmtik', ''))
 end
 
 def warn_about_live_git_repository
@@ -87,4 +87,43 @@ def init(create_copy = true)
 
   raise 'uncommitted changes in project' if with_uncommitted_changes
   CartoCSSHelper::OverpassQueryGenerator.check_for_free_space
+end
+
+def final
+  CartoCSSHelper::VisualDiff.run_jobs
+  notify_spam 'Everything computed!'
+  exit
+end
+
+def get_minutes_spend_on(start, finish)
+  return nil if finish.nil?
+  return nil if start.nil?
+  return (finish - start).to_i / 60
+end
+
+def encoutered_exception(e, start_time, load_end, end_time)
+  puts e.class
+  puts e
+  puts
+  puts e.backtrace
+  min_of_loading = get_minutes_spend_on(start_time, load_end)
+  min_of_work = get_minutes_spend_on(load_end, end_time)
+  min_of_errors = get_minutes_spend_on(end_time, Time.now)
+  notify "Crash during map generation! (after #{min_of_work} min of work and #{min_of_errors} min of errors with #{min_of_loading} min of loading before)"
+  sleep 10
+end
+
+def run_and_report_the_end
+  start_time = Time.now
+  begin
+    # verify
+    switch_database
+    init(make_copy_of_repository) # frozen copy making
+    # CartoCSSHelper::Configuration.set_known_alternative_overpass_url
+    load_end = Time.now
+    main
+  rescue => e
+    end_time = Time.now
+    encoutered_exception(e, start_time, load_end, end_time) while true
+  end
 end

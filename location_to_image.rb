@@ -34,7 +34,7 @@ module CartoCSSHelper
         latitude, longitude = locator.next
         puts latitude, longitude
         description = "#{location_provider.description} on overpass data [#{latitude}, #{longitude}]"
-        VisualDiff.visualise_changes_for_location(latitude, longitude, zlevels, description, to, from, 0.4, image_size)
+        VisualDiff.visualise_for_location(latitude, longitude, zlevels, description, to, from, 0.4, image_size)
       end
     rescue StopIteration
       puts "Supply of places in the database exhausted for <#{location_provider.description}>"

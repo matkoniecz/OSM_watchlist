@@ -16,16 +16,16 @@
 # }
 
 def test_viewpoint
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'tourism' => 'viewpoint', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ' }, 'closed_way', false, 12..22, 'viewpoint', 'master')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'tourism' => 'viewpoint', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ' }, 'closed_way', false, 12..22, 'viewpoint', 'master')
   before_after_from_loaded_databases({ 'tourism' => 'viewpoint', 'name' => :any_value }, 'viewpoint', 'master', 18..18, 350, 5, 0)
   # missing label
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'tourism' => 'viewpoint', 'name' => 'a' }, 'closed_way', false, 22..22, 'viewpoint', '41714f1')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'tourism' => 'viewpoint', 'name' => 'a' }, 'closed_way', false, 22..22, 'viewpoint', '41714f1')
 
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'tourism' => 'attraction', 'name' => 'a' }, 'closed_way', false, 22..22, 'viewpoint', 'master')
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'tourism' => 'viewpoint', 'name' => 'a' }, 'closed_way', false, 22..22, 'viewpoint', 'master')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'tourism' => 'attraction', 'name' => 'a' }, 'closed_way', false, 22..22, 'viewpoint', 'master')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'tourism' => 'viewpoint', 'name' => 'a' }, 'closed_way', false, 22..22, 'viewpoint', 'master')
 
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'tourism' => 'attraction', 'name' => 'a' }, 'closed_way', false, 22..22, 'test1', 'master')
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'tourism' => 'viewpoint', 'name' => 'a' }, 'closed_way', false, 22..22, 'test1', 'master')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'tourism' => 'attraction', 'name' => 'a' }, 'closed_way', false, 22..22, 'test1', 'master')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'tourism' => 'viewpoint', 'name' => 'a' }, 'closed_way', false, 22..22, 'test1', 'master')
 end
 
 def test_rail_pr
@@ -37,9 +37,9 @@ def test_rail_pr
 end
 
 def test_eternal_710_text_resize
-  # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'amenity' => 'bicycle_parking'}.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'closed_way', false, 22..22, 'eternal_710', 'master')
-  # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'amenity' => 'parking'}.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'closed_way', false, 22..22, 'eternal_710', 'master')
-  # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'amenity' => 'motorcycle_parking'}.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'closed_way', false, 22..22, 'eternal_710', 'master')
+  # CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({'amenity' => 'bicycle_parking'}.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'closed_way', false, 22..22, 'eternal_710', 'master')
+  # CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({'amenity' => 'parking'}.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'closed_way', false, 22..22, 'eternal_710', 'master')
+  # CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({'amenity' => 'motorcycle_parking'}.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'closed_way', false, 22..22, 'eternal_710', 'master')
   # before_after_from_loaded_databases({'amenity'=>'hospital', 'name' => :any_value}, 'eternal_710', 'master', 18..18, 1000, 5, 0)
   # before_after_from_loaded_databases({'highway' => 'pedestrian', 'area'=>'yes', 'name' => :any_value}, 'eternal_710', 'master', 18..18, 1000, 5, 0)
   affected = [
@@ -102,7 +102,7 @@ def test_eternal_710_text_resize
   affected.each do |_tag|
     # active =true if (tag == {'amenity' => 'car_wash'})
     # next unless active
-    # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test(tag.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'node', false, 22..22, 'eternal_710', 'master')
+    # CartoCSSHelper::VisualDiff.visualise_on_synthethic_data(tag.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'node', false, 22..22, 'eternal_710', 'master')
   end
   affected.each do |tag|
     before_after_from_loaded_databases(tag.merge({ 'name' => :any_value }), 'eternal_710', 'master', 16..18, 300, 1, 5)
@@ -742,17 +742,17 @@ def various_from_gsoc
   CartoCSSHelper.test_tag_on_real_data ({ 'railway' => 'tram', 'service' => 'yard' }), 'tram-service', 'master', 12..19, ['way'], 10, 0
   CartoCSSHelper.test ({ 'railway' => 'tram', 'service' => 'yard' }), 'tram-service', 'master'
 
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'highway' => 'service' }, 'way', false, z, 'gsoc', 'c9af9f7')
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'highway' => 'road' }, 'way', false, z, 'gsoc', 'c9af9f7')
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'highway' => 'service', 'service' => 'parking_aisle' }, 'way', false, z, 'gsoc', 'c9af9f7')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'highway' => 'service' }, 'way', false, z, 'gsoc', 'c9af9f7')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'highway' => 'road' }, 'way', false, z, 'gsoc', 'c9af9f7')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'highway' => 'service', 'service' => 'parking_aisle' }, 'way', false, z, 'gsoc', 'c9af9f7')
 
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'highway' => 'service', 'access' => 'private' }, 'way', false, z, 'gsoc', 'c9af9f7')
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'highway' => 'road', 'access' => 'private' }, 'way', false, z, 'gsoc', 'c9af9f7')
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'highway' => 'service', 'service' => 'parking_aisle', 'access' => 'private' }, 'way', false, z, 'gsoc', 'c9af9f7')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'highway' => 'service', 'access' => 'private' }, 'way', false, z, 'gsoc', 'c9af9f7')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'highway' => 'road', 'access' => 'private' }, 'way', false, z, 'gsoc', 'c9af9f7')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'highway' => 'service', 'service' => 'parking_aisle', 'access' => 'private' }, 'way', false, z, 'gsoc', 'c9af9f7')
 
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'highway' => 'service', 'access' => 'destination' }, 'way', false, z, 'gsoc', 'c9af9f7')
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'highway' => 'road', 'access' => 'destination' }, 'way', false, z, 'gsoc', 'c9af9f7')
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'highway' => 'service', 'service' => 'parking_aisle', 'access' => 'destination' }, 'way', false, z, 'gsoc', 'c9af9f7')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'highway' => 'service', 'access' => 'destination' }, 'way', false, z, 'gsoc', 'c9af9f7')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'highway' => 'road', 'access' => 'destination' }, 'way', false, z, 'gsoc', 'c9af9f7')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'highway' => 'service', 'service' => 'parking_aisle', 'access' => 'destination' }, 'way', false, z, 'gsoc', 'c9af9f7')
   final
 
   CartoCSSHelper.probe ({ 'railway' => 'rail' }), 'sql-rail', 'master'
@@ -823,8 +823,8 @@ def test_cross_pr
   ]
   urls.each do |url|
     latitude, longitude = CartoCSSHelper.get_latitude_longitude_from_url(url)
-    CartoCSSHelper::VisualDiff.visualise_changes_on_real_data({ 'historic' => 'wayside_cross' }, 'node', latitude, longitude, 10..19, to, 'master')
-    CartoCSSHelper::VisualDiff.visualise_changes_on_real_data({ 'man_made' => 'cross' }, 'node', latitude, longitude, 10..19, to, 'master')
+    CartoCSSHelper::VisualDiff.visualise_on_overpass_data({ 'historic' => 'wayside_cross' }, 'node', latitude, longitude, 10..19, to, 'master')
+    CartoCSSHelper::VisualDiff.visualise_on_overpass_data({ 'man_made' => 'cross' }, 'node', latitude, longitude, 10..19, to, 'master')
   end
   megatest({ 'historic' => 'wayside_cross' }, to, 14..19, ['node'])
   megatest({ 'man_made' => 'cross' }, to, 14..19, ['node'])
@@ -880,8 +880,8 @@ def test_uni_pr
 end
 
 def old
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'highway' => 'living_street' }, 'closed_way', false, 16..16, 'new-road-style', 'new-road-style')
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'highway' => 'living_street', 'area' => 'yes' }, 'closed_way', false, 16..16, 'new-road-style', 'new-road-style')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'highway' => 'living_street' }, 'closed_way', false, 16..16, 'new-road-style', 'new-road-style')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'highway' => 'living_street', 'area' => 'yes' }, 'closed_way', false, 16..16, 'new-road-style', 'new-road-style')
   to = from = branch = 'new-road-style-z16' # 'wat'
 
   bridge = { 'highway' => 'trunk', 'bridge' => 'yes' }

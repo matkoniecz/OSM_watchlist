@@ -74,6 +74,10 @@ module CartoCSSHelper
   end
 
   def x(branch, latitude, longitude, zlevels = 7..18, image_size = 550)
+    raise 'renamed'
+  end
+
+  def collect_images(branch, latitude, longitude, zlevels = 7..18, image_size = 550)
     collection = []
     zlevels.each do |zlevel|
       cache_location = make_image_from_loaded_database(branch, latitude, longitude, zlevel, image_size, branch)
@@ -83,9 +87,9 @@ module CartoCSSHelper
   end
 
   def before_after_from_loaded_database(latitude, longitude, to, from, zlevels, image_size, header)
-    to_images = x(to, latitude, longitude, zlevels, image_size)
-    from_images = x(from, latitude, longitude, zlevels, image_size)
-    VisualDiff.pack_image_sets from_images, to_images, header + " #{zlevels}", to, from, image_size
+    to_images = collect_images(to, latitude, longitude, zlevels, image_size)
+    from_images = collect_images(from, latitude, longitude, zlevels, image_size)
+    VisualDiff.pack_image_sets(from_images, to_images, header + " #{zlevels}", to, from, image_size)
   end
 
   def before_after_directly_from_database(database_name, latitude, longitude, to, from, zlevels, image_size, header = nil)
@@ -105,10 +109,10 @@ def load_remote_file(url, clear_cache = False)
   scene.load
 end
 
-def iterate_over(branch, base_branch, z_levels, coords)
+def iterate_over(branch, base_branch, z_levels, coords, size: 750)
   coords.each do |coord|
-    lat, lon ,name = coord
-    [750].each do |image_size|
+    lat, lon, name = coord
+    [size].each do |image_size|
       z_levels.reverse_each do |z|
         puts z
         get_single_image_from_database('entire_world', branch, lat, lon, z, image_size)
@@ -119,4 +123,3 @@ def iterate_over(branch, base_branch, z_levels, coords)
     end
   end
 end
-

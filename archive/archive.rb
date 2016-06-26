@@ -1,16 +1,56 @@
 # frozen_string_literal: true
 
-def missing_labels(branch='v2.31.0', old_branch='v2.30.0')
+def different_renderers
+  CartoCSSHelper::Configuration.set_renderer(:kosmtik)
+  CartoCSSHelper::Configuration.set_mapnik_reference_version_override('3.0.0')
+  iterate_over('preempt_mapnik3', 'master', 8..8, [[50, 20]])
+
+  CartoCSSHelper::Configuration.set_renderer(:kosmtik)
+  CartoCSSHelper::Configuration.set_mapnik_reference_version_override('2.2.0')
+  iterate_over('preempt_mapnik3', 'master', 8..8, [[50, 20]])
+
+  CartoCSSHelper::Configuration.set_renderer(:tilemill)
+  CartoCSSHelper::Configuration.set_mapnik_reference_version_override(nil)
+  iterate_over('preempt_mapnik3', 'master', 8..8, [[50, 20]])
+
+  CartoCSSHelper::Configuration.set_renderer(:kosmtik)
+  CartoCSSHelper::Configuration.set_mapnik_reference_version_override('3.0.0')
+  test_spurious
+
+  CartoCSSHelper::Configuration.set_renderer(:kosmtik)
+  CartoCSSHelper::Configuration.set_mapnik_reference_version_override('2.2.0')
+  test_spurious
+end
+
+def test_spurious_12_plus(count)
+  places = ['city', 'town', 'suburb', 'village', 'hamlet', 'neighbourhood', 'locality', 'isolated_dwelling', 'farm']
+  places.each do |place|
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'place' => place, 'name' => :any_value }, types: ['node'], skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: 'spurious', from: 'master', zlevels: 12..17, image_size: 700, count: count)
+  end
+end
+
+def test_spurious
+  test_placename('spurious', 4..11)
+  test_spurious_12_plus(2)
+  # test_spurious_12_plus(4)
+  get_single_image_from_database('entire_world', 'spurious', 0, 0, 3, 300)
+  get_single_image_from_database('entire_world', 'master', 0, 0, 3, 300)
+  get_single_image_from_database('entire_world', 'spurious', 0, 0, 2, 300)
+  get_single_image_from_database('entire_world', 'master', 0, 0, 2, 300)
+end
+
+def missing_labels(branch = 'v2.31.0', old_branch = 'v2.30.0')
   # missing name - see https://github.com/gravitystorm/openstreetmap-carto/issues/1797
   tags = [
-    { 'natural' => 'peak', 'ele' => '4' }, 
-    { 'natural' => 'volcano', 'ele' => '4' }, 
-    { 'natural' => 'saddle', 'ele' => '4' }, 
-    { 'tourism' => 'alpine_hut', 'ele' => '4' }, 
+    { 'natural' => 'peak', 'ele' => '4' },
+    { 'natural' => 'volcano', 'ele' => '4' },
+    { 'natural' => 'saddle', 'ele' => '4' },
+    { 'tourism' => 'alpine_hut', 'ele' => '4' },
     { 'aeroway' => 'gate', 'ref' => '4' },
   ]
   tags.each do |tag|
-    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test(tag, 'node', false, 22..22, branch, old_branch) # 20, 27, 29, 30 - 31 34
+    CartoCSSHelper::VisualDiff.visualise_on_synthethic_data(tag, 'node', false, 22..22, branch, old_branch) # 20, 27, 29, 30 - 31 34
   end
   tags.each do |tag|
     CartoCSSHelper.probe(tag, branch, old_branch)
@@ -21,7 +61,6 @@ def test_kocio_parking_pr
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'parking' }, skip: 0)
   diff_on_loaded_database(location_provider: locator, to: 'kocio/parking-size', from: 'master', zlevels: 16..18, image_size: 375, count: 10)
 end
-
 
 def test_low
   lat = 51.01155
@@ -38,9 +77,9 @@ def all_roads
 end
 
 def bus_guideway_in_tunnel(branch)
-  tags = {'highway' => 'bus_guideway', 'tunnel' => 'yes'}
+  tags = { 'highway' => 'bus_guideway', 'tunnel' => 'yes' }
   CartoCSSHelper.probe(tags, 'show_guideway_tunnel', 'master', 22..22, ['way'])
-  tags = {'highway' => 'bus_guideway'}
+  tags = { 'highway' => 'bus_guideway' }
   CartoCSSHelper.probe(tags, 'show_guideway_tunnel', 'master', 22..22, ['way'])
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tags, skip: 0)
   diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 14..19, image_size: 375, count: 10)
@@ -84,7 +123,7 @@ def barrier_names(branch, n)
 end
 
 def obelisk(branch)
-  #https://github.com/gravitystorm/openstreetmap-carto/issues/2126
+  # https://github.com/gravitystorm/openstreetmap-carto/issues/2126
 
   CartoCSSHelper.probe({ 'historic' => 'monument' }, branch, 'master')
   CartoCSSHelper.probe({ 'man_made' => 'obelisk' }, branch, 'master')
@@ -126,21 +165,21 @@ def test_turning_circle(branch, count, zlevels, location_finder_mode = false)
 end
 
 def buildinglessz12
-    puts "bbb"
-    before_after_directly_from_database('entire_world', 50, 20, 'master', 'master', 12..12, 1534, "description")
-    puts
+  puts "bbb"
+  before_after_directly_from_database('entire_world', 50, 20, 'master', 'master', 12..12, 1534, "description")
+  puts
 
-    puts "aaaa"
-    before_after_directly_from_database('entire_world', 50, 20, 'buildingless_z12', 'buildingless_z12', 12..12, 1534, "description")
-    puts
+  puts "aaaa"
+  before_after_directly_from_database('entire_world', 50, 20, 'buildingless_z12', 'buildingless_z12', 12..12, 1534, "description")
+  puts
 
-    puts "cccc"
-    before_after_directly_from_database('entire_world', 50, 20, 'buildingless_z12', 'master', 11..13, 661, "description")
-    puts
+  puts "cccc"
+  before_after_directly_from_database('entire_world', 50, 20, 'buildingless_z12', 'master', 11..13, 661, "description")
+  puts
 end
 
 def test_eternal_710_on_real_data(branch)
-  #tourism_theme_park tourism_zoo are special
+  # tourism_theme_park tourism_zoo are special
   werebold_710.each do |tag|
     locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag.merge({ 'name' => :any_value }), skip: 0)
     diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: 16..18, image_size: 700, count: 1)
@@ -153,31 +192,31 @@ end
 
 def test_eternal_710_dy(branch)
   tags_for_710.each do |tag|
-    CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test(tag.merge({'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}), 'node', false, 22..22, branch, branch)
+    CartoCSSHelper::VisualDiff.visualise_on_synthethic_data(tag.merge({ 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ' }), 'node', false, 22..22, branch, branch)
   end
 end
 
 def werebold_710
   [
     { 'amenity' => 'pub' },
-    { 'amenity' => 'restaurant'},
-    { 'amenity' => 'food_court'},
-    { 'amenity' => 'cafe'},
-    { 'amenity' => 'fast_food'},
-    { 'amenity' => 'biergarten'},
-    { 'amenity' => 'bar'},
-    { 'amenity' => 'ice_cream'},
-    { 'amenity' => 'nightclub'},
-    { 'amenity' => 'library'},
-    { 'tourism' => 'museum'},
-    { 'amenity' => 'theatre'},
-    { 'amenity' => 'courthouse'},
-    { 'amenity' => 'townhall'},
-    { 'amenity' => 'cinema'},
- ]
+    { 'amenity' => 'restaurant' },
+    { 'amenity' => 'food_court' },
+    { 'amenity' => 'cafe' },
+    { 'amenity' => 'fast_food' },
+    { 'amenity' => 'biergarten' },
+    { 'amenity' => 'bar' },
+    { 'amenity' => 'ice_cream' },
+    { 'amenity' => 'nightclub' },
+    { 'amenity' => 'library' },
+    { 'tourism' => 'museum' },
+    { 'amenity' => 'theatre' },
+    { 'amenity' => 'courthouse' },
+    { 'amenity' => 'townhall' },
+    { 'amenity' => 'cinema' },
+  ]
 end
 
-def tags_for_710 ()
+def tags_for_710
   [
     # was 11
     { 'leisure' => 'miniature_golf' },
@@ -273,7 +312,7 @@ end
 #=============
 
 def test_library_book_shop_prs
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'shop' => 'books', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ' }, 'node', false, 22..22, 'also_shop', 'master')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'shop' => 'books', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ' }, 'node', false, 22..22, 'also_shop', 'master')
   n = 6
   skip = 3
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'shop' => 'books' }, skip: skip)
@@ -288,19 +327,19 @@ def show_road_grid
 end
 
 def test_fishmonger
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'shop' => 'fishmonger', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ' }, 'node', false, 22..22, 'fishmonger', 'master')
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'shop' => 'seafood', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ' }, 'node', false, 22..22, 'fishmonger', 'master')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'shop' => 'fishmonger', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ' }, 'node', false, 22..22, 'fishmonger', 'master')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'shop' => 'seafood', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ' }, 'node', false, 22..22, 'fishmonger', 'master')
   before_after_from_loaded_databases({ 'shop' => 'fishmonger' }, 'fishmonger', 'master', 17..18, 300, 1, 8)
-  # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'shop' => 'seafood', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}, 'node', false, 22..22, 'drop-fishmonger', 'master')
+  # CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({'shop' => 'seafood', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}, 'node', false, 22..22, 'drop-fishmonger', 'master')
   # before_after_from_loaded_databases({'shop' => 'seafood'}, 'drop-fishmonger', 'master', 17..18, 300, 2, 8)
 
-  # CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({'shop' => 'fishmonger', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}, 'node', false, 22..22, 'fishmonger', 'master')
+  # CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({'shop' => 'fishmonger', 'name' => 'ÉÉÉÉÉÉ ÉÉÉÉÉÉ'}, 'node', false, 22..22, 'fishmonger', 'master')
 
   # before_after_from_loaded_databases({'shop' => 'fishmonger'}, 'fishmonger', 'master', 17..18, 300, 2, 8)
 end
 
 def test_forest
-  CartoCSSHelper::VisualDiff.visualise_changes_synthethic_test({ 'natural' => 'valley', 'landuse' => 'forest' }, 'closed_way', false, 22..22, 'forest', 'master')
+  CartoCSSHelper::VisualDiff.visualise_on_synthethic_data({ 'natural' => 'valley', 'landuse' => 'forest' }, 'closed_way', false, 22..22, 'forest', 'master')
 
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'natural' => :any_value, 'landuse' => 'forest' })
   diff_on_loaded_database(location_provider: locator, to: 'forest', from: 'master', zlevels: 15..19, image_size: 375, count: 6)
@@ -365,5 +404,3 @@ def debris
     before_after_from_loaded_databases({ 'highway' => highway, 'ref' => :any_value }, 'nebulon/road-shields', 'master', 13..22, 1000, 5)
   end
 end
-
-
