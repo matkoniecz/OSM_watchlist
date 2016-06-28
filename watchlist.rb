@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 require 'json'
 
-def suspicious_name_watchlist_entry(name)
-  return { list: get_list({ 'name' => name }), message: "name = '#{name}" }
+def suspicious_name_watchlist_entry(name, description=nil)
+  return { list: get_list({ 'name' => name }), message: "name = '#{name}' #{description}" }
 end
 
 def watchlist_entries
@@ -27,8 +27,8 @@ def watchlist_entries
   watchlist << suspicious_name_watchlist_entry('Wiatrak')
   watchlist << suspicious_name_watchlist_entry('plac zabaw')
   watchlist << suspicious_name_watchlist_entry('Plac zabaw')
-  watchlist << suspicious_name_watchlist_entry('Parking')
-  watchlist << suspicious_name_watchlist_entry('parking')
+  watchlist << suspicious_name_watchlist_entry('Parking', 'Is it really parking named parking or is it just a parking?')
+  watchlist << suspicious_name_watchlist_entry('parking', 'Is it really parking named parking or is it just a parking?')
   watchlist << suspicious_name_watchlist_entry('dojazd do przedszkola')
   watchlist << suspicious_name_watchlist_entry('Dojazd do przedszkola')
   # dojazd do
@@ -42,6 +42,8 @@ def watchlist_entries
   watchlist << suspicious_name_watchlist_entry('Drzewo')
   watchlist << suspicious_name_watchlist_entry('las')
   watchlist << suspicious_name_watchlist_entry('Las')
+  watchlist << suspicious_name_watchlist_entry('Wieża kościelna')
+  watchlist << suspicious_name_watchlist_entry('wieża kościelna')
 
   # bardzo stare highway=construction
 
@@ -57,14 +59,17 @@ def watchlist_entries
   watchlist << { list: get_list({ 'name' => 'brzoza', 'natural' => 'tree' }), message: "opis drzewa w nazwie" }
   watchlist << { list: get_list({ 'name' => 'Brzoza', 'natural' => 'tree' }), message: "opis drzewa w nazwie" }
 
-  watchlist << { list: get_list({ 'bicycle' => 'official' }, 50, 20, 2), message: "bicycle=official" }
   watchlist << { list: get_list({ 'bicycle' => 'official' }, 50, 20, 3), message: "bicycle=official" }
+  watchlist << { list: get_list({ 'bicycle' => 'official' }, 50, 20, 6), message: "bicycle=official" }
 
-  watchlist << { list: get_list({ 'highway' => 'bridleway' }, 50, 20, 2), message: "highway=bridleway" }
-  watchlist << { list: get_list({ 'highway' => 'bridleway' }, 50, 20, 3), message: "highway=bridleway" }
+  watchlist << { list: get_list({ 'horse' => 'designated' }, 50, 20, 2), message: "bicycle=official" }
+  watchlist << { list: get_list({ 'horse' => 'designated' }, 50, 20, 3), message: "bicycle=official" }
 
-  watchlist << { list: get_list({ 'highway' => 'bus_guideway' }, 50, 20, 5), message: "highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ?" }
+  watchlist << { list: get_list({ 'highway' => 'bridleway' }, 50, 20, 3), message: "highway=bridleway Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?" }
+  watchlist << { list: get_list({ 'highway' => 'bridleway' }, 50, 20, 6), message: "highway=bridleway Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?" }
+
   watchlist << { list: get_list({ 'highway' => 'bus_guideway' }, 50, 20, 100), message: "highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ?" }
+  watchlist << { list: get_list({ 'highway' => 'bus_guideway' }, 50, 20, 200), message: "highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ?" }
 
   watchlist << { list: get_list({ 'natural' => 'volcano' }, 50, 20, 5), message: "natural=volcano" }
   watchlist << { list: get_list({ 'natural' => 'volcano' }, 50, 20, 250), message: "natural=volcano" }
@@ -133,7 +138,12 @@ def watchlist_entries
   out body;
   >;
   out skel qt;'
-  watchlist << { list: get_list_from_arbitrary_query(nonmilitary_military_danger), message: "military=danger_area without landuse_military" }
+  watchlist << { list: get_list_from_arbitrary_query(nonmilitary_military_danger), message: 'military=danger_area without landuse=military If it is military landuse and landuse=military is missing and should be added.
+
+If not then using **military**=danger_area just because it renders seems to be a poor idea. And either it should be changed or https://wiki.openstreetmap.org/wiki/Tag:military%3Ddanger_area with "landuse=military mandatory" should be changed. 
+
+http://forum.openstreetmap.org/viewtopic.php?pid=598288#p598288 - de thread
+' }
 
   return watchlist
 end
@@ -150,6 +160,9 @@ def run_watchlist
     mentioned = false
     entry[:list].each do |data|
       range = 0.005
+      if data[:lat] == nil or data[:lon] == nil
+        raise "#{entry[:message]} has broken data"
+      end
       notes = CartoCSSHelper::NotesDownloader.run_note_query(data[:lat], data[:lon], range)
       next if notes.strip != empty
       timestamp_in_h = (Time.now - CartoCSSHelper::NotesDownloader.cache_timestamp(data[:lat], data[:lon], range)).to_i / 60 / 60
@@ -200,7 +213,9 @@ def get_list(required_tags, lat = 0, lon = 0, distance_in_km = :infinity)
                distance_in_km * 1000
              end
   query = watchlist_query(required_tags, lat, lon, distance)
-  return get_list_from_arbitrary_query(query, required_tags)
+  list = get_list_from_arbitrary_query(query, required_tags)
+  puts list
+  return list
 end
 
 def get_list_from_arbitrary_query(query, required_tags = {})
@@ -215,7 +230,11 @@ def get_list_from_arbitrary_query(query, required_tags = {})
     next if not_fully_matching_tag_set(entry["tags"], required_tags)
     next unless entry["type"] == "way"
     lat, lon = locations[entry["nodes"][0]]
-    url = "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}"
+    url = "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}#map=15/#{lat}/#{lon}layers=N"
+    if lat == nil or lon == nil
+      puts "Unexpected nil in get_list_from_arbitrary_query"
+      next
+    end
     list << { lat: lat, lon: lon, url: url }
   end
   return list
