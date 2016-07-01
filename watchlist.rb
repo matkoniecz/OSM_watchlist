@@ -145,6 +145,8 @@ If not then using **military**=danger_area just because it renders seems to be a
 http://forum.openstreetmap.org/viewtopic.php?pid=598288#p598288 - de thread
 ' }
 
+#type=site relation http://overpass-turbo.eu/s/fwU
+
   return watchlist
 end
 
