@@ -46,6 +46,9 @@ module CartoCSSHelper
     test_alpine_hut('alpine_14')
     final
 
+module CartoCSSHelper
+  def main
+    generate_preview
     locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'pub', 'name' => :any_value }, skip: 0)
     diff_on_loaded_database(location_provider: locator, to: 'noto_710', from: 'master', zlevels: 16..18, image_size: 700, count: 1)
     run_tests
