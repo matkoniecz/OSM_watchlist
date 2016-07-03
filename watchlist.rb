@@ -143,6 +143,7 @@ def watchlist_entries
 If not then using **military**=danger_area just because it renders seems to be a poor idea. And either it should be changed or https://wiki.openstreetmap.org/wiki/Tag:military%3Ddanger_area with "landuse=military mandatory" should be changed. 
 
 http://forum.openstreetmap.org/viewtopic.php?pid=598288#p598288 - de thread
+http://www.openstreetmap.org/note/597863#map=14/68.7102/20.4516 - case of civilian rocketry range
 ' }
 
 #type=site relation http://overpass-turbo.eu/s/fwU
