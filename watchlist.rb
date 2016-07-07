@@ -44,6 +44,9 @@ def watchlist_entries
   watchlist << suspicious_name_watchlist_entry('Las')
   watchlist << suspicious_name_watchlist_entry('Wieża kościelna')
   watchlist << suspicious_name_watchlist_entry('wieża kościelna')
+  watchlist << suspicious_name_watchlist_entry('mieszkanie')
+  watchlist << suspicious_name_watchlist_entry('dom')
+  watchlist << suspicious_name_watchlist_entry('budynek gospodarczy')
 
   # bardzo stare highway=construction
 
