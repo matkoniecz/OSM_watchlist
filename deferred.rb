@@ -19,22 +19,22 @@ def show_military_danger_areas(branch)
   # diff_on_overpass_data(location_provider: locator, to: 'master', from: 'master', zlevels: 9..19, image_size: 375, count: 10)
 end
 
-def test_alpine_hut(branch = 'master')
+def test_alpine_hut(branch = 'master', before_branch='master')
   # https://github.com/gravitystorm/openstreetmap-carto/issues/2115
   hut = { 'tourism' => 'alpine_hut', 'name' => :any_value }
   zlevels = 9..19
   count = 5
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(hut)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: zlevels, image_size: 375, count: count)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: before_branch, zlevels: zlevels, image_size: 375, count: count)
 
   locator = CartoCSSHelper::LocatePairedTagsInsideLoadedDatabases.new(hut, { 'natural' => 'peak' }, 'way', 'node', skip: 0, distance_in_meters: 1000)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: zlevels, image_size: 375, count: count)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: before_branch, zlevels: zlevels, image_size: 375, count: count)
 
   locator = CartoCSSHelper::LocatePairedTagsInsideLoadedDatabases.new(hut, hut, 'way', 'way', skip: 0, distance_in_meters: 1000)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: zlevels, image_size: 375, count: count)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: before_branch, zlevels: zlevels, image_size: 375, count: count)
 
   locator = CartoCSSHelper::LocatePairedTagsInsideLoadedDatabases.new(hut, { 'natural' => 'volcano' }, 'way', 'node', skip: 0, distance_in_meters: 1000)
-  diff_on_loaded_database(location_provider: locator, to: branch, from: 'master', zlevels: zlevels, image_size: 375, count: count)
+  diff_on_loaded_database(location_provider: locator, to: branch, from: before_branch, zlevels: zlevels, image_size: 375, count: count)
   # find alpine hut nearby alpine hut
 end
 

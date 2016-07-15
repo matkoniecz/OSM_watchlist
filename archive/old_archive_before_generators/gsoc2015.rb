@@ -230,53 +230,6 @@ def additional_test_unpaved(tested_branch, base_branch = 'master', zlevels = 16.
   end
 end
 
-def generate_preview(branches, download_bbox_size = 0.05)
-  top_lat = 41.8788
-  lef_lon = -87.6515
-  bottom_lat = 41.8693
-  right_lon = -87.6150
-  xmin = lef_lon
-  ymin = bottom_lat
-  xmax = right_lon
-  ymax = top_lat
-
-  #--bbox=[xmin,ymin,xmax,ymax]
-  bbox = "#{xmin},#{ymin},#{xmax},#{ymax}"
-  width = 852
-  height = 300
-  zlevel = 15
-  params = "--format=png --width=#{width} --height=#{height} --static_zoom=#{zlevel} --bbox=\"#{bbox}\""
-  project_name = CartoCSSHelper::Configuration.get_tilemill_project_name
-
-  filename = "preview for readme #{download_bbox_size}.png"
-  branches.each do |branch|
-    Git.checkout branch
-    export_filename = Configuration.get_path_to_folder_for_branch_specific_cache + filename
-    next if File.exist?(export_filename)
-    latitude = (ymin + ymax) / 2
-    longitude = (xmin + xmax) / 2
-    osm_data_filename = OverpassQueryGenerator.get_file_with_downloaded_osm_data_for_location(latitude, longitude, download_bbox_size)
-    DataFileLoader.load_data_into_database(osm_data_filename)
-
-    command = "node /usr/share/tilemill/index.js export #{project_name} '#{export_filename}' #{params}"
-    puts command
-    system command
-  end
-
-  branches.each do |branch|
-    Git.checkout branch
-    source = Configuration.get_path_to_folder_for_branch_specific_cache + filename
-    destination = Configuration.get_path_to_folder_for_output + "preview #{branch} #{download_bbox_size}.png"
-    puts source
-    puts destination
-    if File.exist?(source)
-      FileUtils.copy_entry source, destination, false, false, true
-    else
-      raise 'file that should be created is not present'
-    end
-  end
-end
-
 def test_all_road_types(to)
   get_all_road_types.each do |tag|
     test_road_type to, tag

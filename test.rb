@@ -8,7 +8,7 @@ include CartoCSSHelper
 
 # sudo service postgresql restart
 def make_copy_of_repository
-  false # true #false
+  true # true #false
 end
 
 def test_placename(branch, z_levels = 4..11)
@@ -19,18 +19,14 @@ end
 
 module CartoCSSHelper
   def main
+    test_alpine_hut('pnorman/fonts_1604', 'upstream/master')
+
+    generate_preview(['master'])
     run_watchlist
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'pub', 'name' => :any_value }, skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: 'noto_710', from: 'master', zlevels: 16..18, image_size: 700, count: 1)
+    run_tests
     final
-    CartoCSSHelper::Configuration.set_renderer(:tilemill)
-    CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=50.45396&mlon=16.63328#map=19/50.45396/16.63328', 19..19, 'master', 'master', 'master', 0.1)
-
-    CartoCSSHelper::Configuration.set_renderer(:kosmtik)
-    CartoCSSHelper::Configuration.set_mapnik_reference_version_override('2.2.0')
-    CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=50.45396&mlon=16.63328#map=19/50.45396/16.63328', 19..19, 'master', 'master', 'master', 0.1)
-
-    CartoCSSHelper::Configuration.set_renderer(:kosmtik)
-    CartoCSSHelper::Configuration.set_mapnik_reference_version_override('3.0.0')
-    CartoCSSHelper.visualise_place_by_url('http://www.openstreetmap.org/?mlat=50.45396&mlon=16.63328#map=19/50.45396/16.63328', 19..19, 'master', 'master', 'master', 0.1)
 
     CartoCSSHelper::Configuration.set_renderer(:kosmtik)
     location = [[49.91002, -122.78525, "pnorman example"], [49.0907, 22.5646, "Bieszczady"], [37.41499, -111.55294, "staircase"]]
@@ -44,14 +40,6 @@ module CartoCSSHelper
     final
 
     test_alpine_hut('alpine_14')
-    final
-
-module CartoCSSHelper
-  def main
-    generate_preview
-    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'pub', 'name' => :any_value }, skip: 0)
-    diff_on_loaded_database(location_provider: locator, to: 'noto_710', from: 'master', zlevels: 16..18, image_size: 700, count: 1)
-    run_tests
     final
 
     # wat(50, 20)
@@ -146,9 +134,53 @@ def waiting_pr
   test_eternal_710_dy("bold_710")
 end
 
-def generate_preview
-  generate_preview(['master'])
+def generate_preview(branches, download_bbox_size = 0.05)
+  top_lat = 41.8788
+  lef_lon = -87.6515
+  bottom_lat = 41.8693
+  right_lon = -87.6150
+  xmin = lef_lon
+  ymin = bottom_lat
+  xmax = right_lon
+  ymax = top_lat
+
+  #--bbox=[xmin,ymin,xmax,ymax]
+  bbox = "#{xmin},#{ymin},#{xmax},#{ymax}"
+  width = 852
+  height = 300
+  zlevel = 15
+  params = "--format=png --width=#{width} --height=#{height} --static_zoom=#{zlevel} --bbox=\"#{bbox}\""
+  project_name = CartoCSSHelper::Configuration.get_cartocss_project_name
+
+  filename = "preview for readme #{download_bbox_size}.png"
+  branches.each do |branch|
+    Git.checkout branch
+    export_filename = Configuration.get_path_to_folder_for_branch_specific_cache + filename
+    next if File.exist?(export_filename)
+    latitude = (ymin + ymax) / 2
+    longitude = (xmin + xmax) / 2
+    osm_data_filename = OverpassQueryGenerator.get_file_with_downloaded_osm_data_for_location(latitude, longitude, download_bbox_size)
+    DataFileLoader.load_data_into_database(osm_data_filename)
+
+    command = "node /usr/share/tilemill/index.js export #{project_name} '#{export_filename}' #{params}"
+    puts command
+    system command
+  end
+
+  branches.each do |branch|
+    Git.checkout branch
+    source = Configuration.get_path_to_folder_for_branch_specific_cache + filename
+    destination = Configuration.get_path_to_folder_for_output + "preview #{branch} #{download_bbox_size}.png"
+    puts source
+    puts destination
+    if File.exist?(source)
+      FileUtils.copy_entry source, destination, false, false, true
+    else
+      raise 'file that should be created is not present'
+    end
+  end
 end
+
 
 def test_water_color
   # https://github.com/gravitystorm/openstreetmap-carto/issues/1781 - tweaking water colour
