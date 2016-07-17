@@ -8,7 +8,7 @@ include CartoCSSHelper
 
 # sudo service postgresql restart
 def make_copy_of_repository
-  true # true #false
+  false # true #false
 end
 
 def test_placename(branch, z_levels = 4..11)
@@ -19,10 +19,10 @@ end
 
 module CartoCSSHelper
   def main
+    run_watchlist
     test_alpine_hut('pnorman/fonts_1604', 'upstream/master')
 
     generate_preview(['master'])
-    run_watchlist
     locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'pub', 'name' => :any_value }, skip: 0)
     diff_on_loaded_database(location_provider: locator, to: 'noto_710', from: 'master', zlevels: 16..18, image_size: 700, count: 1)
     run_tests
