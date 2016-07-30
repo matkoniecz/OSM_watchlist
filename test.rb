@@ -12,14 +12,27 @@ def make_copy_of_repository
 end
 
 def test_placename(branch, z_levels = 4..11)
-  coords = [[50, 20, "KRK"], [53.245, -2.274, "UK"], [60.6696, -139.2532, "Kluane National park"], [-22.3276, 23.8453, "Central Kalahari Game Reserve"], [-24.56237, 15.33238, "Namib National Park"], [37.43834, -111.58082, "Grand Staircase USA"], [34.56186, -115.21428, "Mojave"], [39.1205, -94.4913], [16.820, 79.915], [64.1173, -21.8688], [50, 80], [50, 100]]
+  coords = [[50, 20, "KRK"], [53.245, -2.274, "UK"],
+            [60.6696, -139.2532, "Kluane National park"],
+            [-22.3276, 23.8453, "Central Kalahari Game Reserve"],
+            [-24.56237, 15.33238, "Namib National Park"],
+            [37.43834, -111.58082, "Grand Staircase USA"],
+            [34.56186, -115.21428, "Mojave"],
+            [39.1205, -94.4913],
+            [16.820, 79.915],
+            [64.1173, -21.8688],
+            [50, 80],
+            [50, 100]]
   iterate_over(branch, branch, z_levels, coords)
   iterate_over(branch, 'master', z_levels, coords)
 end
 
 module CartoCSSHelper
   def main
-    run_watchlist
+    # see watchlist.txt
+    # run_watchlist
+    # final
+
     test_alpine_hut('pnorman/fonts_1604', 'upstream/master')
 
     generate_preview(['master'])
@@ -180,7 +193,6 @@ def generate_preview(branches, download_bbox_size = 0.05)
     end
   end
 end
-
 
 def test_water_color
   # https://github.com/gravitystorm/openstreetmap-carto/issues/1781 - tweaking water colour
