@@ -186,11 +186,8 @@ def generate_preview(branches, download_bbox_size = 0.05)
     destination = Configuration.get_path_to_folder_for_output + "preview #{branch} #{download_bbox_size}.png"
     puts source
     puts destination
-    if File.exist?(source)
-      FileUtils.copy_entry source, destination, false, false, true
-    else
-      raise 'file that should be created is not present'
-    end
+    raise 'file that should be created is not present' unless File.exist?(source)
+    FileUtils.copy_entry source, destination, false, false, true
   end
 end
 
