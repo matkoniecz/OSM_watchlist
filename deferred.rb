@@ -1,5 +1,14 @@
 # frozen_string_literal: true
 =begin
+test_alpine_hut('alpine_14')
+
+test_eternal_710_on_real_data("book_710")
+test_eternal_710_on_real_data("bold_710")
+test_eternal_710_dy("book_710")
+test_eternal_710_dy("bold_710")
+=end
+
+=begin
 http://wiki.openstreetmap.org/wiki/Tag%3Alanduse%3Ddepot - update
 http://overpass-turbo.eu/s/aJA access=public eliminator
     #http://overpass-turbo.eu/s/aJm - reduce impact before rendering proposal
