@@ -10,17 +10,16 @@ def watchlist_entries
   watchlist += watch_lifecycle_state_in_the_name
   watchlist += watch_nonmilitary_military_danger
 
-  #TODO bardzo stare highway=construction
+  # TODO: bardzo stare highway=construction
 
   watchlist << { list: get_list({ 'bicycle' => 'official' }, 50, 20, 6), message: "bicycle=official" }
   watchlist << { list: get_list({ 'bicycle' => 'official' }, 50, 20, 30), message: "bicycle=official" }
-
 
   # wszystkie nawiasy; http://overpass-turbo.eu/s/gVo
 
   # watchlist for rare landuse values in Kraków, ; w surface
 
-#type=site relation http://overpass-turbo.eu/s/fwU
+  # type=site relation http://overpass-turbo.eu/s/fwU
 
   return watchlist
 end
@@ -37,7 +36,7 @@ def run_watchlist
     mentioned = false
     entry[:list].each do |data|
       range = 0.005
-      if data[:lat] == nil or data[:lon] == nil
+      if data[:lat].nil? || data[:lon].nil?
         raise "#{entry[:message]} has broken data"
       end
       notes = CartoCSSHelper::NotesDownloader.run_note_query(data[:lat], data[:lon], range)
@@ -99,11 +98,11 @@ def get_list_from_arbitrary_query(query, required_tags = {})
 
   timestamp_in_h = (Time.now - CartoCSSHelper::OverpassDownloader.cache_timestamp(query)).to_i / 60 / 60
 
-  base = 24*30
+  base = 24 * 30
 
   if rand(base) < timestamp_in_h
-  	puts "redoing #{timestamp_in_h}h old query"
-	  json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, "for watchlist #{required_tags}", false, invalidate_cache: true)  	
+    puts "redoing #{timestamp_in_h}h old query"
+    json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, "for watchlist #{required_tags}", false, invalidate_cache: true)
   end
 
   obj = JSON.parse(json_string)
@@ -117,7 +116,7 @@ def get_list_from_arbitrary_query(query, required_tags = {})
     next unless entry["type"] == "way"
     lat, lon = locations[entry["nodes"][0]]
     url = "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}#map=15/#{lat}/#{lon}layers=N"
-    if lat == nil or lon == nil
+    if lat.nil? || lon.nil?
       puts "Unexpected nil in get_list_from_arbitrary_query"
       next
     end
@@ -146,10 +145,10 @@ def watch_beton
     watchlist << { list: get_list(tags), message: message }
   end
 
-  return watchlist 
+  return watchlist
 end
 
-def suspicious_name_watchlist_entry(name, description=nil)
+def suspicious_name_watchlist_entry(name, description = nil)
   return { list: get_list({ 'name' => name }), message: "name = '#{name}' #{description}" }
 end
 
@@ -198,7 +197,7 @@ The original search was:
 // print results
 out meta;/*fixed by auto repair*/
 >;
-out meta qt;/*fixed by auto repair*/ 
+out meta qt;/*fixed by auto repair*/
 =end
   watchlist << suspicious_name_watchlist_entry('budynek gospodarczy')
   return watchlist
@@ -297,7 +296,7 @@ def watch_nonmilitary_military_danger
 
   info_message = 'military=danger_area without landuse=military If it is military landuse and landuse=military is missing and should be added.
 
-If not then using **military**=danger_area just because it renders seems to be a poor idea. And either it should be changed or https://wiki.openstreetmap.org/wiki/Tag:military%3Ddanger_area with "landuse=military mandatory" should be changed. 
+If not then using **military**=danger_area just because it renders seems to be a poor idea. And either it should be changed or https://wiki.openstreetmap.org/wiki/Tag:military%3Ddanger_area with "landuse=military mandatory" should be changed.
 
 http://forum.openstreetmap.org/viewtopic.php?pid=598288#p598288 - de thread
 http://www.openstreetmap.org/note/597863#map=14/68.7102/20.4516 - case of civilian rocketry range

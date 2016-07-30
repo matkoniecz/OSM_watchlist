@@ -19,7 +19,7 @@ def show_military_danger_areas(branch)
   # diff_on_overpass_data(location_provider: locator, to: 'master', from: 'master', zlevels: 9..19, image_size: 375, count: 10)
 end
 
-def test_alpine_hut(branch = 'master', before_branch='master')
+def test_alpine_hut(branch = 'master', before_branch = 'master')
   # https://github.com/gravitystorm/openstreetmap-carto/issues/2115
   hut = { 'tourism' => 'alpine_hut', 'name' => :any_value }
   zlevels = 9..19
