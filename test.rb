@@ -78,31 +78,6 @@ module CartoCSSHelper
   end
 end
 
-def test_710_variants(count = 1)
-  tags = [{ 'tourism' => 'museum', 'name' => :any_value }] # { 'amenity' => 'pub', 'name' => :any_value }
-  zlevels = 17..17
-
-  tags.each do |tag|
-    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
-    diff_on_loaded_database(location_provider: locator, to: 'medium-halo', from: 'master', zlevels: zlevels, image_size: 700, count: count)
-
-    # locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
-    # diff_on_loaded_database(location_provider: locator, to: 'small-halo', from: 'master', zlevels: zlevels, image_size: 700, count: count)
-
-    # locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
-    # diff_on_loaded_database(location_provider: locator, to: 'halo', from: 'master', zlevels: zlevels, image_size: 700, count: count)
-
-    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
-    diff_on_loaded_database(location_provider: locator, to: 'book_710', from: 'master', zlevels: zlevels, image_size: 700, count: count)
-
-    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
-    diff_on_loaded_database(location_provider: locator, to: 'bold_noto', from: 'master', zlevels: zlevels, image_size: 700, count: count)
-
-    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
-    diff_on_loaded_database(location_provider: locator, to: 'bold_710', from: 'master', zlevels: zlevels, image_size: 700, count: count)
-  end
-end
-
 def wat(lat, lon)
   puts "master"
   get_single_image_from_database('entire_world', 'master', lat, lon, 6, 298)

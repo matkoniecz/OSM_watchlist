@@ -19,6 +19,31 @@ http://overpass-turbo.eu/s/aJA access=public eliminator
 
 # http://codereview.stackexchange.com/questions/tagged/ruby?page=2&sort=votes&pagesize=15
 
+def test_710_variants(count = 1)
+  tags = [{ 'tourism' => 'museum', 'name' => :any_value }] # { 'amenity' => 'pub', 'name' => :any_value }
+  zlevels = 17..17
+
+  tags.each do |tag|
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: 'medium-halo', from: 'master', zlevels: zlevels, image_size: 700, count: count)
+
+    # locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
+    # diff_on_loaded_database(location_provider: locator, to: 'small-halo', from: 'master', zlevels: zlevels, image_size: 700, count: count)
+
+    # locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
+    # diff_on_loaded_database(location_provider: locator, to: 'halo', from: 'master', zlevels: zlevels, image_size: 700, count: count)
+
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: 'book_710', from: 'master', zlevels: zlevels, image_size: 700, count: count)
+
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: 'bold_noto', from: 'master', zlevels: zlevels, image_size: 700, count: count)
+
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new(tag, skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: 'bold_710', from: 'master', zlevels: zlevels, image_size: 700, count: count)
+  end
+end
+
 def show_military_danger_areas(branch)
   # czarnobyl - www.openstreetmap.org/?mlat=51.5&mlon=30.1&zoom=12#map=12/51.5000/30.1000 (lat =-0.5, lon+-0.7)
   locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'military' => 'danger_area' }, types: ['way'])
