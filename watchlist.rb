@@ -21,6 +21,10 @@ def watchlist_entries
 
   # type=site relation http://overpass-turbo.eu/s/fwU
 
+#TODO:
+#site=parking elimination
+#(planowany) w osm, (w budowie) nie jest lepsze
+
   return watchlist
 end
 
