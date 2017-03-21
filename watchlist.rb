@@ -24,6 +24,11 @@ def watchlist_entries
 #TODO:
 #site=parking elimination
 #(planowany) w osm, (w budowie) nie jest lepsze
+#walidator: name=Garaże
+#building=bridge w Krakowie - http://overpass-turbo.eu/s/dGR 
+#type=site relation http://overpass-turbo.eu/s/fwU 
+#name=Ogródki działkowe http://overpass-turbo.eu/s/dr3 
+#planowan* - tagowanie pod render http://overpass-turbo.eu/s/dtf 
 
   return watchlist
 end
