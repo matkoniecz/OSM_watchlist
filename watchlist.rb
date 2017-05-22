@@ -22,6 +22,8 @@ def watchlist_entries
   # type=site relation http://overpass-turbo.eu/s/fwU
 
 #TODO:
+#should be highway=path http://overpass-turbo.eu/s/khG 
+#bicycle_road=yes w Krakowie http://overpass-turbo.eu/s/pcO
 #site=parking elimination
 #(planowany) w osm, (w budowie) nie jest lepsze
 #walidator: name=Garaże
