@@ -23,6 +23,8 @@ def watchlist_entries
   # type=site relation http://overpass-turbo.eu/s/fwU
 
 #TODO:
+#puts "access=public eliminator http://overpass-turbo.eu/s/gTt"
+# more https://github.com/osmlab/name-suggestion-index/blob/master/filter.json https://lists.openstreetmap.org/pipermail/talk/2015-May/072923.html
 #should be highway=path http://overpass-turbo.eu/s/khG 
 #bicycle_road=yes w Krakowie http://overpass-turbo.eu/s/pcO
 #site=parking elimination
@@ -41,8 +43,6 @@ def run_watchlist
 <osm version="0.6" generator="OpenStreetMap server">
 </osm>'
 
-  puts "access=public eliminator http://overpass-turbo.eu/s/gTt"
-  # more https://github.com/osmlab/name-suggestion-index/blob/master/filter.json https://lists.openstreetmap.org/pipermail/talk/2015-May/072923.html
 
   watchlist_entries.each do |entry|
     mentioned = false
