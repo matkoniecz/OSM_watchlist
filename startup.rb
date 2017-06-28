@@ -59,13 +59,14 @@ def set_paths(cartocss_project_location)
   CartoCSSHelper::Configuration.set_path_to_kosmtik(File.join(ENV['HOME'], 'Desktop', 'kosmtik', ''))
 end
 
-def warn_about_live_git_repository
+def warn_about_live_git_repository(project)
   puts 'WARNING WARNING WARNING'
   puts 'WARNING WARNING WARNING'
   puts 'WARNING WARNING WARNING'
   puts 'WARNING WARNING WARNING'
-  puts 'running on live git repository'
+  puts 'running on live git repository of ' + project
   puts 'using it may result in generated images for wrong versions of code'
+  puts 'set create_copy to true to enable working on the frozen copy'
   puts 'WARNING WARNING WARNING'
   puts 'WARNING WARNING WARNING'
   puts 'WARNING WARNING WARNING'
@@ -78,7 +79,7 @@ def init(create_copy = true)
   if create_copy
     destination = destination_of_frozen_copy(project)
   else
-    warn_about_live_git_repository
+    warn_about_live_git_repository(project)
   end
   set_paths(destination)
 
