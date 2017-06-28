@@ -40,34 +40,40 @@ def watchlist_entries
   return watchlist
 end
 
-def run_watchlist
+# in case of note present it accepts cache
+# in case of missing note and cache that is not current it checks to be sure
+def currently_present_note_at(lat, lon)
   empty = '<?xml version="1.0" encoding="UTF-8"?>
 <osm version="0.6" generator="OpenStreetMap server">
 </osm>'
+  range = 0.005
+  notes = CartoCSSHelper::NotesDownloader.run_note_query(lat, lon, range).strip
+  return true if notes != empty
+  timestamp_in_h = (Time.now - CartoCSSHelper::NotesDownloader.cache_timestamp(lat, lon, range)).to_i / 60 / 60
+  if timestamp_in_h > 1
+    puts "note download after discarding cache (cache age was #{timestamp_in_h}h)"
+    notes = CartoCSSHelper::NotesDownloader.run_note_query(lat, lon, range, invalidate_cache: true)
+  end
+  return notes != empty
+end
 
-
+def run_watchlist
   watchlist_entries.each do |entry|
     mentioned = false
     entry[:list].each do |data|
-      range = 0.005
       if data[:lat].nil? || data[:lon].nil?
         raise "#{entry[:message]} has broken data"
       end
-      notes = CartoCSSHelper::NotesDownloader.run_note_query(data[:lat], data[:lon], range)
-      next if notes.strip != empty
-      timestamp_in_h = (Time.now - CartoCSSHelper::NotesDownloader.cache_timestamp(data[:lat], data[:lon], range)).to_i / 60 / 60
-      if timestamp_in_h > 1
-        notes = CartoCSSHelper::NotesDownloader.run_note_query(data[:lat], data[:lon], range, invalidate_cache: true)
+      if currently_present_note_at(data[:lat], data[:lon])
+        next
       end
-      next if notes.strip != empty
       unless mentioned
         puts
         puts
         puts entry[:message]
         mentioned = true
       end
-      timestamp_in_h = (Time.now - CartoCSSHelper::NotesDownloader.cache_timestamp(data[:lat], data[:lon], range)).to_i / 60 / 60
-      puts "# #{data[:url]} #{timestamp_in_h}h ago"
+      puts "# #{data[:url]}"
     end
   end
 end
