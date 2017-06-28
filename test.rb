@@ -36,8 +36,8 @@ name=Fontanna watchlist
 name=Playground
 OSM watchlist „Pomnik przyrody”
 =end
-    # run_watchlist
-    # final
+    run_watchlist
+    final
 
     generate_preview('master')
     locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'pub', 'name' => :any_value }, skip: 0)
