@@ -13,8 +13,10 @@ def watchlist_entries
 
   # TODO: bardzo stare highway=construction
 
-  watchlist << { list: get_list({ 'bicycle' => 'official' }, 50, 20, 6), message: "bicycle=official" }
-  watchlist << { list: get_list({ 'bicycle' => 'official' }, 50, 20, 30), message: "bicycle=official" }
+  distance_in_km = 6
+  watchlist << { list: get_list({ 'bicycle' => 'official' }, 50, 20, distance_in_km), message: "bicycle=official" }
+  distance_in_km *= 5
+  watchlist << { list: get_list({ 'bicycle' => 'official' }, 50, 20, distance_in_km), message: "bicycle=official" }
 
   # wszystkie nawiasy; http://overpass-turbo.eu/s/gVo
 
