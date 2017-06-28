@@ -13,9 +13,9 @@ def watchlist_entries
   # TODO: bardzo stare highway=construction
 
   distance_in_km = 6
-  watchlist << { list: get_list({ 'bicycle' => 'official' }, 50, 20, distance_in_km), message: "bicycle=official" }
+  watchlist << { list: get_list({ 'bicycle' => 'official' }, 50, 20, distance_in_km), message: "bicycle=official within #{distance_in_km}km from [50, 20]" }
   distance_in_km *= 5
-  watchlist << { list: get_list({ 'bicycle' => 'official' }, 50, 20, distance_in_km), message: "bicycle=official" }
+  watchlist << { list: get_list({ 'bicycle' => 'official' }, 50, 20, distance_in_km), message: "bicycle=official within #{distance_in_km}km from [50, 20]" }
 
   # wszystkie nawiasy; http://overpass-turbo.eu/s/gVo
 
@@ -184,10 +184,10 @@ def watch_descriptive_names
   watchlist << suspicious_name_watchlist_entry('Maszt telekomunikacyjny')
   watchlist << suspicious_name_watchlist_entry('wiatrak')
   watchlist << suspicious_name_watchlist_entry('Wiatrak')
-  watchlist << suspicious_name_watchlist_entry('plac zabaw')
-  watchlist << suspicious_name_watchlist_entry('Plac zabaw')
-  watchlist << suspicious_name_watchlist_entry('Parking', 'Is it really parking named parking or is it just a parking?')
-  watchlist << suspicious_name_watchlist_entry('parking', 'Is it really parking named parking or is it just a parking?')
+  watchlist << suspicious_name_watchlist_entry('plac zabaw', 'Czy tag name nie jest tu przypadkiem błednie użyty jako opis obiektu? leisure=playground wystarcza by oznaczyć to jako plac zabaw...')
+  watchlist << suspicious_name_watchlist_entry('Plac zabaw', 'Czy tag name nie jest tu przypadkiem błednie użyty jako opis obiektu? leisure=playground wystarcza by oznaczyć to jako plac zabaw...')
+  watchlist << suspicious_name_watchlist_entry('Parking', 'Is it really parking named parking or is it just a parking and name tag is incorrectly used as a description?')
+  watchlist << suspicious_name_watchlist_entry('parking', 'Is it really parking named parking or is it just a parking and name tag is incorrectly used as a description?')
   watchlist << suspicious_name_watchlist_entry('dojazd do przedszkola')
   watchlist << suspicious_name_watchlist_entry('Dojazd do przedszkola')
   # dojazd do
@@ -248,17 +248,25 @@ end
 
 def watch_valid_tags_unexpected_in_krakow
   watchlist = []
-  watchlist << { list: get_list({ 'horse' => 'designated' }, 50, 20, 3), message: "horse=designated" }
-  watchlist << { list: get_list({ 'horse' => 'designated' }, 50, 20, 30), message: "horse=designated" }
+  range_in_km = 3
+  watchlist << { list: get_list({ 'horse' => 'designated' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) horse=designated" }
+  range_in_km = 30
+  watchlist << { list: get_list({ 'horse' => 'designated' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) horse=designated" }
 
-  watchlist << { list: get_list({ 'highway' => 'bridleway' }, 50, 20, 6), message: "highway=bridleway Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?" }
-  watchlist << { list: get_list({ 'highway' => 'bridleway' }, 50, 20, 9), message: "highway=bridleway Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?" }
+  range_in_km = 6
+  watchlist << { list: get_list({ 'highway' => 'bridleway' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) highway=bridleway Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?" }
+  range_in_km = 9
+  watchlist << { list: get_list({ 'highway' => 'bridleway' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) highway=bridleway Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?" }
 
-  watchlist << { list: get_list({ 'highway' => 'bus_guideway' }, 50, 20, 200), message: "highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ?" }
-  watchlist << { list: get_list({ 'highway' => 'bus_guideway' }, 50, 20, 300), message: "highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ?" }
+  range_in_km = 250
+  watchlist << { list: get_list({ 'highway' => 'bus_guideway' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?" }
+  range_in_km *= 2
+  watchlist << { list: get_list({ 'highway' => 'bus_guideway' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?" }
 
-  watchlist << { list: get_list({ 'natural' => 'volcano' }, 50, 20, 250), message: "natural=volcano" }
-  watchlist << { list: get_list({ 'natural' => 'volcano' }, 50, 20, 550), message: "natural=volcano" }
+  range_in_km = 300
+  watchlist << { list: get_list({ 'natural' => 'volcano' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) Is it really a good idea to tag something as natural=volcano where it was last active about X 000 years ago? In that case natural=peak is probably better..." }
+  range_in_km = 400
+  watchlist << { list: get_list({ 'natural' => 'volcano' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) Is it really a good idea to tag something as natural=volcano where it was last active about X 000 years ago? In that case natural=peak is probably better..." }
   return watchlist
 end
 
