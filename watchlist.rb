@@ -133,11 +133,16 @@ def get_list_from_arbitrary_query(query, required_tags = {})
 
   elements.each do |entry|
     next if not_fully_matching_tag_set(entry["tags"], required_tags)
-    if entry["type"] != "way"
+    lat, lon = nil, nil
+    if entry["type"] == "way"
+      lat, lon = locations[entry["nodes"][0]]
+    elsif entry["type"] == "node"
+      lat = entry["lat"].to_f
+      lon = entry["lon"].to_f
+    else
       puts "skipped #{entry["type"]}"
       next
     end
-    lat, lon = locations[entry["nodes"][0]]
     url = "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}#map=15/#{lat}/#{lon}layers=N"
     if lat.nil? || lon.nil?
       puts "Unexpected nil in get_list_from_arbitrary_query"
