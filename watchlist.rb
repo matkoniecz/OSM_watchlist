@@ -8,7 +8,7 @@ def watchlist_entries
   watchlist += watch_tree_species_in_name
   watchlist += watch_valid_tags_unexpected_in_krakow
   watchlist += watch_lifecycle_state_in_the_name
-  watchlist += watch_nonmilitary_military_danger
+  #watchlist += watch_nonmilitary_military_danger
 
   # TODO: bardzo stare highway=construction
 
