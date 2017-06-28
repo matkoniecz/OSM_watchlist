@@ -3,6 +3,7 @@ require 'json'
 
 def watchlist_entries
   watchlist = []
+  watchlist << { list: get_list({ 'highway' => 'bus_stop', 'wheelchair' => 'no' }), message: "highway' => 'bus_stop', 'wheelchair' => 'no'" }
   watchlist += watch_beton
   watchlist += watch_descriptive_names
   watchlist += watch_tree_species_in_name
