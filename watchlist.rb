@@ -125,7 +125,10 @@ def get_list_from_arbitrary_query(query, required_tags = {})
 
   elements.each do |entry|
     next if not_fully_matching_tag_set(entry["tags"], required_tags)
-    next unless entry["type"] == "way"
+    if entry["type"] != "way"
+      puts "skipped #{entry["type"]}"
+      next
+    end
     lat, lon = locations[entry["nodes"][0]]
     url = "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}#map=15/#{lat}/#{lon}layers=N"
     if lat.nil? || lon.nil?
