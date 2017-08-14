@@ -321,6 +321,14 @@ def watch_valid_tags_unexpected_in_krakow
   return watchlist
 end
 
+#TODO escaping fails (copy pasted to overpass works...)
+=begin
+    /* query part for: “name~/proj\./ and name!=Nowoprojektowana” */
+    node["name"~"proj\."]["name"!="Nowoprojektowana"];
+    way["name"~"proj\."]["name"!="Nowoprojektowana"];
+    relation["name"~"proj\."]["name"!="Nowoprojektowana"];
+=end
+
 def watch_lifecycle_state_in_the_name
   watchlist = []
   project_mess_query = '[out:json][timeout:250];
@@ -334,11 +342,6 @@ def watch_lifecycle_state_in_the_name
     node["name"~"projektowan"]["name"!="Nowoprojektowana"];
     way["name"~"projektowan"]["name"!="Nowoprojektowana"];
     relation["name"~"projektowan"]["name"!="Nowoprojektowana"];
-
-    /* query part for: “name~/proj\./ and name!=Nowoprojektowana” */
-    node["name"~"proj\\."]["name"!="Nowoprojektowana"];
-    way["name"~"proj\\."]["name"!="Nowoprojektowana"];
-    relation["name"~"proj\\."]["name"!="Nowoprojektowana"];
 
     /* query part for: “name~/w budowie/ and name!=Nowoprojektowana” */
     node["name"~"w budowie"];
