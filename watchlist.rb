@@ -36,6 +36,12 @@ def watchlist_entries
 #type=site relation http://overpass-turbo.eu/s/fwU 
 #name=Ogródki działkowe http://overpass-turbo.eu/s/dr3 
 #planowan* - tagowanie pod render http://overpass-turbo.eu/s/dtf 
+#landuse=basin bez natural=water
+
+#https://www.openstreetmap.org/way/33711547
+#note=taśmociąg na filarach + highway=service
+#to man_made=goods_conveyor
+
   return watchlist
 end
 
