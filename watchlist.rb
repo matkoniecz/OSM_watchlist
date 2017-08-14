@@ -155,6 +155,10 @@ def get_list_from_arbitrary_query(query, required_tags = {})
     lat, lon = nil, nil
     if entry["type"] == "way"
       lat, lon = locations[entry["nodes"][0]]
+      if is_location_undefined(lat, lon, entry)
+        puts "location not loaded for way"
+        puts query
+      end
     elsif entry["type"] == "node"
       lat = entry["lat"].to_f
       lon = entry["lon"].to_f
@@ -163,8 +167,7 @@ def get_list_from_arbitrary_query(query, required_tags = {})
       next
     end
     url = "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}#map=15/#{lat}/#{lon}layers=N"
-    if lat.nil? || lon.nil?
-      puts "Unexpected nil in get_list_from_arbitrary_query"
+    if is_location_undefined(lat, lon, entry)
       next
     end
     list << { lat: lat, lon: lon, url: url }
@@ -172,6 +175,14 @@ def get_list_from_arbitrary_query(query, required_tags = {})
   return list
 end
 
+def is_location_undefined(lat, lon, entry)
+  if lat.nil? || lon.nil?
+    puts "Unexpected nil in get_list_from_arbitrary_query"
+    puts entry.to_s
+    return true
+  end
+  return false
+end
 def not_fully_matching_tag_set(json_response_tags, tags_in_dict)
   return true if json_response_tags.nil?
   tags_in_dict.each do |tag|
