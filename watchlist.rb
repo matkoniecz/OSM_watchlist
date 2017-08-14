@@ -4,6 +4,7 @@ require 'json'
 def watchlist_entries
   watchlist = []
   watchlist += watch_beton
+  watchlist += watch_invalid_wikipedia
   watchlist += watch_descriptive_names
   watchlist += watch_tree_species_in_name
   watchlist += watch_valid_tags_unexpected_in_krakow
@@ -35,6 +36,19 @@ def watchlist_entries
 #type=site relation http://overpass-turbo.eu/s/fwU 
 #name=Ogródki działkowe http://overpass-turbo.eu/s/dr3 
 #planowan* - tagowanie pod render http://overpass-turbo.eu/s/dtf 
+  return watchlist
+end
+
+def watch_invalid_wikipedia
+  watchlist = []
+  values = ["pl:Pomniki Jana Pawła II w Krakowie", "pl:Ringstand 58c"]
+
+  values.each do |value|
+    tags = { 'wikipedia' => value }
+    wiki_docs = "only provide links to articles which are 'about the feature'. A link from St Paul's Cathedral in London to an article about St Paul's Cathedral on Wikipedia is fine. A link from a bus depot to the company that operates it is not (see section below)."
+    message = "\"wikipedia=#{value}\"? \"#{wiki_docs}\" - https://wiki.openstreetmap.org/wiki/Key:wikipedia"
+    watchlist << { list: get_list(tags), message: message }
+  end
 
   return watchlist
 end
