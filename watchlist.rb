@@ -184,9 +184,9 @@ def watch_beton
   watchlist = []
   beton_variations = ["Beton", "beton"]
 
-  beton_variations.each do |beton_variation|
-    tags = { 'surface' => beton_variation }
-    beton_problem = "surface=#{beton_variation}? 'beton' is word for concrete in some languages but not in the English"
+  beton_variations.each do |value|
+    tags = { 'surface' => value }
+    beton_problem = "surface=#{value}? 'beton' is word for concrete in some languages but not in the English"
     overpass_code = 'gT2'
     message = beton_problem + "\n\n" + "See http://overpass-turbo.eu/s/#{overpass_code} for more problems of this type"
     watchlist << { list: get_list(tags), message: message }
