@@ -98,7 +98,7 @@ def run_watchlist
 end
 
 def watchlist_query(tags, lat, lon, distance)
-  query = '[timeout:25][out:json];
+  query = '[timeout:250][out:json];
 (
   ' + CartoCSSHelper::OverpassQueryGenerator.get_query_element_to_get_location(tags, lat, lon, 'node', distance) + '
   ' + CartoCSSHelper::OverpassQueryGenerator.get_query_element_to_get_location(tags, lat, lon, 'way', distance) + '
