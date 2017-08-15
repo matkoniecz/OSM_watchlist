@@ -437,3 +437,5 @@ https://help.openstreetmap.org/questions/50552/former-military-danger-areas
   watchlist << { list: get_list_from_arbitrary_query(query), message: info_message }
   return watchlist
 end
+
+#TODO - private public toilets https://www.openstreetmap.org/node/3058828370#map=19/-16.51863/35.17363&layers=N
