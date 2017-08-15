@@ -327,7 +327,6 @@ end
 
 #TODO escaping fails (copy pasted to overpass works...)
 =begin
-    /* query part for: “name~/proj\./ and name!=Nowoprojektowana” */
     node["name"~"proj\."]["name"!="Nowoprojektowana"];
     way["name"~"proj\."]["name"!="Nowoprojektowana"];
     relation["name"~"proj\."]["name"!="Nowoprojektowana"];
@@ -337,22 +336,18 @@ def watch_lifecycle_state_in_the_name
   watchlist = []
   project_mess_query = '[out:json][timeout:250];
   (
-    /* query part for: “name~planowan” */
     node["name"~"planowan"];
     way["name"~"planowan"];
     relation["name"~"planowan"];
 
-    /* query part for: “name~projektowan and name!=Nowoprojektowana” */
     node["name"~"projektowan"]["name"!="Nowoprojektowana"];
     way["name"~"projektowan"]["name"!="Nowoprojektowana"];
     relation["name"~"projektowan"]["name"!="Nowoprojektowana"];
 
-    /* query part for: “name~/w budowie/ and name!=Nowoprojektowana” */
     node["name"~"w budowie"];
     way["name"~"w budowie"];
     relation["name"~"w budowie"];
 
-    // query part for: “name~koncepcja and name!=Nowoprojektowana”
     node["name"~"koncepcja"];
     way["name"~"koncepcja"];
     relation["name"~"koncepcja"];
