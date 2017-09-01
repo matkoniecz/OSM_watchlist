@@ -208,10 +208,14 @@ def suspicious_name_watchlist_entry(name, language_code_of_name, description = n
   matching_tag_list.each do |required_tags|
     required_tags_info = ""
     required_tags_info = "with #{required_tags.to_s}" if required_tags != {}
-    returned << { list: get_list({ 'name' => name }.merge(required_tags)), message: "name = '#{name}' #{description}" }
-    returned << { list: get_list({ 'name' => name.capitalize }.merge(required_tags)), message: "name = '#{name.capitalize}' #{description}" }
-    returned << { list: get_list({ 'name:'+language_code_of_name => name }.merge(required_tags)), message: "name:pl = '#{name}' #{description}" }
-    returned << { list: get_list({ 'name:'+language_code_of_name => name.capitalize }.merge(required_tags)), message: "name:pl = '#{name.capitalize}' #{description}" }
+    [
+      {key: 'name', value: name},
+      {key: 'name', value: name.capitalize},
+      {key: 'name:'+language_code_of_name, value: name},
+      {key: 'name:'+language_code_of_name, value: name.capitalize},
+    ].each do |data|
+      returned << { list: get_list({ data[:key] => data[:value] }.merge(required_tags)), message: "#{data[:key]} = '#{data[:value]}' #{description}" }
+    end
   end
   return returned
 end
@@ -245,8 +249,8 @@ def watch_descriptive_names
   watchlist += suspicious_name_watchlist_entry('kiosk', 'pl', 'shop=kiosk', [{'shop' => 'kiosk'}], 'http://overpass-turbo.eu/s/qYg')
   # watchlist += suspicious_name_watchlist_entry('warzywniak')
   # watchlist += suspicious_name_watchlist_entry('Warzywniak')
-  complaint = 'for areas OSM data sometimes makes clear that <amenity = waste_disposal> is missing http://overpass-turbo.eu/s/qZh'
-  watchlist += suspicious_name_watchlist_entry('śmietnik', 'pl', complaint, [{'amenity' => 'waste_disposal'}])
+  complaint = 'for areas OSM data sometimes makes clear that <amenity = waste_disposal> is missing'
+  watchlist += suspicious_name_watchlist_entry('śmietnik', 'pl', complaint, [{'amenity' => 'waste_disposal'}], 'http://overpass-turbo.eu/s/qZh')
   watchlist += suspicious_name_watchlist_entry('drzewo', 'pl')
   watchlist += suspicious_name_watchlist_entry('kamieniołom', 'pl')
   watchlist += suspicious_name_watchlist_entry('quarry', 'en')
@@ -257,12 +261,12 @@ def watch_descriptive_names
   watchlist += suspicious_name_watchlist_entry('fontanna', 'pl')
   watchlist += suspicious_name_watchlist_entry('fountain', 'en')
   watchlist += suspicious_name_watchlist_entry('las', 'pl', 'name=las', [{'natural' => 'wood'}, {'landuse' => 'forest'}])
-  watchlist += suspicious_name_watchlist_entry('forest', 'en', 'name=forest', [{'natural' => 'wood'}, {'landuse' => 'forest'}], 'http://overpass-turbo.eu/s/qYi')
+  watchlist += suspicious_name_watchlist_entry('forest', 'en', 'name=forest', [{'natural' => 'wood'}, {'landuse' => 'forest'}], 'http://overpass-turbo.eu/s/rpJ')
   watchlist += suspicious_name_watchlist_entry('big forest', 'en', 'name=big forest', [{'natural' => 'wood'}, {'landuse' => 'forest'}])
   watchlist += suspicious_name_watchlist_entry('small forest', 'en', 'name=small forest', [{'natural' => 'wood'}, {'landuse' => 'forest'}])
 
   # TODO - las nie na lesie, miejscowości
-  watchlist += suspicious_name_watchlist_entry('wieża kościelna', 'pl', 'wieża kościelna (zamienić na   description = Wieża kościelna?, dodać man_made = tower), overpass: http://overpass-turbo.eu/s/qZo')
+  watchlist += suspicious_name_watchlist_entry('wieża kościelna', 'pl', 'wieża kościelna (zamienić na   description = Wieża kościelna?, dodać man_made = tower)') #http://overpass-turbo.eu/s/qZo
   watchlist += suspicious_name_watchlist_entry('mieszkanie', 'pl')
   watchlist += suspicious_name_watchlist_entry('dom', 'pl', 'name=dom, overpass: http://overpass-turbo.eu/s/qZn', [{'building' => :any_value}, {'historic' => 'ruins'}])
   #dom - also in Czechia

@@ -37,6 +37,7 @@ name=Playground
 OSM watchlist „Pomnik przyrody”
 =end
     run_watchlist
+    return
     final
 
     generate_preview('master')
