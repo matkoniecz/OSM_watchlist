@@ -1,0 +1,53 @@
+in case of requests, problems, suggestions, improvements, complaints send a message to http://www.openstreetmap.org/message/new/Mateusz%20Konieczny
+
+to request adding challenge like this in your region send message to http://www.openstreetmap.org/message/new/Mateusz%20Konieczny
+
+
+
+=============================================================
+
+wikipedia tags to nowhere
+----
+wikipedia tags must lead to existing pages
+
+this challenge lists cases of wikipedia links not leading to working pages
+----
+(1) check whatever wikipedia tag leads to existing page
+
+(2) delete it if it is not working
+
+(3) add working one if matching page exists
+
+(4) check whatever wikidata tag should be changed/removed
+
+hints:
+
+ - maybe wikipedia page was moved?
+
+ - wikidata link may be helpful if present - it may lead to existing page
+
+tags: wikipedia
+
+=============================================================
+
+http://overpass-turbo.eu/s/rpE tourism=attraction + name
+
+[out:json][timeout:60];
+{{geocodeArea:Mongolia}}->.searchArea;
+(
+   node[tourism=attraction][name](if:count_tags()==2)(area.searchArea);
+   way[tourism=attraction][name](if:count_tags()==2)(area.searchArea);
+);
+out meta;
+>;
+out body geom qt;
+
+bare tourism=attraction in 
+
+tourism=attraction with just name tag, without anything else
+
+it is necessary to either add tag describing the feature or merge it with existing ones
+
+some places added by maps.me users are personal notes or otherwise useless and obviously should be deleted
+
+=============================================================
