@@ -376,6 +376,12 @@ def watch_lifecycle_state_in_the_name
   return watchlist
 end
 
+#https://www.openstreetmap.org/changeset/49785062#map=8/46.881/18.215
+#Czy są tu jakieś pozostałości po bitwie? Jeśli tak to powiny zostać zmapowane, jeśli nie to jest to do skasowania.
+#"historic=battlefield to tag niezgodny z zasadami OSM, ale używany i wygląda na tolerowany."
+#To pora przestać go tolerować zanim więcej osób zacznie do OSM wsadzać wydarzenia (lepiej by wykasować to zanim sie zrobi popularne, mniej osób straci wtedy czasu na ich dodawanie)
+# https://www.openstreetmap.org/changeset/51522177#map=13/54.0944/21.6133&layers=N
+#name   Zbiornik ppoż.
 # wszystkie nawiasy http://overpass-turbo.eu/s/rpH
 # watchlist for rare landuse, surfave values in Kraków
 # more https://github.com/osmlab/name-suggestion-index/blob/master/filter.json https://lists.openstreetmap.org/pipermail/talk/2015-May/072923.html
