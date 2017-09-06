@@ -161,7 +161,7 @@ def get_list_from_arbitrary_query(query, required_tags = {})
       puts "skipped #{entry["type"]}"
       next
     end
-    url = "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}#map=15/#{lat}/#{lon}layers=N"
+    url = "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}#map=17/#{lat}/#{lon}layers=N"
     if is_location_undefined(lat, lon, entry)
       next
     end
