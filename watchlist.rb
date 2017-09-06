@@ -480,6 +480,7 @@ end
 #poprawiać za pomocą "confirm website" bazowaną na add wikidata
 #błedne linki do parafii http://overpass-turbo.eu/s/rpy
 
+=begin
 def watch_nonmilitary_military_danger
   watchlist = []
   query = '/*
@@ -512,3 +513,4 @@ http://www.openstreetmap.org/note/605791
   watchlist << { list: get_list_from_arbitrary_query(query), message: info_message }
   return watchlist
 end
+=end
