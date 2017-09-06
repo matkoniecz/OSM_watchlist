@@ -297,7 +297,6 @@ def watch_descriptive_names
   watchlist += suspicious_name_watchlist_entry('wieża kościelna', 'pl', 'wieża kościelna (zamienić na   description = Wieża kościelna?, dodać man_made = tower)') #http://overpass-turbo.eu/s/qZo
   watchlist += suspicious_name_watchlist_entry('mieszkanie', 'pl')
   watchlist += suspicious_name_watchlist_entry('dom', 'pl', 'name=dom, overpass: http://overpass-turbo.eu/s/qZn', [{'building' => :any_value}, {'historic' => 'ruins'}])
-  #dom - also in Czechia
   watchlist += suspicious_name_watchlist_entry('obora', 'pl', 'name=obora', [{'building' => :any_value}])
   watchlist += suspicious_name_watchlist_entry('barn', 'en', 'name=barn', [{'building' => :any_value}])
   watchlist += suspicious_name_watchlist_entry('dom', 'en', 'name=barn', [{'building' => :any_value}])
