@@ -420,6 +420,7 @@ def watch_lifecycle_state_in_the_name
   return watchlist
 end
 
+# https://www.openstreetmap.org/changeset/49958115
 #https://www.openstreetmap.org/changeset/49785062#map=8/46.881/18.215
 #Czy są tu jakieś pozostałości po bitwie? Jeśli tak to powiny zostać zmapowane, jeśli nie to jest to do skasowania.
 #"historic=battlefield to tag niezgodny z zasadami OSM, ale używany i wygląda na tolerowany."
