@@ -5,13 +5,14 @@ return
 require 'json'
 
 def watchlist_entries
+  requested_total_entries = 20
   watchlist = []
-  watchlist += watch_beton
-  watchlist += watch_invalid_wikipedia
-  watchlist += watch_descriptive_names
-  watchlist += watch_tree_species_in_name
-  watchlist += watch_valid_tags_unexpected_in_krakow
-  watchlist += watch_lifecycle_state_in_the_name
+  watchlist += watch_beton if count_entries(watchlist) < requested_total_entries
+  watchlist += watch_invalid_wikipedia if count_entries(watchlist) < requested_total_entries
+  watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_total_entries
+  watchlist += watch_descriptive_names(requested_total_entries - count_entries(watchlist))
+  watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_total_entries
+  watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_total_entries
   #watchlist += watch_nonmilitary_military_danger
 
 
@@ -52,6 +53,22 @@ def currently_present_note_at(lat, lon)
     notes = CartoCSSHelper::NotesDownloader.run_note_query(lat, lon, range, invalidate_cache: true)
   end
   return notes != empty
+end
+
+def count_entries(watchlist)
+  count = 0
+  watchlist.each do |entry|
+    entry[:list].each do |data|
+      if data[:lat].nil? || data[:lon].nil?
+        raise "#{entry[:message]} has broken data"
+      end
+      if currently_present_note_at(data[:lat], data[:lon])
+        next
+      end
+      count += 1
+    end
+  end
+  return count
 end
 
 def run_watchlist
@@ -199,7 +216,7 @@ def list_of_objects_with_this_name_part(name_part)
   return get_list_from_arbitrary_query(name_part_query)
 end
 
-def suspicious_name_watchlist_entry(name, language_code_of_name, description = nil, matching_tag_list = [{}], overpass_url = nil)
+def suspicious_name_watchlist_entry(name:, language_code_of_name:, description: nil, matching_tag_list: [{}], overpass_url: nil)
   # TODO rename to objects_using_this_name
   # TODO switch description and matching_tag_list
   # TODO add prefix to description with correct name tag value and name tag
@@ -217,7 +234,7 @@ def suspicious_name_watchlist_entry(name, language_code_of_name, description = n
       required_tags_info = ""
       required_tags_info = "with #{required_tags.to_s}" if required_tags != {}
       tags = { data[:key] => data[:value] }.merge(required_tags)
-      returned << { list: get_list(tags), message: "#{data[:key]} = '#{data[:value]}' #{description} #{required_tags_info}" }
+      returned << { list: get_list(tags), message: "#{data[:key]} = '#{data[:value]}' #{description} #{required_tags_info} (#{overpass_url})" }
     end
   end
 
@@ -242,7 +259,7 @@ def suspicious_name_watchlist_entry(name, language_code_of_name, description = n
     required_tags_info = ""
     required_tags_info = "with #{reverse_required_tags.to_s}" if reverse_required_tags != {}
     tags = { data[:key] => data[:value] }.merge(reverse_required_tags)
-    returned << { list: get_list(tags), message: "#{data[:key]} = '#{data[:value]}' #{description} #{required_tags_info}" }
+    returned << { list: get_list(tags), message: "#{data[:key]} = '#{data[:value]}' #{description} #{required_tags_info} (#{overpass_url})" }
   end
   return returned
 end
@@ -251,67 +268,76 @@ def objects_using_this_name_part(name_part, description)
   return [{ list: list_of_objects_with_this_name_part(name_part), message: description }]
 end
 
-def watch_descriptive_names
+def watch_descriptive_names(requested_entries)
   #https://wiki.openstreetmap.org/wiki/Naming_conventions#Don.27t_describe_things_using_name_tag
   #see also https://github.com/osmlab/name-suggestion-index - names should end here to discourage iD users from using them
   #user facing complaint: 
   # Czy tag name nie jest tu przypadkiem błędnie użyty jako opis obiektu? leisure=playground wystarcza by oznaczyć to jako plac zabaw.
   # Is it really parking named parking or is it just a parking and name tag is incorrectly used as a description?
+
+  #name=parking zakomentowanee bo otworzyłem dużo notek i czekam na reakcje
+  #name=apteka zakomentowane bo styl domyślny ma słabą ikonkę
+
   watchlist = []
   watchlist += objects_using_this_name_part('boisko do gry w', 'name used instead sport tags')
-  watchlist += suspicious_name_watchlist_entry('boisko', 'pl', 'name=boisko', [{'leisure' => 'pitch'}])
-  watchlist += suspicious_name_watchlist_entry('maszt telekomunikacyjny', 'pl')
-  watchlist += suspicious_name_watchlist_entry('wieża telekomunikacyjna', 'pl')
-  watchlist += suspicious_name_watchlist_entry('wiatrak', 'pl', 'name=wiatrak', [{'building' => :any_value}])
-  watchlist += suspicious_name_watchlist_entry('plac zabaw', 'pl', 'name=plac zabaw', [{'leisure' => 'playground'}], 'http://overpass-turbo.eu/s/qZ6')
-  watchlist += suspicious_name_watchlist_entry('plac zabaw dla dzieci', 'pl', 'name=plac dla dzieci', [{'leisure' => 'playground'}])
-  watchlist += suspicious_name_watchlist_entry('playground', 'en', [{'leisure' => 'playground'}], 'http://overpass-turbo.eu/s/qZ8')
-  #watchlist += suspicious_name_watchlist_entry('parking', 'pl', parking_complaint, [{'amenity' => 'parking'}])
-  watchlist += suspicious_name_watchlist_entry('parking bezpłatny', 'pl', 'parking with suspicious name', [{'amenity' => 'parking'}])
-  watchlist += suspicious_name_watchlist_entry('parking strzeżony', 'pl', 'parking with suspicious name', [{'amenity' => 'parking'}])
-  watchlist += suspicious_name_watchlist_entry('Parking Strzeżony', 'pl', 'parking with suspicious name', [{'amenity' => 'parking'}])
-  watchlist += suspicious_name_watchlist_entry('Public Parking', 'en', 'parking with suspicious name', [{'amenity' => 'parking'}])
-  watchlist += suspicious_name_watchlist_entry('free parking', 'en', 'free parking tagged using name rather than fee tag. overpass helper query: http://overpass-turbo.eu/s/qZf', [{'amenity' => 'parking'}])
-  watchlist += suspicious_name_watchlist_entry('supervised parking', 'en', 'supervised parking tagged using name rather than proper tag. overpass helper query: http://overpass-turbo.eu/s/qZf', [{'amenity' => 'parking'}])
-  watchlist += suspicious_name_watchlist_entry('dojazd do przedszkola', 'pl')
-  # dojazd do
-  #watchlist += suspicious_name_watchlist_entry('apteka', 'pl', 'name=apteka - overpass query: http://overpass-turbo.eu/s/qZa') - zakomentowane bo styl domyślny ma słabą ikonkę
-  watchlist += suspicious_name_watchlist_entry('kiosk', 'pl', 'shop=kiosk', [{'shop' => 'kiosk'}], 'http://overpass-turbo.eu/s/qYg')
-  # watchlist += suspicious_name_watchlist_entry('warzywniak')
-  # watchlist += suspicious_name_watchlist_entry('Warzywniak')
-  watchlist += suspicious_name_watchlist_entry('śmietnik', 'pl', 'OSM data sometimes makes clear that <amenity = waste_disposal> is missing', [{'amenity' => 'waste_disposal'}], 'http://overpass-turbo.eu/s/qZh')
-  watchlist += suspicious_name_watchlist_entry('drzewo', 'pl')
-  watchlist += suspicious_name_watchlist_entry('kamieniołom', 'pl')
-  watchlist += suspicious_name_watchlist_entry('quarry', 'en')
-  watchlist += suspicious_name_watchlist_entry('garaż', 'pl')
-  watchlist += suspicious_name_watchlist_entry('garaże', 'pl')
-  watchlist += suspicious_name_watchlist_entry('garage', 'en')
-  watchlist += suspicious_name_watchlist_entry('garages', 'en')
-  watchlist += suspicious_name_watchlist_entry('fontanna', 'pl', 'name=fontanna', [{'amenity' => "fountain"}])
-  watchlist += suspicious_name_watchlist_entry('fountain', 'en')
-  watchlist += suspicious_name_watchlist_entry('tablica informacyjna', 'pl', 'name=tablica informacyjna', [{'information' => "board"}])
-  watchlist += suspicious_name_watchlist_entry('las', 'pl', 'name=las', [{'natural' => 'wood'}, {'landuse' => 'forest'}])
-  watchlist += suspicious_name_watchlist_entry('forest', 'en', 'name=forest', [{'natural' => 'wood'}, {'landuse' => 'forest'}], 'http://overpass-turbo.eu/s/rpK')
-  watchlist += suspicious_name_watchlist_entry('big forest', 'en', 'name=big forest', [{'natural' => 'wood'}, {'landuse' => 'forest'}])
-  watchlist += suspicious_name_watchlist_entry('small forest', 'en', 'name=small forest', [{'natural' => 'wood'}, {'landuse' => 'forest'}])
-  watchlist += suspicious_name_watchlist_entry('wieża kościelna', 'pl', 'wieża kościelna (zamienić na   description = Wieża kościelna?, dodać man_made = tower)') #http://overpass-turbo.eu/s/qZo
-  watchlist += suspicious_name_watchlist_entry('mieszkanie', 'pl')
-  watchlist += suspicious_name_watchlist_entry('dom', 'pl', 'name=dom, overpass: http://overpass-turbo.eu/s/qZn', [{'building' => :any_value}, {'historic' => 'ruins'}])
-  watchlist += suspicious_name_watchlist_entry('obora', 'pl', 'name=obora', [{'building' => :any_value}])
-  watchlist += suspicious_name_watchlist_entry('barn', 'en', 'name=barn', [{'building' => :any_value}])
-  watchlist += suspicious_name_watchlist_entry('dom', 'en', 'name=barn', [{'building' => :any_value}])
-  watchlist += suspicious_name_watchlist_entry('restauracja', 'pl', 'name=restauracja', [{'amenity' => 'restaurant'}])
-  watchlist += suspicious_name_watchlist_entry('restaurant', 'en', 'name=restaurant', [{'amenity' => 'restaurant'}])
-
-  watchlist += suspicious_name_watchlist_entry('sklep', 'en', 'name=sklep', [{'shop' => :any_value}])
-
-  watchlist += suspicious_name_watchlist_entry('open field', 'en', 'what kind of open field is here?')
-  watchlist += suspicious_name_watchlist_entry('water tap', 'en', "water tap - to copy: <\n  man_made = water_tap\n  description = Water tap\n> overpass query helper: http://overpass-turbo.eu/s/qZe", [{'man_made' => 'water_tap'}])
-  watchlist += suspicious_name_watchlist_entry('park', 'en', 'name=park/name=Park', [{'leisure' => 'park'}], 'http://overpass-turbo.eu/s/qZb')
-  watchlist += suspicious_name_watchlist_entry('park', 'pl', 'name=park/name=Park', [{'leisure' => 'park'}], 'http://overpass-turbo.eu/s/qZb')
-
-  watchlist += suspicious_name_watchlist_entry('budynek gospodarczy', 'pl')
+  descriptive_names_entries.each do |entry|
+    return watchlist if count_entries(watchlist) >= requested_entries
+    matching_tag_list = entry[:matching_tags]
+    matching_tag_list ||= [{}]
+    watchlist += suspicious_name_watchlist_entry(name: entry[:name], language_code_of_name: entry[:language], matching_tag_list: matching_tag_list, overpass_url: entry[:overpass])
+  end
   return watchlist
+end
+
+def descriptive_names_entries
+  return [
+    {name: 'boisko', language: 'pl', matching_tags: [{'leisure' => 'pitch'}]},
+    {name: 'maszt telekomunikacyjny', language: 'pl'},
+    {name: 'wieża telekomunikacyjna', language: 'pl'},
+    {name: 'wiatrak', language: 'pl', matching_tags: [{'building' => :any_value}]},
+    {name: 'plac zabaw', language: 'pl', matching_tags: [{'leisure' => 'playground'}], overpass: 'http://overpass-turbo.eu/s/qZ6'},
+    {name: 'plac zabaw dla dzieci', language: 'pl', matching_tags: [{'leisure' => 'playground'}]},
+    {name: 'playground', language: 'en', matching_tags: [{'leisure' => 'playground'}], overpass: 'http://overpass-turbo.eu/s/qZ8'},
+    {name: 'parking', language: 'pl', matching_tags: [{'amenity' => 'parking'}]},
+    {name: 'parking bezpłatny', language: 'pl', matching_tags: [{'amenity' => 'parking'}]},
+    {name: 'parking strzeżony', language: 'pl', matching_tags: [{'amenity' => 'parking'}]},
+    {name: 'Parking Strzeżony', language: 'pl', matching_tags: [{'amenity' => 'parking'}]},
+    {name: 'Public Parking', language: 'en', matching_tags: [{'amenity' => 'parking'}], overpass: 'http://overpass-turbo.eu/s/qZf'},
+    {name: 'free parking', language: 'en', complaint: 'free parking tagged using name rather than fee tag', matching_tags: [{'amenity' => 'parking'}]},
+    {name: 'supervised parking', language: 'en', complaint: 'supervised parking tagged using name rather than proper tag', matching_tags: [{'amenity' => 'parking'}]},
+    {name: 'śmietnik', language: 'pl', complaint: 'OSM data sometimes makes clear that <amenity = waste_disposal> is missing', matching_tags: [{'amenity' => 'waste_disposal'}], overpass: 'http://overpass-turbo.eu/s/qZh'},
+    {name: 'kiosk', language: 'pl', matching_tags: [{'shop' => 'kiosk'}], overpass: 'http://overpass-turbo.eu/s/qYg'},
+    {name: 'dojazd do przedszkola', language: 'pl'},
+    {name: 'apteka', language: 'pl', overpass: 'http://overpass-turbo.eu/s/qZa'},
+    {name: 'kamieniołom', language: 'pl'},
+    {name: 'quarry', language: 'en'},
+    {name: 'garaż', language: 'pl'},
+    {name: 'garaże', language: 'pl'},
+    {name: 'garage', language: 'en'},
+    {name: 'garages', language: 'en'},
+    {name: 'fontanna', language: 'pl', matching_tags: [{'amenity' => "fountain"}]},
+    {name: 'fountain', language: 'en'},
+    {name: 'tablica informacyjna', language: 'pl', matching_tags: [{'information' => "board"}]},
+    {name: 'las', language: 'pl', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
+    {name: 'forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}], overpass: 'http://overpass-turbo.eu/s/rpK'},
+    {name: 'big forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
+    {name: 'small forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
+    {name: 'wieża kościelna', language: 'pl', complaint: 'wieża kościelna (zamienić na   description = Wieża kościelna?, dodać man_made = tower)', overpass: 'http://overpass-turbo.eu/s/qZo'},
+    {name: 'mieszkanie', language: 'pl'},
+    {name: 'dom', language: 'pl', matching_tags: [{'building' => :any_value}, {'historic' => 'ruins'}]},
+    {name: 'obora', language: 'pl', matching_tags: [{'building' => :any_value}]},
+    {name: 'barn', language: 'en', matching_tags: [{'building' => :any_value}]},
+    {name: 'dom', language: 'en', matching_tags: [{'building' => :any_value}]},
+    {name: 'restauracja', language: 'pl', matching_tags: [{'amenity' => 'restaurant'}]},
+    {name: 'restaurant', language: 'en', matching_tags: [{'amenity' => 'restaurant'}]},
+    {name: 'sklep', language: 'en', matching_tags: [{'shop' => :any_value}]},
+    {name: 'open field', language: 'en', complaint: 'what kind of open field is here?'},
+    {name: 'water tap', language: 'en', complaint: "water tap - to copy: <\n  man_made = water_tap\n  description = Water tap\n> overpass query helper: http://overpass-turbo.eu/s/qZe", matching_tags: [{'man_made' => 'water_tap'}]},
+    {name: 'park', language: 'en', matching_tags: [{'leisure' => 'park'}], overpass: 'http://overpass-turbo.eu/s/qZb'},
+    {name: 'park', language: 'pl', matching_tags: [{'leisure' => 'park'}], overpass: 'http://overpass-turbo.eu/s/qZb'},
+    {name: 'budynek gospodarczy', language: 'pl'},
+    {name: 'drzewo', language: 'pl'},
+  ]
 end
 
 def watch_tree_species_in_name
