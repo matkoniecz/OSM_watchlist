@@ -1,7 +1,5 @@
-puts "run overpass queeries mentioned here before running watchlist itself"
-return
-
 # frozen_string_literal: true
+#http://overpass-turbo.eu/s/qAX
 require 'json'
 
 def watchlist_entries
