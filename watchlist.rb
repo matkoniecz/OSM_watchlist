@@ -205,17 +205,44 @@ def suspicious_name_watchlist_entry(name, language_code_of_name, description = n
   # TODO add prefix to description with correct name tag value and name tag
   #TODO support nonacsii https://stackoverflow.com/a/38016153/4130619
   returned = []
+  name_variants = [
+    {key: 'name', value: name},
+    {key: 'name', value: name.capitalize},
+    {key: 'name:'+language_code_of_name, value: name},
+    {key: 'name:'+language_code_of_name, value: name.capitalize},
+  ]
+
   matching_tag_list.each do |required_tags|
-    required_tags_info = ""
-    required_tags_info = "with #{required_tags.to_s}" if required_tags != {}
-    [
-      {key: 'name', value: name},
-      {key: 'name', value: name.capitalize},
-      {key: 'name:'+language_code_of_name, value: name},
-      {key: 'name:'+language_code_of_name, value: name.capitalize},
-    ].each do |data|
-      returned << { list: get_list({ data[:key] => data[:value] }.merge(required_tags)), message: "#{data[:key]} = '#{data[:value]}' #{description}" }
+    name_variants.each do |data|
+      required_tags_info = ""
+      required_tags_info = "with #{required_tags.to_s}" if required_tags != {}
+      tags = { data[:key] => data[:value] }.merge(required_tags)
+      returned << { list: get_list(tags), message: "#{data[:key]} = '#{data[:value]}' #{description} #{required_tags_info}" }
     end
+  end
+
+  name_variants.each do |data|
+    # exclude cases of locations where bizarre names may happen
+    reverse_required_tags = {
+        'place': {operation: :not_equal_to, value: :any_value},
+        'amenity': {operation: :not_equal_to, value: "restaurant"},
+        'natural': {operation: :not_equal_to, value: "peak"}
+      }
+    matching_tag_list.each.each do |key, value|
+      if value.class == Hash
+        if value[:operation] == :not_equal_to
+          reverse_required_tags['key'] = value
+        else
+          raise "unexpected operation in #{value}"
+        end
+      else
+        reverse_required_tags['key'] = {operation: :not_equal_to, value: value}
+      end
+    end
+    required_tags_info = ""
+    required_tags_info = "with #{reverse_required_tags.to_s}" if reverse_required_tags != {}
+    tags = { data[:key] => data[:value] }.merge(reverse_required_tags)
+    returned << { list: get_list(tags), message: "#{data[:key]} = '#{data[:value]}' #{description} #{required_tags_info}" }
   end
   return returned
 end
@@ -246,7 +273,6 @@ def watch_descriptive_names
   watchlist += suspicious_name_watchlist_entry('Public Parking', 'en', 'parking with suspicious name', [{'amenity' => 'parking'}])
   watchlist += suspicious_name_watchlist_entry('free parking', 'en', 'free parking tagged using name rather than fee tag. overpass helper query: http://overpass-turbo.eu/s/qZf', [{'amenity' => 'parking'}])
   watchlist += suspicious_name_watchlist_entry('supervised parking', 'en', 'supervised parking tagged using name rather than proper tag. overpass helper query: http://overpass-turbo.eu/s/qZf', [{'amenity' => 'parking'}])
-  #TODO name=parking nie na parkingu
   watchlist += suspicious_name_watchlist_entry('dojazd do przedszkola', 'pl')
   # dojazd do
   #watchlist += suspicious_name_watchlist_entry('apteka', 'pl', 'name=apteka - overpass query: http://overpass-turbo.eu/s/qZa') - zakomentowane bo styl domyślny ma słabą ikonkę
@@ -268,21 +294,16 @@ def watch_descriptive_names
   watchlist += suspicious_name_watchlist_entry('forest', 'en', 'name=forest', [{'natural' => 'wood'}, {'landuse' => 'forest'}], 'http://overpass-turbo.eu/s/rpK')
   watchlist += suspicious_name_watchlist_entry('big forest', 'en', 'name=big forest', [{'natural' => 'wood'}, {'landuse' => 'forest'}])
   watchlist += suspicious_name_watchlist_entry('small forest', 'en', 'name=small forest', [{'natural' => 'wood'}, {'landuse' => 'forest'}])
-
-  # TODO - las nie na lesie, miejscowości
   watchlist += suspicious_name_watchlist_entry('wieża kościelna', 'pl', 'wieża kościelna (zamienić na   description = Wieża kościelna?, dodać man_made = tower)') #http://overpass-turbo.eu/s/qZo
   watchlist += suspicious_name_watchlist_entry('mieszkanie', 'pl')
   watchlist += suspicious_name_watchlist_entry('dom', 'pl', 'name=dom, overpass: http://overpass-turbo.eu/s/qZn', [{'building' => :any_value}, {'historic' => 'ruins'}])
   #dom - also in Czechia
-  #TODO - other values
   watchlist += suspicious_name_watchlist_entry('obora', 'pl', 'name=obora', [{'building' => :any_value}])
   watchlist += suspicious_name_watchlist_entry('barn', 'en', 'name=barn', [{'building' => :any_value}])
   watchlist += suspicious_name_watchlist_entry('dom', 'en', 'name=barn', [{'building' => :any_value}])
-  #TODO - other values
   watchlist += suspicious_name_watchlist_entry('restauracja', 'pl', 'name=restauracja', [{'amenity' => 'restaurant'}])
   watchlist += suspicious_name_watchlist_entry('restaurant', 'en', 'name=restaurant', [{'amenity' => 'restaurant'}])
 
-  #TODO - not only for amenity=restaurant
   watchlist += suspicious_name_watchlist_entry('sklep', 'en', 'name=sklep', [{'shop' => :any_value}])
 
   watchlist += suspicious_name_watchlist_entry('open field', 'en', 'what kind of open field is here?')
