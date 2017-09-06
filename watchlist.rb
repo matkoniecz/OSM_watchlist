@@ -363,31 +363,27 @@ end
 
 def watch_valid_tags_unexpected_in_krakow
   watchlist = []
-  range_in_km = 6
-  watchlist << { list: get_list({ 'horse' => 'designated' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) horse=designated" }
-  range_in_km = 40
-  watchlist << { list: get_list({ 'horse' => 'designated' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) horse=designated" }
-
-  range_in_km = 9
-  watchlist << { list: get_list({ 'highway' => 'bridleway' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) highway=bridleway Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?" }
-  range_in_km = 12
-  watchlist << { list: get_list({ 'highway' => 'bridleway' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) highway=bridleway Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?" }
-
-  range_in_km = 600
-  watchlist << { list: get_list({ 'highway' => 'bus_guideway' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?" }
-  range_in_km *= 2
-  watchlist << { list: get_list({ 'highway' => 'bus_guideway' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?" }
-
-  range_in_km = 6
-  watchlist << { list: get_list({ 'historic' => 'battlefield' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) historic=battlefield" }
-  range_in_km = 40
-  watchlist << { list: get_list({ 'historic' => 'battlefield' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) historic=battlefield" }
+  lat = 50
+  lon = 20
+  watchlist += detect_tags_in_region(lat, lon, 100, 'historic', 'battlefield')
+  watchlist += detect_tags_in_region(lat, lon, 100, 'horse', 'designated')
+  watchlist += detect_tags_in_region(lat, lon, 25, 'highway', 'bridleway', "Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?")
+  watchlist += detect_tags_in_region(lat, lon, 2500, 'highway', 'bus_guideway', "#highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?")
 
   #TODO: exclude volcano:status   extinct
   #range_in_km = 300
   #watchlist << { list: get_list({ 'natural' => 'volcano' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) Is it really a good idea to tag something as natural=volcano where it was last active about X 000 years ago? In that case natural=peak is probably better..." }
   #range_in_km = 400
   #watchlist << { list: get_list({ 'natural' => 'volcano' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) Is it really a good idea to tag something as natural=volcano where it was last active about X 000 years ago? In that case natural=peak is probably better..." }
+  return watchlist
+end
+
+def detect_tags_in_region(lat, lon, range_in_km, key, value, message="")
+  watchlist = []
+  range_in_km /= 2
+  watchlist << { list: get_list({ key => value }, lat, lon, range_in_km), message: "(#{range_in_km}km range) #{key}=#{value} #{message}" }
+  range_in_km *= 2
+  watchlist << { list: get_list({ key => value }, lat, lon, range_in_km), message: "(#{range_in_km}km range) #{key}=#{value} #{message}" }
   return watchlist
 end
 
