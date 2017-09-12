@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 #http://overpass-turbo.eu/s/qAX
 require 'json'
+require_relative 'watchlist_infrastructure'
 
 def watchlist_entries
   requested_total_entries = 20
@@ -12,14 +13,6 @@ def watchlist_entries
   watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_total_entries
   watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_total_entries
   watchlist += objects_using_this_name_part('naprawdę warto', 'spam')
-  #watchlist += watch_nonmilitary_military_danger
-
-
-  distance_in_km = 6
-  watchlist << { list: get_list({ 'bicycle' => 'official' }, 50, 20, distance_in_km), message: "bicycle=official within #{distance_in_km}km from [50, 20]" }
-  distance_in_km *= 5
-  watchlist << { list: get_list({ 'bicycle' => 'official' }, 50, 20, distance_in_km), message: "bicycle=official within #{distance_in_km}km from [50, 20]" }
-
   return watchlist
 end
 
@@ -37,155 +30,6 @@ def watch_invalid_wikipedia
   return watchlist
 end
 
-# in case of note present it accepts cache
-# in case of missing note and cache that is not current it checks to be sure
-def currently_present_note_at(lat, lon)
-  empty = '<?xml version="1.0" encoding="UTF-8"?>
-<osm version="0.6" generator="OpenStreetMap server">
-</osm>'
-  range = 0.025
-  notes = CartoCSSHelper::NotesDownloader.run_note_query(lat, lon, range).strip
-  return true if notes != empty
-  timestamp_in_h = (Time.now - CartoCSSHelper::NotesDownloader.cache_timestamp(lat, lon, range)).to_i / 60 / 60
-  if timestamp_in_h > 1
-    puts "note download after discarding cache (cache age was #{timestamp_in_h}h)"
-    notes = CartoCSSHelper::NotesDownloader.run_note_query(lat, lon, range, invalidate_cache: true)
-  end
-  return notes != empty
-end
-
-def count_entries(watchlist)
-  count = 0
-  watchlist.each do |entry|
-    entry[:list].each do |data|
-      if data[:lat].nil? || data[:lon].nil?
-        raise "#{entry[:message]} has broken data"
-      end
-      if currently_present_note_at(data[:lat], data[:lon])
-        next
-      end
-      count += 1
-    end
-  end
-  return count
-end
-
-def run_watchlist
-  watchlist_entries.each do |entry|
-    mentioned = false
-    entry[:list].each do |data|
-      if data[:lat].nil? || data[:lon].nil?
-        raise "#{entry[:message]} has broken data"
-      end
-      if currently_present_note_at(data[:lat], data[:lon])
-        next
-      end
-      unless mentioned
-        puts
-        puts
-        puts entry[:message]
-        mentioned = true
-      end
-      puts "# #{data[:url]}"
-    end
-  end
-end
-
-def watchlist_query(tags, lat, lon, distance)
-  query = '[timeout:250][out:json];
-(
-  ' + CartoCSSHelper::OverpassQueryGenerator.get_query_element_to_get_location(tags, lat, lon, 'node', distance) + '
-  ' + CartoCSSHelper::OverpassQueryGenerator.get_query_element_to_get_location(tags, lat, lon, 'way', distance) + '
-  ' + CartoCSSHelper::OverpassQueryGenerator.get_query_element_to_get_location(tags, lat, lon, 'relation', distance) + '
-);
-out body;
->;
-out skel qt;'
-  return query
-end
-
-def get_node_database(json_obj)
-  locations = {}
-  json_obj["elements"].each do |entry|
-    if entry["type"] == "node"
-      locations[entry["id"]] = entry["lat"].to_f, entry["lon"].to_f
-    end
-  end
-  return locations
-end
-
-def get_list(required_tags, lat = 0, lon = 0, distance_in_km = :infinity)
-  distance = :infinity
-  distance = if distance_in_km == :infinity
-               :infinity
-             else
-               distance_in_km * 1000
-             end
-  query = watchlist_query(required_tags, lat, lon, distance)
-  list = get_list_from_arbitrary_query(query, required_tags)
-  return list
-end
-
-def get_list_from_arbitrary_query(query, required_tags = {})
-  json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, "for watchlist #{required_tags}", false)
-
-  timestamp_in_h = (Time.now - CartoCSSHelper::OverpassDownloader.cache_timestamp(query)).to_i / 60 / 60
-
-  base = 24 * 30
-
-  if rand(base) < timestamp_in_h
-    puts "redoing #{timestamp_in_h}h old query"
-    json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, "for watchlist #{required_tags}", false, invalidate_cache: true)
-  end
-
-  obj = JSON.parse(json_string)
-
-  list = []
-  locations = get_node_database(obj)
-  elements = obj["elements"]
-
-  elements.each do |entry|
-    next if not_fully_matching_tag_set(entry["tags"], required_tags)
-    lat, lon = nil, nil
-    if entry["type"] == "way"
-      lat, lon = locations[entry["nodes"][0]]
-      if is_location_undefined(lat, lon, entry)
-        puts "location not loaded for way"
-        puts query
-      end
-    elsif entry["type"] == "node"
-      lat = entry["lat"].to_f
-      lon = entry["lon"].to_f
-    else
-      puts "skipped #{entry["type"]}"
-      next
-    end
-    url = "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}#map=17/#{lat}/#{lon}layers=N"
-    if is_location_undefined(lat, lon, entry)
-      next
-    end
-    list << { lat: lat, lon: lon, url: url }
-  end
-  return list
-end
-
-def is_location_undefined(lat, lon, entry)
-  if lat.nil? || lon.nil?
-    puts "Unexpected nil in get_list_from_arbitrary_query"
-    puts entry.to_s
-    return true
-  end
-  return false
-end
-
-def not_fully_matching_tag_set(json_response_tags, tags_in_dict)
-  return true if json_response_tags.nil?
-  tags_in_dict.each do |tag|
-    return true if json_response_tags[tag[0]] != tag[1]
-  end
-  return false
-end
-
 def watch_beton
   watchlist = []
   beton_variations = ["Beton", "beton"]
@@ -199,20 +43,6 @@ def watch_beton
   end
 
   return watchlist
-end
-
-def list_of_objects_with_this_name_part(name_part)
-  watchlist = []
-  name_part_query = '[out:json][timeout:250];
-  (
-    node["name"~"' + name_part + '"];
-    way["name"~"' + name_part + '"];
-    relation["name"~"' + name_part + '"];
-  );
-  out body;
-  >;
-  out skel qt;'
-  return get_list_from_arbitrary_query(name_part_query)
 end
 
 def suspicious_name_watchlist_entry(name:, language_code_of_name:, description: nil, matching_tag_list: [{}], overpass_url: nil)
@@ -365,11 +195,13 @@ def watch_valid_tags_unexpected_in_krakow
   watchlist = []
   lat = 50
   lon = 20
-  watchlist += detect_tags_in_region(lat, lon, 1000, 'boundary', 'historic') #1 295 -> 1 280 (w tym 634 way) in 2017 IX
-  watchlist += detect_tags_in_region(lat, lon, 100, 'historic', 'battlefield') #1 653 in 2017 IX
-  watchlist += detect_tags_in_region(lat, lon, 100, 'horse', 'designated')
-  watchlist += detect_tags_in_region(lat, lon, 25, 'highway', 'bridleway', "Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?")
-  watchlist += detect_tags_in_region(lat, lon, 2500, 'highway', 'bus_guideway', "#highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?")
+  watchlist += detect_tags_in_region(lat, lon, 1000, { 'boundary' => 'historic' }) #1 295 -> 1 280 (w tym 634 way) -> 1 274 (w tym 630 way) in 2017 IX
+  watchlist += detect_tags_in_region(lat, lon, 20, { 'bicycle' => 'official' })
+  watchlist += detect_tags_in_region(lat, lon, 20, {'highway': 'proposed', 'source': {operation: :not_equal_to, value: :any_value}})
+  watchlist += detect_tags_in_region(lat, lon, 100, { 'historic' => 'battlefield' }) #1 653 in 2017 IX
+  watchlist += detect_tags_in_region(lat, lon, 100, { 'horse' => 'designated' })
+  watchlist += detect_tags_in_region(lat, lon, 25, { 'highway' => 'bridleway' }, "Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?")
+  watchlist += detect_tags_in_region(lat, lon, 2500, { 'highway' => 'bus_guideway' }, "#highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?")
 
   #TODO: exclude volcano:status   extinct
   #range_in_km = 300
@@ -379,12 +211,12 @@ def watch_valid_tags_unexpected_in_krakow
   return watchlist
 end
 
-def detect_tags_in_region(lat, lon, range_in_km, key, value, message="")
+def detect_tags_in_region(lat, lon, range_in_km, tags, message="")
   watchlist = []
   range_in_km /= 2
-  watchlist << { list: get_list({ key => value }, lat, lon, range_in_km), message: "(#{range_in_km}km range) #{key}=#{value} #{message}" }
+  watchlist << { list: get_list(tags, lat, lon, range_in_km), message: "(#{range_in_km}km range) #{tags} #{message}" }
   range_in_km *= 2
-  watchlist << { list: get_list({ key => value }, lat, lon, range_in_km), message: "(#{range_in_km}km range) #{key}=#{value} #{message}" }
+  watchlist << { list: get_list(tags, lat, lon, range_in_km), message: "(#{range_in_km}km range) #{tags} #{message}" }
   return watchlist
 end
 
