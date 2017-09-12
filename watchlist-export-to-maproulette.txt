@@ -30,7 +30,7 @@ tags: wikipedia
 
 =============================================================
 
-http://overpass-turbo.eu/s/rpE tourism=attraction + name
+http://overpass-turbo.eu/s/ryl bare tourism=attraction
 
 [out:json][timeout:60];
 {{geocodeArea:Mongolia}}->.searchArea;

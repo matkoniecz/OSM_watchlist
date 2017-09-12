@@ -11,6 +11,7 @@ def watchlist_entries
   watchlist += watch_descriptive_names(requested_total_entries - count_entries(watchlist))
   watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_total_entries
   watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_total_entries
+  watchlist += objects_using_this_name_part('naprawdę warto', 'spam')
   #watchlist += watch_nonmilitary_military_danger
 
 
@@ -335,6 +336,7 @@ def descriptive_names_entries
     {name: 'park', language: 'pl', matching_tags: [{'leisure' => 'park'}], overpass: 'http://overpass-turbo.eu/s/qZb'},
     {name: 'budynek gospodarczy', language: 'pl'},
     {name: 'drzewo', language: 'pl'},
+    {name: 'lighthouse', language: 'en'},
   ]
 end
 
@@ -363,7 +365,8 @@ def watch_valid_tags_unexpected_in_krakow
   watchlist = []
   lat = 50
   lon = 20
-  watchlist += detect_tags_in_region(lat, lon, 100, 'historic', 'battlefield')
+  watchlist += detect_tags_in_region(lat, lon, 1000, 'boundary', 'historic') #1 295 -> 1 280 (w tym 634 way) in 2017 IX
+  watchlist += detect_tags_in_region(lat, lon, 100, 'historic', 'battlefield') #1 653 in 2017 IX
   watchlist += detect_tags_in_region(lat, lon, 100, 'horse', 'designated')
   watchlist += detect_tags_in_region(lat, lon, 25, 'highway', 'bridleway', "Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?")
   watchlist += detect_tags_in_region(lat, lon, 2500, 'highway', 'bus_guideway', "#highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?")
@@ -420,6 +423,7 @@ def watch_lifecycle_state_in_the_name
   return watchlist
 end
 
+# shop, bank etc with wikipedia tag
 # https://www.openstreetmap.org/changeset/49958115
 #https://www.openstreetmap.org/changeset/49785062#map=8/46.881/18.215
 #Czy są tu jakieś pozostałości po bitwie? Jeśli tak to powiny zostać zmapowane, jeśli nie to jest to do skasowania.
@@ -439,6 +443,7 @@ end
 #name=Ogródki działkowe http://overpass-turbo.eu/s/dr3 
 #planowan* - tagowanie pod render http://overpass-turbo.eu/s/dtf 
 #landuse=basin bez natural=water
+# http://www.openstreetmap.org/changeset/39896451#map=7/51.986/19.100
 
 #https://www.openstreetmap.org/way/33711547
 #note=taśmociąg na filarach + highway=service
