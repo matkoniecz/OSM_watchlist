@@ -31,27 +31,6 @@ def count_entries(watchlist)
   return count
 end
 
-def run_watchlist
-  watchlist_entries.each do |entry|
-    mentioned = false
-    entry[:list].each do |data|
-      if data[:lat].nil? || data[:lon].nil?
-        raise "#{entry[:message]} has broken data"
-      end
-      if currently_present_note_at(data[:lat], data[:lon])
-        next
-      end
-      unless mentioned
-        puts
-        puts
-        puts entry[:message]
-        mentioned = true
-      end
-      puts "# #{data[:url]}"
-    end
-  end
-end
-
 def watchlist_query(tags, lat, lon, distance)
   query = '[timeout:250][out:json];
 (

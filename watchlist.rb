@@ -3,6 +3,28 @@
 require 'json'
 require_relative 'watchlist_infrastructure'
 
+def run_watchlist
+  dump_descriptive_names_entries_to_stdout()
+  watchlist_entries.each do |entry|
+    mentioned = false
+    entry[:list].each do |data|
+      if data[:lat].nil? || data[:lon].nil?
+        raise "#{entry[:message]} has broken data"
+      end
+      if currently_present_note_at(data[:lat], data[:lon])
+        next
+      end
+      unless mentioned
+        puts
+        puts
+        puts entry[:message]
+        mentioned = true
+      end
+      puts "# #{data[:url]}"
+    end
+  end
+end
+
 def watchlist_entries
   requested_total_entries = 20
   watchlist = []
