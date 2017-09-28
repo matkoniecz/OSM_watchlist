@@ -1,5 +1,12 @@
 # frozen_string_literal: true
+
+# man_made=pier bez highway=footway
 #http://overpass-turbo.eu/s/qAX
+# http://www.openstreetmap.org/relation/2222174
+
+
+
+# boundary=historic http://overpass-turbo.eu/s/rEQ
 require 'json'
 require_relative 'watchlist_infrastructure'
 
@@ -140,16 +147,41 @@ def watch_descriptive_names(requested_entries)
   return watchlist
 end
 
+def dump_descriptive_names_entries_to_stdout()
+  descriptive_names_entries.each do |entry|
+    query = entry[:overpass]
+    if query == nil
+      query = ""
+    else
+      query = " overpass: #{query}"
+    end
+    puts "name=#{entry[:name]}#{guery}"
+  end
+end
+
 def descriptive_names_entries
   return [
+    # in https://github.com/osmlab/name-suggestion-index
+    {name: 'parking', language: 'pl', matching_tags: [{'amenity' => 'parking'}]},
+    {name: 'plac zabaw', language: 'pl', matching_tags: [{'leisure' => 'playground'}], overpass: 'http://overpass-turbo.eu/s/qZ6'},
+    {name: 'playground', language: 'en', matching_tags: [{'leisure' => 'playground'}], overpass: 'http://overpass-turbo.eu/s/qZ8'},
     {name: 'boisko', language: 'pl', matching_tags: [{'leisure' => 'pitch'}]},
+    {name: 'boisko sportowe', language: 'pl', matching_tags: [{'leisure' => 'pitch'}]},
+    {name: 'Boisko Sportowe', language: 'pl', matching_tags: [{'leisure' => 'pitch'}]},
+    {name: 'garaż', language: 'pl'},
+    {name: 'garaże', language: 'pl'},
+    {name: 'garage', language: 'en'},
+    {name: 'garages', language: 'en'},
+
+    # proposed in PR
+    {name: 'fontanna', language: 'pl', matching_tags: [{'amenity' => "fountain"}]},
+    {name: 'fountain', language: 'en', matching_tags: [{'amenity' => "fountain"}]},
+
+    # not in https://github.com/osmlab/name-suggestion-index
     {name: 'maszt telekomunikacyjny', language: 'pl'},
     {name: 'wieża telekomunikacyjna', language: 'pl'},
     {name: 'wiatrak', language: 'pl', matching_tags: [{'building' => :any_value}]},
-    {name: 'plac zabaw', language: 'pl', matching_tags: [{'leisure' => 'playground'}], overpass: 'http://overpass-turbo.eu/s/qZ6'},
     {name: 'plac zabaw dla dzieci', language: 'pl', matching_tags: [{'leisure' => 'playground'}]},
-    {name: 'playground', language: 'en', matching_tags: [{'leisure' => 'playground'}], overpass: 'http://overpass-turbo.eu/s/qZ8'},
-    {name: 'parking', language: 'pl', matching_tags: [{'amenity' => 'parking'}]},
     {name: 'parking bezpłatny', language: 'pl', matching_tags: [{'amenity' => 'parking'}]},
     {name: 'parking strzeżony', language: 'pl', matching_tags: [{'amenity' => 'parking'}]},
     {name: 'Parking Strzeżony', language: 'pl', matching_tags: [{'amenity' => 'parking'}]},
@@ -162,12 +194,6 @@ def descriptive_names_entries
     {name: 'apteka', language: 'pl', overpass: 'http://overpass-turbo.eu/s/qZa'},
     {name: 'kamieniołom', language: 'pl'},
     {name: 'quarry', language: 'en'},
-    {name: 'garaż', language: 'pl'},
-    {name: 'garaże', language: 'pl'},
-    {name: 'garage', language: 'en'},
-    {name: 'garages', language: 'en'},
-    {name: 'fontanna', language: 'pl', matching_tags: [{'amenity' => "fountain"}]},
-    {name: 'fountain', language: 'en'},
     {name: 'tablica informacyjna', language: 'pl', matching_tags: [{'information' => "board"}]},
     {name: 'las', language: 'pl', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
     {name: 'forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}], overpass: 'http://overpass-turbo.eu/s/rpK'},
@@ -181,14 +207,21 @@ def descriptive_names_entries
     {name: 'dom', language: 'en', matching_tags: [{'building' => :any_value}]},
     {name: 'restauracja', language: 'pl', matching_tags: [{'amenity' => 'restaurant'}]},
     {name: 'restaurant', language: 'en', matching_tags: [{'amenity' => 'restaurant'}]},
-    {name: 'sklep', language: 'en', matching_tags: [{'shop' => :any_value}]},
+    {name: 'sklep', language: 'pl', matching_tags: [{'shop' => :any_value}]},
+    {name: 'studnia', language: 'en', matching_tags: [{'man_made' => 'water_well'}]},
+    {name: 'droga lokalna', language: 'pl', matching_tags: [{'highway' => :any_value}]},
+    {name: 'droga prywatna', language: 'pl', matching_tags: [{'highway' => :any_value}]},
     {name: 'open field', language: 'en', complaint: 'what kind of open field is here?'},
+    {name: 'pole', language: 'pl', complaint: 'what kind of open field is here?'},
     {name: 'water tap', language: 'en', complaint: "water tap - to copy: <\n  man_made = water_tap\n  description = Water tap\n> overpass query helper: http://overpass-turbo.eu/s/qZe", matching_tags: [{'man_made' => 'water_tap'}]},
     {name: 'park', language: 'en', matching_tags: [{'leisure' => 'park'}], overpass: 'http://overpass-turbo.eu/s/qZb'},
     {name: 'park', language: 'pl', matching_tags: [{'leisure' => 'park'}], overpass: 'http://overpass-turbo.eu/s/qZb'},
     {name: 'budynek gospodarczy', language: 'pl'},
     {name: 'drzewo', language: 'pl'},
     {name: 'lighthouse', language: 'en'},
+    {name: 'scrub', language: 'en', matching_tags: [{'natural' => 'scrub'}]},
+    {name: 'staw', language: 'pl', matching_tags: [{'natural' => 'water'}]},
+    {name: 'torfowiska', language: 'pl', matching_tags: [{'natural' => 'wetland'}]},
   ]
 end
 
@@ -217,14 +250,14 @@ def watch_valid_tags_unexpected_in_krakow
   watchlist = []
   lat = 50
   lon = 20
-  watchlist += detect_tags_in_region(lat, lon, 1000, { 'boundary' => 'historic' }) #1 295 -> 1 280 (w tym 634 way) -> 1 274 (w tym 630 way) in 2017 IX
+  watchlist += detect_tags_in_region(lat, lon, 1000, { 'boundary' => 'historic', 'end_date': {operation: :not_equal_to, value: :any_value} }) #1 295 -> 1 280 (w tym 634 way) -> 1 274 (w tym 630 way) in 2017 IX  
   watchlist += detect_tags_in_region(lat, lon, 20, { 'bicycle' => 'official' })
   watchlist += detect_tags_in_region(lat, lon, 20, {'highway': 'proposed', 'source': {operation: :not_equal_to, value: :any_value}})
   watchlist += detect_tags_in_region(lat, lon, 100, { 'historic' => 'battlefield' }) #1 653 in 2017 IX
   watchlist += detect_tags_in_region(lat, lon, 100, { 'horse' => 'designated' })
   watchlist += detect_tags_in_region(lat, lon, 25, { 'highway' => 'bridleway' }, "Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?")
   watchlist += detect_tags_in_region(lat, lon, 2500, { 'highway' => 'bus_guideway' }, "#highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?")
-
+  #end_date - catch entries deep in past and in the far future
   #TODO: exclude volcano:status   extinct
   #range_in_km = 300
   #watchlist << { list: get_list({ 'natural' => 'volcano' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) Is it really a good idea to tag something as natural=volcano where it was last active about X 000 years ago? In that case natural=peak is probably better..." }
@@ -330,7 +363,8 @@ end
 #is_in:province
 #search for other is_in: tags on taginfo
 #(punkt widokowy) w nazwie
-
+#steps=yes instead of highway=steps
+#waterway=canal + area=yes
 #poprawiać za pomocą "confirm website" bazowaną na add wikidata
 #błedne linki do parafii http://overpass-turbo.eu/s/rpy
 
@@ -368,3 +402,4 @@ http://www.openstreetmap.org/note/605791
   return watchlist
 end
 =end
+#["concentration_camp"="nazism"]["amenity"="prison"]
