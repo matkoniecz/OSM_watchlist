@@ -36,6 +36,7 @@ def watchlist_entries
   requested_total_entries = 20
   watchlist = []
   watchlist += watch_beton if count_entries(watchlist) < requested_total_entries
+  watchlist += watch_other if count_entries(watchlist) < requested_total_entries
   watchlist += watch_invalid_wikipedia if count_entries(watchlist) < requested_total_entries
   watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_total_entries
   watchlist += watch_descriptive_names(requested_total_entries - count_entries(watchlist))
@@ -71,6 +72,13 @@ def watch_beton
     watchlist << { list: get_list(tags), message: message }
   end
 
+  return watchlist
+end
+
+def watch_other
+  watchlist = []
+  watchlist << { list: get_list({'leisure' => 'park', 'landuse' => 'industrial'}), message: 'leisure=park is not for industrial park' }
+  watchlist << { list: get_list({'steps' => 'yes', 'highway' => {operation: :not_equal_to, value: "steps"}}), message: 'Why this is not tagged as highway=steps? What is the meaning of steps=yes here? See http://overpass-turbo.eu/s/sLv for more cases.', overpass: 'http://overpass-turbo.eu/s/sLv' }
   return watchlist
 end
 
@@ -234,6 +242,7 @@ def descriptive_names_entries
     {name: 'torfowiska', language: 'pl', matching_tags: [{'natural' => 'wetland'}]},
     {name: 'shelter', language: 'en', matching_tags: [{'amenity' => 'shelter'}]},
     {name: 'picnic table', language: 'en', matching_tags: [{'leisure' => 'picnic_table'}]},
+    {name: 'steps', language: 'en', matching_tags: [{'highway' => 'steps'}]},
 
     {name: 'big forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
     {name: 'small forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
@@ -265,6 +274,7 @@ def watch_valid_tags_unexpected_in_krakow
   watchlist = []
   lat = 50
   lon = 20
+
   watchlist += detect_tags_in_region(lat, lon, 1000, { 'boundary' => 'historic', 'end_date': {operation: :not_equal_to, value: :any_value} }) #1 295 -> 1 280 (w tym 634 way) -> 1 274 (w tym 630 way) in 2017 IX  
   watchlist += detect_tags_in_region(lat, lon, 20, { 'bicycle' => 'official' })
   
@@ -273,6 +283,8 @@ def watch_valid_tags_unexpected_in_krakow
   watchlist += detect_tags_in_region(lat, lon, 200, { 'demolished' => 'yes' })
   watchlist += detect_tags_in_region(lat, lon, 20, { 'abandoned' => 'yes' })
   
+  watchlist += detect_tags_in_region(lat, lon, 200, { 'capacity:disabled' => 'unknown' })
+
   watchlist += detect_tags_in_region(lat, lon, 20, {'highway': 'proposed', 'source': {operation: :not_equal_to, value: :any_value}})
   watchlist += detect_tags_in_region(lat, lon, 100, { 'historic' => 'battlefield' }) #1 653 in 2017 IX
   watchlist += detect_tags_in_region(lat, lon, 200, { 'horse' => 'designated' }, "tu serio jest chodnik z wyznaczoną po nim trasą dla koni?")
@@ -429,7 +441,6 @@ out skel qt;
 #is_in:province
 #search for other is_in: tags on taginfo
 #(punkt widokowy) w nazwie
-#steps=yes instead of highway=steps
 #waterway=canal + area=yes
 #poprawiać za pomocą "confirm website" bazowaną na add wikidata
 #błedne linki do parafii http://overpass-turbo.eu/s/rpy
