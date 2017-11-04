@@ -153,9 +153,9 @@ def dump_descriptive_names_entries_to_stdout()
     if query == nil
       query = ""
     else
-      query = " overpass: #{query}"
+      query = " [overpass: #{query} ]"
     end
-    puts "name=#{entry[:name]}#{guery}"
+    puts "# name=#{entry[:name]}#{query}"
   end
 end
 
