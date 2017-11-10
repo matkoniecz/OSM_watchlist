@@ -22,9 +22,6 @@ def count_entries(watchlist)
       if data[:lat].nil? || data[:lon].nil?
         raise "#{entry[:message]} has broken data"
       end
-      if currently_present_note_at(data[:lat], data[:lon])
-        next
-      end
       count += 1
     end
   end
@@ -66,17 +63,22 @@ def get_list(required_tags, lat = 0, lon = 0, distance_in_km = :infinity)
   return list
 end
 
-def get_list_from_arbitrary_query(query, required_tags = {})
-  json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, "for watchlist #{required_tags}", false)
-
+def get_data_from_overpass(query, explanation)
+  json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, explanation, false)
   timestamp_in_h = (Time.now - CartoCSSHelper::OverpassDownloader.cache_timestamp(query)).to_i / 60 / 60
 
-  base = 24 * 30
-
-  if rand(base) < timestamp_in_h
-    puts "redoing #{timestamp_in_h}h old query"
-    json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, "for watchlist #{required_tags}", false, invalidate_cache: true)
+  if rand(24 * 30) > timestamp_in_h
+    return json_string
   end
+
+  puts "redoing #{timestamp_in_h}h old query"
+  return CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, explanation, false, invalidate_cache: true)
+end
+
+def get_list_from_arbitrary_query(query, required_tags = {})
+  explanation = "for watchlist #{required_tags}"
+  json_string = get_data_from_overpass(query, explanation)
+
 
   obj = JSON.parse(json_string)
 
@@ -104,7 +106,9 @@ def get_list_from_arbitrary_query(query, required_tags = {})
     if is_location_undefined(lat, lon, entry)
       next
     end
-    list << { lat: lat, lon: lon, url: url }
+    if not currently_present_note_at(lat, lon)
+      list << { lat: lat, lon: lon, url: url }
+    end
   end
   return list
 end

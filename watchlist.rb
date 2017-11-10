@@ -18,9 +18,6 @@ def run_watchlist
       if data[:lat].nil? || data[:lon].nil?
         raise "#{entry[:message]} has broken data"
       end
-      if currently_present_note_at(data[:lat], data[:lon])
-        next
-      end
       unless mentioned
         puts
         puts
