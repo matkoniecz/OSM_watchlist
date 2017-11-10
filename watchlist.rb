@@ -33,27 +33,15 @@ def watchlist_entries
   requested_total_entries = 20
   watchlist = []
   watchlist += watch_beton if count_entries(watchlist) < requested_total_entries
+  watchlist += watch_auto if count_entries(watchlist) < requested_total_entries
   watchlist += watch_other if count_entries(watchlist) < requested_total_entries
   watchlist += watch_invalid_wikipedia if count_entries(watchlist) < requested_total_entries
   watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_total_entries
   watchlist += watch_descriptive_names(requested_total_entries - count_entries(watchlist))
   watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_total_entries
   watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_total_entries
-  watchlist += objects_using_this_name_part('naprawdę warto', 'spam')
-  return watchlist
-end
-
-def watch_invalid_wikipedia
-  watchlist = []
-  values = ["pl:Pomniki Jana Pawła II w Krakowie", "pl:Ringstand 58c"]
-
-  values.each do |value|
-    tags = { 'wikipedia' => value }
-    wiki_docs = "only provide links to articles which are 'about the feature'. A link from St Paul's Cathedral in London to an article about St Paul's Cathedral on Wikipedia is fine. A link from a bus depot to the company that operates it is not (see section below)."
-    message = "\"wikipedia=#{value}\"? \"#{wiki_docs}\" - https://wiki.openstreetmap.org/wiki/Key:wikipedia"
-    watchlist << { list: get_list(tags), message: message }
-  end
-
+  watchlist += objects_using_this_name_part('naprawdę warto', 'spam') if count_entries(watchlist) < requested_total_entries
+  watchlist += watch_low_priority if count_entries(watchlist) < requested_total_entries if count_entries(watchlist) < requested_total_entries
   return watchlist
 end
 
@@ -72,10 +60,33 @@ def watch_beton
   return watchlist
 end
 
+def watch_auto
+  watchlist << { list: get_list({ 'access' => 'private', 'amenity' => 'toilets', 'note' => {operation: :not_equal_to, value: :any_value} }), message: 'amenity=toilets is supposed to be used only for public toilets, amenity=toilets with access=private makes no sense Is it place with a public toilets or not?' }
+end
+
 def watch_other
   watchlist = []
-  watchlist << { list: get_list({'leisure' => 'park', 'landuse' => 'industrial'}), message: 'leisure=park is not for industrial park' }
-  watchlist << { list: get_list({'steps' => 'yes', 'highway' => {operation: :not_equal_to, value: "steps"}}), message: 'Why this is not tagged as highway=steps? What is the meaning of steps=yes here? See http://overpass-turbo.eu/s/sLv for more cases.', overpass: 'http://overpass-turbo.eu/s/sLv' }
+    #after fixing revisit https://github.com/openstreetmap/iD/issues/4501
+  message = "is this object demolished or not? If demolished, it should be deleted, if not demolished then it is wrong to tag it as "
+  watchlist << { list: get_list({ 'demolished' => 'yes' }), message: message + "demolished=yes"}
+  watchlist << { list: get_list({ 'razed' => 'yes' }), message: message + "razed=yes"}
+  watchlist << { list: get_list({ 'access' => 'private', 'amenity' => 'telephone' }), message: 'access=private on what may be only public...' }
+  watchlist << { list: get_list({ 'access' => 'private', 'amenity' => 'toilets', 'note' => :any_value }), message: 'amenity=toiletsacces=rivate, note=*' }
+  #more at https://taginfo.openstreetmap.org/search?q=demolished%3Dyes
+
+  message = 'is it really both landuse=industrial and leisure=park? leisure=park is for https://en.wikipedia.org/wiki/Park, not for industrial park https://en.wikipedia.org/wiki/Industrial_park'
+  watchlist << { list: get_list({'leisure' => 'park', 'landuse' => 'industrial'}), message: message }
+  message = 'Why this is not tagged as highway=steps? What is the meaning of steps=yes here? See http://overpass-turbo.eu/s/sLv for more cases (I considered armchair mapping it to highway=steps but I think that verification from local mappers is preferable)'
+  watchlist << { list: get_list({'steps' => 'yes', 'highway' => 'footway'}), message: message, overpass: 'http://overpass-turbo.eu/s/sLv' }
+  watchlist << { list: get_list({'steps' => 'yes', 'highway' => 'path'}), message: message, overpass: 'http://overpass-turbo.eu/s/sLv' }
+  watchlist << { list: get_list({'steps' => 'yes', 'highway' => {operation: :not_equal_to, value: "steps"}}), message: message, overpass: 'http://overpass-turbo.eu/s/sLv' }
+  watchlist << { list: get_list({'step_count' => :any_value, 'highway' => {operation: :not_equal_to, value: "steps"}}), message: 'step_count without highway=steps' }
+  return watchlist
+end
+
+def watch_low_priority
+  watchlist = []
+  watchlist << { list: get_list({ 'demolished:building' => 'yes', 'note': {operation: :not_equal_to, value: :any_value} }), message: 'still visible in some aerial images, avoid deleting for now to avoid people tagging no longer existing objects' }
   return watchlist
 end
 
@@ -240,6 +251,7 @@ def descriptive_names_entries
     {name: 'shelter', language: 'en', matching_tags: [{'amenity' => 'shelter'}]},
     {name: 'picnic table', language: 'en', matching_tags: [{'leisure' => 'picnic_table'}]},
     {name: 'steps', language: 'en', matching_tags: [{'highway' => 'steps'}]},
+    {name: 'Pomnik przyrody', language: 'en', matching_tags: [{'natural' => 'tree'}]},
 
     {name: 'big forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
     {name: 'small forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
@@ -272,21 +284,26 @@ def watch_valid_tags_unexpected_in_krakow
   lat = 50
   lon = 20
 
-  watchlist += detect_tags_in_region(lat, lon, 1000, { 'boundary' => 'historic', 'end_date': {operation: :not_equal_to, value: :any_value} }) #1 295 -> 1 280 (w tym 634 way) -> 1 274 (w tym 630 way) in 2017 IX  
   watchlist += detect_tags_in_region(lat, lon, 20, { 'bicycle' => 'official' })
+  watchlist += detect_tags_in_region(lat, lon, 20, { 'building' => 'no' })
+  watchlist += detect_tags_in_region(lat, lon, 20, { 'oneway' => {operation: :not_equal_to, value: 'yes'} })
   
   #after fixing revisit https://github.com/openstreetmap/iD/issues/4501
   watchlist += detect_tags_in_region(lat, lon, 20, { 'disused' => 'yes' })
-  watchlist += detect_tags_in_region(lat, lon, 200, { 'demolished' => 'yes' })
   watchlist += detect_tags_in_region(lat, lon, 20, { 'abandoned' => 'yes' })
+
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'surface' => 'sett', 'smoothness': {operation: :not_equal_to, value: :any_value} })
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'surface' => 'cobblestone', 'smoothness': {operation: :not_equal_to, value: :any_value} })
   
   watchlist += detect_tags_in_region(lat, lon, 200, { 'capacity:disabled' => 'unknown' })
 
   watchlist += detect_tags_in_region(lat, lon, 20, {'highway': 'proposed', 'source': {operation: :not_equal_to, value: :any_value}})
   watchlist += detect_tags_in_region(lat, lon, 100, { 'historic' => 'battlefield' }) #1 653 in 2017 IX
-  watchlist += detect_tags_in_region(lat, lon, 200, { 'horse' => 'designated' }, "tu serio jest chodnik z wyznaczoną po nim trasą dla koni?")
+  watchlist += detect_tags_in_region(lat, lon, 150, { 'horse' => 'designated' }, "to naprawdę jest specjalnie przeznaczone dla koni?") #200 - too far
   watchlist += detect_tags_in_region(lat, lon, 25, { 'highway' => 'bridleway' }, "Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?")
   watchlist += detect_tags_in_region(lat, lon, 2500, { 'highway' => 'bus_guideway' }, "#highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?")
+
+  watchlist += detect_tags_in_region(lat, lon, 1000, { 'boundary' => 'historic', 'end_date': {operation: :not_equal_to, value: :any_value} }) #1 295 -> 1 280 (w tym 634 way) -> 1 274 (w tym 630 way) in 2017 IX  
   #end_date - catch entries deep in past and in the far future
   #TODO: exclude volcano:status   extinct
   #range_in_km = 300
@@ -337,6 +354,20 @@ def watch_lifecycle_state_in_the_name
   out skel qt;'
 
   watchlist << { list: get_list_from_arbitrary_query(project_mess_query), message: "planowane/projektowane" }
+  return watchlist
+end
+
+def watch_invalid_wikipedia
+  watchlist = []
+  values = ["pl:Pomniki Jana Pawła II w Krakowie", "pl:Ringstand 58c"]
+
+  values.each do |value|
+    tags = { 'wikipedia' => value }
+    wiki_docs = "only provide links to articles which are 'about the feature'. A link from St Paul's Cathedral in London to an article about St Paul's Cathedral on Wikipedia is fine. A link from a bus depot to the company that operates it is not (see section below)."
+    message = "\"wikipedia=#{value}\"? \"#{wiki_docs}\" - https://wiki.openstreetmap.org/wiki/Key:wikipedia"
+    watchlist << { list: get_list(tags), message: message }
+  end
+
   return watchlist
 end
 
