@@ -269,9 +269,6 @@ def watch_descriptive_names(requested_entries)
   # Czy tag name nie jest tu przypadkiem błędnie użyty jako opis obiektu? leisure=playground wystarcza by oznaczyć to jako plac zabaw.
   # Is it really parking named parking or is it just a parking and name tag is incorrectly used as a description?
 
-  #name=parking zakomentowanee bo otworzyłem dużo notek i czekam na reakcje
-  #name=apteka zakomentowane bo styl domyślny ma słabą ikonkę
-
   watchlist = []
   watchlist += objects_using_this_name_part('boisko do gry w', 'name used instead sport tags')
   descriptive_names_entries.each do |entry|
@@ -298,7 +295,10 @@ end
 def descriptive_names_entries
   return [
     # in https://github.com/osmlab/name-suggestion-index
-    {name: 'parking', language: 'pl', matching_tags: [{'amenity' => 'parking'}]},
+    #{name: 'parking', language: 'pl', matching_tags: [{'amenity' => 'parking'}]},
+    #{name: 'parking', language: 'en', matching_tags: [{'amenity' => 'parking'}]},
+    #{name: 'parking lot', language: 'en', matching_tags: [{'amenity' => 'parking'}]},
+    #{name: 'Parking Lot', language: 'en', matching_tags: [{'amenity' => 'parking'}]},
     {name: 'plac zabaw', language: 'pl', matching_tags: [{'leisure' => 'playground'}], overpass: 'http://overpass-turbo.eu/s/qZ6'},
     {name: 'playground', language: 'en', matching_tags: [{'leisure' => 'playground'}], overpass: 'http://overpass-turbo.eu/s/qZ8'},
     {name: 'boisko', language: 'pl', matching_tags: [{'leisure' => 'pitch'}], overpass: 'http://overpass-turbo.eu/s/s6F'},
@@ -310,7 +310,7 @@ def descriptive_names_entries
     {name: 'garages', language: 'en'},
     {name: 'fontanna', language: 'pl', matching_tags: [{'amenity' => "fountain"}]},
     {name: 'fountain', language: 'en', matching_tags: [{'amenity' => "fountain"}]},
-    #{name: 'apteka', language: 'pl', overpass: 'http://overpass-turbo.eu/s/qZa'},
+    #{name: 'apteka', language: 'pl', overpass: 'http://overpass-turbo.eu/s/qZa'}, #default style has poor icon
     {name: 'restaurant', language: 'en', matching_tags: [{'amenity' => 'restaurant'}]},
     {name: 'las', language: 'pl', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
     {name: 'forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}], overpass: 'http://overpass-turbo.eu/s/rpK'},
