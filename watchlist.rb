@@ -148,6 +148,12 @@ def watch_auto
   tags = { 'access' => 'private', 'amenity' => 'toilets', 'note' => not_present, 'fixme' => not_present }
   #watchlist << { list: get_list(tags), message: 'amenity=toilets is supposed to be used only for public toilets, amenity=toilets with access=private makes no sense. Is it place with a public toilets or not? If it is a public toilet but withh access limited to workers/students/clients - then likely access=customers is a better description' }
   #TODO reconsider
+
+  message = 'Why this is not tagged as highway=steps? What is the meaning of steps=yes here? See http://overpass-turbo.eu/s/tPd for more cases (I considered armchair mapping it to highway=steps but I think that verification from local mappers is preferable)'
+  watchlist << { list: get_list({'steps' => 'yes', 'highway' => 'footway'}), message: message, overpass: 'http://overpass-turbo.eu/s/tPd' }
+  watchlist << { list: get_list({'steps' => 'yes', 'highway' => 'path'}), message: message, overpass: 'http://overpass-turbo.eu/s/tPd' }
+  watchlist << { list: get_list({'steps' => 'yes', 'highway' => {operation: :not_equal_to, value: "steps"}}), message: message, overpass: 'http://overpass-turbo.eu/s/tPd' }
+
   return watchlist
 end
 
@@ -174,10 +180,6 @@ def watch_other
   watchlist << { list: get_list({ 'access' => 'private', 'amenity' => 'telephone' }), message: 'access=private on what is supposed to be mapped only if public (mapping phones not accessible to public may sometimes make sense but one should use a different tag)...' }
   message = 'is it really both landuse=industrial and leisure=park? leisure=park is for https://en.wikipedia.org/wiki/Park, not for industrial park https://en.wikipedia.org/wiki/Industrial_park'
   watchlist << { list: get_list({'leisure' => 'park', 'landuse' => 'industrial'}), message: message }
-  message = 'Why this is not tagged as highway=steps? What is the meaning of steps=yes here? See http://overpass-turbo.eu/s/sLv for more cases (I considered armchair mapping it to highway=steps but I think that verification from local mappers is preferable)'
-  watchlist << { list: get_list({'steps' => 'yes', 'highway' => 'footway'}), message: message, overpass: 'http://overpass-turbo.eu/s/sLv' }
-  watchlist << { list: get_list({'steps' => 'yes', 'highway' => 'path'}), message: message, overpass: 'http://overpass-turbo.eu/s/sLv' }
-  watchlist << { list: get_list({'steps' => 'yes', 'highway' => {operation: :not_equal_to, value: "steps"}}), message: message, overpass: 'http://overpass-turbo.eu/s/sLv' }
   watchlist << { list: get_list({'step_count' => :any_value, 'highway' => {operation: :not_equal_to, value: "steps"}}), message: 'step_count without highway=steps' }
   return watchlist
 end
