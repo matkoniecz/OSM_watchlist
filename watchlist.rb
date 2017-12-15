@@ -79,8 +79,13 @@ out meta;
 require 'json'
 require_relative 'watchlist_infrastructure'
 
+def requested_watchlist_entries
+  return 20
+end
+
 def run_watchlist
-  dump_descriptive_names_entries_to_stdout()
+  #dump_descriptive_names_entries_to_stdout()
+  displayed = 0
   watchlist_entries.each do |entry|
     mentioned = false
     entry[:list].each do |data|
@@ -93,24 +98,31 @@ def run_watchlist
         puts entry[:message]
         mentioned = true
       end
-      puts "# #{data[:url]}"
+      puts data[:type]+'('+data[:id].to_s+')' + ';'
+      puts "// #{data[:url]}"
+      displayed += 1
+      if displayed > 5 * requested_watchlist_entries
+        break
+      end
+    end
+    if displayed >= requested_watchlist_entries
+      break
     end
   end
 end
 
 def watchlist_entries
-  requested_total_entries = 20
   watchlist = []
-  watchlist += watch_beton if count_entries(watchlist) < requested_total_entries
-  watchlist += watch_auto if count_entries(watchlist) < requested_total_entries
-  watchlist += watch_other if count_entries(watchlist) < requested_total_entries
-  watchlist += watch_invalid_wikipedia if count_entries(watchlist) < requested_total_entries
-  watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_total_entries
-  watchlist += watch_descriptive_names(requested_total_entries - count_entries(watchlist))
-  watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_total_entries
-  watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_total_entries
-  watchlist += objects_using_this_name_part('naprawdę warto', 'spam') if count_entries(watchlist) < requested_total_entries
-  watchlist += watch_low_priority if count_entries(watchlist) < requested_total_entries if count_entries(watchlist) < requested_total_entries
+  watchlist += watch_auto if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += objects_using_this_name_part('naprawdę warto', 'spam') if count_entries(watchlist) < requested_watchlist_entries
+  #watchlist += watch_other if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_invalid_wikipedia if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_descriptive_names(requested_watchlist_entries - count_entries(watchlist))
+  watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_lifecycle if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_low_priority if count_entries(watchlist) < requested_watchlist_entries if count_entries(watchlist) < requested_watchlist_entries
   return watchlist
 end
 
@@ -130,19 +142,36 @@ def watch_beton
 end
 
 def watch_auto
-  watchlist << { list: get_list({ 'access' => 'private', 'amenity' => 'toilets', 'note' => {operation: :not_equal_to, value: :any_value} }), message: 'amenity=toilets is supposed to be used only for public toilets, amenity=toilets with access=private makes no sense Is it place with a public toilets or not?' }
+  watchlist = []
+  watchlist = watchlist + watch_beton
+  not_present = {operation: :not_equal_to, value: :any_value}
+  tags = { 'access' => 'private', 'amenity' => 'toilets', 'note' => not_present, 'fixme' => not_present }
+  #watchlist << { list: get_list(tags), message: 'amenity=toilets is supposed to be used only for public toilets, amenity=toilets with access=private makes no sense. Is it place with a public toilets or not? If it is a public toilet but withh access limited to workers/students/clients - then likely access=customers is a better description' }
+  #TODO reconsider
+  return watchlist
+end
+
+def watch_lifecycle
+  watchlist = []
+  #after fixing revisit https://github.com/openstreetmap/iD/issues/4501
+  message = "is this object demolished or not? If demolished, it should be deleted (if stil present at least on some aerial images it should be tagged in a better way - for example object with note='demolished on 2017-10' ), if not demolished then it is wrong to tag it as "
+  watchlist << { list: get_list({ 'demolished' => 'yes' }), message: message + "demolished=yes"}
+  watchlist << { list: get_list({ 'railway' => 'razed' }), message: message + "railway=razed"}
+  watchlist << { list: get_list({ 'railway' => 'historic' }), message: message + "railway=historic"}
+  watchlist << { list: get_list({ 'railway' => 'dismantled' }), message: message + "railway=dismantled"}
+  watchlist << { list: get_list({ 'railway' => 'obliterated' }), message: message + "railway=obliterated"}
+  watchlist << { list: get_list({ 'razed' => 'yes', 'railway' => 'disused' }), message: "is it only disused and railway tracks remain or is it completely razed?"}
+  watchlist << { list: get_list({ 'razed' => 'yes', 'railway' => {operation: :not_equal_to, value: "disused"} }), message: message + "razed=yes"}
+  #more at https://taginfo.openstreetmap.org/search?q=demolished%3Dyes
+  return watchlist
 end
 
 def watch_other
   watchlist = []
-    #after fixing revisit https://github.com/openstreetmap/iD/issues/4501
-  message = "is this object demolished or not? If demolished, it should be deleted, if not demolished then it is wrong to tag it as "
-  watchlist << { list: get_list({ 'demolished' => 'yes' }), message: message + "demolished=yes"}
-  watchlist << { list: get_list({ 'razed' => 'yes' }), message: message + "razed=yes"}
-  watchlist << { list: get_list({ 'access' => 'private', 'amenity' => 'telephone' }), message: 'access=private on what may be only public...' }
-  watchlist << { list: get_list({ 'access' => 'private', 'amenity' => 'toilets', 'note' => :any_value }), message: 'amenity=toiletsacces=rivate, note=*' }
-  #more at https://taginfo.openstreetmap.org/search?q=demolished%3Dyes
+  watchlist = watchlist + watch_unusual_seasonal_for_waterway
+  watchlist = watchlist + watch_unusual_seasonal_not_for_waterway
 
+  watchlist << { list: get_list({ 'access' => 'private', 'amenity' => 'telephone' }), message: 'access=private on what is supposed to be mapped only if public (mapping phones not accessible to public may sometimes make sense but one should use a different tag)...' }
   message = 'is it really both landuse=industrial and leisure=park? leisure=park is for https://en.wikipedia.org/wiki/Park, not for industrial park https://en.wikipedia.org/wiki/Industrial_park'
   watchlist << { list: get_list({'leisure' => 'park', 'landuse' => 'industrial'}), message: message }
   message = 'Why this is not tagged as highway=steps? What is the meaning of steps=yes here? See http://overpass-turbo.eu/s/sLv for more cases (I considered armchair mapping it to highway=steps but I think that verification from local mappers is preferable)'
@@ -153,9 +182,31 @@ def watch_other
   return watchlist
 end
 
+def watch_unusual_seasonal_for_waterway
+  #see https://github.com/gravitystorm/openstreetmap-carto/pull/2982
+  tags =[['waterway', :any_value], ['seasonal' , :any_value]]
+  valid_seasonal_tags = ['yes', 'no', 'wet_season', 'dry_season', 'winter', 'summer', 'spring', 'autumn']
+  for tag in valid_seasonal_tags
+    tags << ['seasonal', {operation: :not_equal_to, value: tag}] 
+  end
+  return [{ list: get_list(tags), message: 'unexpected seasonal tag on a waterway' }]
+end
+
+def watch_unusual_seasonal_not_for_waterway
+  tags =[['waterway', {operation: :not_equal_to, value: :any_value}], ['seasonal' , :any_value]]
+  valid_seasonal_tags = ['yes', 'no', 'wet_season', 'dry_season', 'winter', 'summer', 'spring', 'autumn']
+  for tag in valid_seasonal_tags
+    tags << ['seasonal', {operation: :not_equal_to, value: tag}] 
+  end
+  return []#{ list: get_list(tags), message: 'unexpected seasonal tag (not on a waterway)' }]
+end
+
 def watch_low_priority
   watchlist = []
   watchlist << { list: get_list({ 'demolished:building' => 'yes', 'note': {operation: :not_equal_to, value: :any_value} }), message: 'still visible in some aerial images, avoid deleting for now to avoid people tagging no longer existing objects' }
+
+  # waits for responses
+  watchlist << { list: get_list({ 'access' => 'private', 'amenity' => 'toilets', 'note' => :any_value }), message: 'amenity=toilets access=private, note=*' }
   return watchlist
 end
 
@@ -271,6 +322,8 @@ def descriptive_names_entries
     # not in https://github.com/osmlab/name-suggestion-index
     {name: 'staw', language: 'pl', matching_tags: [{'natural' => 'water'}]},
 
+    {name: 'rondo', language: 'pl'},
+    {name: 'strzelnica', language: 'pl'},
     {name: 'water tap', language: 'en', complaint: "water tap - to copy: <\n  man_made = water_tap\n  description = Water tap\n> overpass query helper: http://overpass-turbo.eu/s/qZe", matching_tags: [{'man_made' => 'water_tap'}]},
     {name: 'park', language: 'en', matching_tags: [{'leisure' => 'park'}], overpass: 'http://overpass-turbo.eu/s/qZb'},
     {name: 'park', language: 'pl', matching_tags: [{'leisure' => 'park'}], overpass: 'http://overpass-turbo.eu/s/qZb'},
@@ -279,6 +332,9 @@ def descriptive_names_entries
     {name: 'scrub', language: 'en', matching_tags: [{'natural' => 'scrub'}]},
     {name: 'kamieniołom', language: 'pl'},
     {name: 'quarry', language: 'en'},
+    {name: 'beach', language: 'en', matching_tags: [{'natural' => 'beach'}]},
+    {name: 'plaża', language: 'pl', matching_tags: [{'natural' => 'beach'}]},
+    {name: 'strand', language: 'de', matching_tags: [{'natural' => 'beach'}]},
     {name: 'water', language: 'en', matching_tags: [{'amenity' => 'drinking_water'}]},
     {name: 'viewpoint', language: 'en', matching_tags: [{'tourism' => 'viewpoint'}]},
     {name: 'boisko do koszykówki', language: 'pl', matching_tags: [{'leisure' => 'pitch', 'sport' => 'basketball'}]},
