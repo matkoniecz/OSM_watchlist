@@ -125,12 +125,44 @@ end
 def not_fully_matching_tag_set(json_response_tags, tags_in_dict)
   return true if json_response_tags.nil?
   tags_in_dict.each do |tag|
-    return true if json_response_tags[tag[0]] != tag[1]
+    if is_failing_tag_match(json_response_tags, tag)
+      puts tag[1]
+      return true
+    end
   end
   return false
 end
 
+def is_failing_tag_match(json_response_tags, tag)
+    key = tag[0]
+    if tag[1].class == Hash
+      if tag[1][:operation] == :not_equal_to
+        return is_failing_negative_tag_match(json_response_tags, key, tag[1][:value])
+      end
+    end
+    value = tag[1]
+    if value == :any_value
+      if json_response_tags[key] == nil
+        # tag not present
+        return true
+      end
+    else
+      if json_response_tags[key] != value
+        # not matching specified value
+        return true
+      end
+    end
+end
 
+def is_failing_negative_tag_match(json_response_tags, key, value)
+    if value == :any_value
+      # was not supposed to be present
+      return true if json_response_tags[key] != nil
+    else
+      # was supposed to have a different value
+      return true if json_response_tags[key] == value
+    end
+end
 def list_of_objects_with_this_name_part(name_part)
   watchlist = []
   name_part_query = '[out:json][timeout:250];
