@@ -101,7 +101,7 @@ def run_watchlist
       puts data[:type]+'('+data[:id].to_s+')' + ';'
       puts "// #{data[:url]}"
       displayed += 1
-      if displayed > 5 * requested_watchlist_entries
+      if displayed >= requested_watchlist_entries
         break
       end
     end
