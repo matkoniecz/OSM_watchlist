@@ -73,7 +73,9 @@ out meta;
 #https://wiki.openstreetmap.org/w/index.php?title=User:Mateusz_Konieczny&action=edit
 
 
-# boundary=historic http://overpass-turbo.eu/s/rEQ
+
+#zwiększyć zasięg w watch_valid_tags_unexpected_in_krakow
+
 require 'json'
 require_relative 'watchlist_infrastructure'
 
