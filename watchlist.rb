@@ -5,11 +5,72 @@ dodajemy wszystko do TODO listy (ctrl+a by zaznaczyc wszystko)
 =end
 
 # frozen_string_literal: true
+=begin
 
-# man_made=pier bez highway=footway
-#http://overpass-turbo.eu/s/qAX
-# http://www.openstreetmap.org/relation/2222174
+mix of various fixes required:
 
+[out:xml][timeout:725][bbox:{{bbox}}];
+(
+  node[tourism=attraction][name](if:count_tags()==2)(area.searchArea);
+  way[tourism=attraction][name](if:count_tags()==2)(area.searchArea);
+  node["area"="yes"](if:count_tags() == 1)({{bbox}});
+  way["area"="yes"](if:count_tags() == 1)({{bbox}});
+  relation["area"="yes"](if:count_tags() == 1)({{bbox}});
+  node["area"="yes"][name](if:count_tags() == 2)({{bbox}});
+  way["area"="yes"][name](if:count_tags() == 2)({{bbox}});
+  relation["area"="yes"][name](if:count_tags() == 2)({{bbox}});
+
+  node["leisure"="pitch"]["name"="boisko"]["sport"="soccer"];
+  way["leisure"="pitch"]["name"="boisko"]["sport"="soccer"];
+  relation["leisure"="pitch"]["name"="boisko"]["sport"="soccer"];
+  node["leisure"="pitch"]["name"="Boisko"]["sport"="soccer"];
+  way["leisure"="pitch"]["name"="Boisko"]["sport"="soccer"];
+  relation["leisure"="pitch"]["name"="Boisko"]["sport"="soccer"];
+  node["leisure"="pitch"]["name"="kort tenisowy"]["sport"="tennis"];
+  way["leisure"="pitch"]["name"="kort tenisowy"]["sport"="tennis"];
+  relation["leisure"="pitch"]["name"="kort tenisowy"]["sport"="tennis"];
+  node["leisure"="pitch"]["name"="Kort tenisowy"]["sport"="tennis"];
+  way["leisure"="pitch"]["name"="Kort tenisowy"]["sport"="tennis"];
+  relation["leisure"="pitch"]["name"="Kort tenisowy"]["sport"="tennis"];
+  node["boundary"="historic"]["end_date"!="2017"]["end_date"!="2016"]["end_date"!="2018"];
+  way["boundary"="historic"]["end_date"!="2017"]["end_date"!="2016"]["end_date"!="2018"];
+  relation["boundary"="historic"]["end_date"!="2017"]["end_date"!="2016"]["end_date"!="2018"];
+  );
+(._;>;);
+out meta;
+
+
+is an area=yes remaining from unfinished edit without obvious purpose. Is it representing something or is it an area for deletion?
+
+delete historic data that should never be added to OSM
+
+
+untagged objects - memory intensive, use area smaller than małopolska:
+
+[out:xml][timeout:525];
+way({{bbox}})(if:count_tags()==0)->.w1;
+rel(bw.w1);way(r)->.w2;
+(.w1; - .w2;);
+(._; >;);
+out meta;
+
+
+#https://wiki.openstreetmap.org/wiki/Key:teryt:simc - jest link walidujący, powtarzane kody
+
+=begin
+
+
+[out:xml][timeout:25];
+(
+  relation(specific);
+);
+(._;>;);
+out meta;
+
+=end
+# http://overpass-turbo.eu/s/rEQ
+
+#https://wiki.openstreetmap.org/w/index.php?title=User:Mateusz_Konieczny&action=edit
 
 
 # boundary=historic http://overpass-turbo.eu/s/rEQ
