@@ -115,7 +115,7 @@ def watchlist_entries
   watchlist = []
   watchlist += watch_auto if count_entries(watchlist) < requested_watchlist_entries
   watchlist += objects_using_this_name_part('naprawdę warto', 'spam') if count_entries(watchlist) < requested_watchlist_entries
-  #watchlist += watch_other if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_other if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_invalid_wikipedia if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_descriptive_names(requested_watchlist_entries - count_entries(watchlist))
