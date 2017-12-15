@@ -1,3 +1,9 @@
+=begin
+instalujemy plugin todo w JOSMie
+filtr "type:node"
+dodajemy wszystko do TODO listy (ctrl+a by zaznaczyc wszystko)
+=end
+
 # frozen_string_literal: true
 
 # man_made=pier bez highway=footway
