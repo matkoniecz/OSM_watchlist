@@ -112,6 +112,9 @@ def get_list_from_arbitrary_query(query, required_tags = {})
     end
     if not currently_present_note_at(lat, lon)
       list << { lat: lat, lon: lon, url: url, id: entry['id'], type: entry['type']}
+      if list.length >= requested_watchlist_entries
+        return list
+      end
     end
   end
   return list
