@@ -5,11 +5,14 @@ def currently_present_note_at(lat, lon)
 <osm version="0.6" generator="OpenStreetMap server">
 </osm>'
   range = 0.025
+  if CartoCSSHelper::NotesDownloader.cache_timestamp(lat, lon, range) == nil
+    puts "note download (cache was not present) (note check of #{lat}, #{lon})"
+  end
   notes = CartoCSSHelper::NotesDownloader.run_note_query(lat, lon, range).strip
   return true if notes != empty
   timestamp_in_h = (Time.now - CartoCSSHelper::NotesDownloader.cache_timestamp(lat, lon, range)).to_i / 60 / 60
   if timestamp_in_h > 1
-    puts "note download after discarding cache (cache age was #{timestamp_in_h}h)"
+    puts "note download after discarding cache (cache age was #{timestamp_in_h}h) (note check of #{lat}, #{lon})"
     notes = CartoCSSHelper::NotesDownloader.run_note_query(lat, lon, range, invalidate_cache: true)
   end
   return notes != empty
@@ -68,6 +71,7 @@ def get_data_from_overpass(query, explanation)
   timestamp_in_h = (Time.now - CartoCSSHelper::OverpassDownloader.cache_timestamp(query)).to_i / 60 / 60
 
   if rand(24 * 30) > timestamp_in_h
+    puts "not redoing #{timestamp_in_h}h old query"
     return json_string
   end
 
