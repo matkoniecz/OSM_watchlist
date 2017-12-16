@@ -189,23 +189,25 @@ def watch_other
   return watchlist
 end
 
+def whitelist_tag_filter(key, valid_values)
+  tags = [[key , :any_value]]
+  for valid in valid_values
+    tags << [key, {operation: :not_equal_to, value: valid}] 
+  end
+  return tags
+end
+
 def watch_unusual_seasonal_for_waterway
   #see https://github.com/gravitystorm/openstreetmap-carto/pull/2982
-  tags =[['waterway', :any_value], ['seasonal' , :any_value]]
-  valid_seasonal_tags = ['yes', 'no', 'wet_season', 'dry_season', 'winter', 'summer', 'spring', 'autumn']
-  for tag in valid_seasonal_tags
-    tags << ['seasonal', {operation: :not_equal_to, value: tag}] 
-  end
+  tags = whitelist_tag_filter('seasonal', ['yes', 'no', 'wet_season', 'dry_season', 'winter', 'summer', 'spring', 'autumn'])
+  tags << ['waterway', :any_value]
   return [{ list: get_list(tags), message: 'unexpected seasonal tag on a waterway' }]
 end
 
 def watch_unusual_seasonal_not_for_waterway
-  tags =[['waterway', {operation: :not_equal_to, value: :any_value}], ['seasonal' , :any_value]]
-  valid_seasonal_tags = ['yes', 'no', 'wet_season', 'dry_season', 'winter', 'summer', 'spring', 'autumn']
-  for tag in valid_seasonal_tags
-    tags << ['seasonal', {operation: :not_equal_to, value: tag}] 
-  end
-  return []#{ list: get_list(tags), message: 'unexpected seasonal tag (not on a waterway)' }]
+  tags = whitelist_tag_filter('seasonal', ['yes', 'no', 'wet_season', 'dry_season', 'winter', 'summer', 'spring', 'autumn'])
+  tags << ['waterway', {operation: :not_equal_to, value: :any_value}]
+  return [{ list: get_list(tags), message: 'unexpected seasonal tag (not on a waterway)' }]
 end
 
 def watch_low_priority
@@ -225,8 +227,10 @@ def suspicious_name_watchlist_entry(name:, language_code_of_name:, description: 
   returned = []
   name_variants = [
     {key: 'name', value: name},
+    {key: 'name', value: name.downcase},
     {key: 'name', value: name.capitalize},
     {key: 'name:'+language_code_of_name, value: name},
+    {key: 'name:'+language_code_of_name, value: name.downcase},
     {key: 'name:'+language_code_of_name, value: name.capitalize},
   ]
 
@@ -328,7 +332,12 @@ def descriptive_names_entries
 
     # not in https://github.com/osmlab/name-suggestion-index
     {name: 'staw', language: 'pl', matching_tags: [{'natural' => 'water'}]},
+    {name: 'pond', language: 'en', matching_tags: [{'natural' => 'water'}]},
 
+    {name: 'paddy field', language: 'en'},
+    {name: 'Boat Ramp', language: 'en', matching_tags: [{'leisure' => 'slipway'}]},
+    {name: 'picnic shelter', language: 'en', matching_tags: [{'amenity' => 'shelter'}]},
+    {name: 'Picnic shelter', language: 'en', matching_tags: [{'amenity' => 'shelter'}]},
     {name: 'rondo', language: 'pl'},
     {name: 'strzelnica', language: 'pl'},
     {name: 'water tap', language: 'en', complaint: "water tap - to copy: <\n  man_made = water_tap\n  description = Water tap\n> overpass query helper: http://overpass-turbo.eu/s/qZe", matching_tags: [{'man_made' => 'water_tap'}]},
@@ -344,6 +353,7 @@ def descriptive_names_entries
     {name: 'strand', language: 'de', matching_tags: [{'natural' => 'beach'}]},
     {name: 'water', language: 'en', matching_tags: [{'amenity' => 'drinking_water'}]},
     {name: 'viewpoint', language: 'en', matching_tags: [{'tourism' => 'viewpoint'}]},
+    {name: 'cricket pitch', language: 'en', matching_tags: [{'leisure' => 'pitch', 'sport' => 'cricket'}]},
     {name: 'boisko do koszykówki', language: 'pl', matching_tags: [{'leisure' => 'pitch', 'sport' => 'basketball'}]},
     {name: 'koszykówka', language: 'pl', matching_tags: [{'leisure' => 'pitch', 'sport' => 'basketball'}]},
     {name: 'siatkówka plażowa', language: 'pl', matching_tags: [{'leisure' => 'pitch', 'sport' => 'beachvolleyball'}]},
@@ -413,29 +423,44 @@ end
 
 def watch_valid_tags_unexpected_in_krakow
   watchlist = []
-  lat = 50
-  lon = 20
+  lat = 50.069
+  lon = 19.926
 
   watchlist += detect_tags_in_region(lat, lon, 20, { 'bicycle' => 'official' })
-  watchlist += detect_tags_in_region(lat, lon, 20, { 'building' => 'no' })
-  watchlist += detect_tags_in_region(lat, lon, 20, { 'oneway' => {operation: :not_equal_to, value: 'yes'} })
+  watchlist += detect_tags_in_region(lat, lon, 100, { 'building' => 'no' })
+
+  valid_oneway_values = ['yes', 'no']
+  filter = [['oneway', :any_value]]
+  for valid in valid_oneway_values
+    filter << ['oneway', {operation: :not_equal_to, value: valid}]
+  end
+  watchlist += detect_tags_in_region(lat, lon, 20, filter)
   
   #after fixing revisit https://github.com/openstreetmap/iD/issues/4501
-  watchlist += detect_tags_in_region(lat, lon, 20, { 'disused' => 'yes' })
-  watchlist += detect_tags_in_region(lat, lon, 20, { 'abandoned' => 'yes' })
+  not_trolltag_filters = [
+    ['man_made', {operation: :not_equal_to, value: 'mineshaft'}],
+    ['building', {operation: :not_equal_to, value: :any_value}],
+    ['landuse', {operation: :not_equal_to, value: 'quarry'}],
+  ]
+  watchlist += detect_tags_in_region(lat, lon, 20, [['disused', 'yes']] + not_trolltag_filters)
+  watchlist += detect_tags_in_region(lat, lon, 20, [['abandoned', 'yes']] + not_trolltag_filters)
 
   watchlist += detect_tags_in_region(lat, lon, 5, { 'surface' => 'sett', 'smoothness': {operation: :not_equal_to, value: :any_value} })
   watchlist += detect_tags_in_region(lat, lon, 5, { 'surface' => 'cobblestone', 'smoothness': {operation: :not_equal_to, value: :any_value} })
+
+  watchlist += detect_tags_in_region(lat, lon, 5, whitelist_tag_filter('cycleway', ['no', 'lane', 'opposite_lane', 'opposite']))
   
-  watchlist += detect_tags_in_region(lat, lon, 200, { 'capacity:disabled' => 'unknown' })
+  watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:disabled' => 'unknown' })
+  watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:parent' => 'unknown' })
+  watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:woman' => 'unknown' })
 
-  watchlist += detect_tags_in_region(lat, lon, 20, {'highway': 'proposed', 'source': {operation: :not_equal_to, value: :any_value}})
-  watchlist += detect_tags_in_region(lat, lon, 100, { 'historic' => 'battlefield' }) #1 653 in 2017 IX
-  watchlist += detect_tags_in_region(lat, lon, 150, { 'horse' => 'designated' }, "to naprawdę jest specjalnie przeznaczone dla koni?") #200 - too far
-  watchlist += detect_tags_in_region(lat, lon, 25, { 'highway' => 'bridleway' }, "Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?")
-  watchlist += detect_tags_in_region(lat, lon, 2500, { 'highway' => 'bus_guideway' }, "#highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?")
+  watchlist += detect_tags_in_region(lat, lon, 50, {'highway': 'proposed', 'source': {operation: :not_equal_to, value: :any_value}})
+  watchlist += detect_tags_in_region(lat, lon, 200, { 'historic' => 'battlefield' }, 'Czy są tu jakieś pozostałości po bitwie? Jeśli tak to powiny zostać zmapowane, jeśli nie to jest to do skasowania.') #1 653 in 2017 IX
+  watchlist += detect_tags_in_region(lat, lon, 130, { 'horse' => 'designated' }, "to naprawdę jest specjalnie przeznaczone dla koni?") #200 - too far
+  watchlist += detect_tags_in_region(lat, lon, 30, { 'highway' => 'bridleway' }, "Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?")
+  watchlist += detect_tags_in_region(lat, lon, 3500, { 'highway' => 'bus_guideway' }, "#highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?")
 
-  watchlist += detect_tags_in_region(lat, lon, 1000, { 'boundary' => 'historic', 'end_date': {operation: :not_equal_to, value: :any_value} }) #1 295 -> 1 280 (w tym 634 way) -> 1 274 (w tym 630 way) in 2017 IX  
+  watchlist += detect_tags_in_region(lat, lon, 1500, { 'boundary' => 'historic', 'end_date': {operation: :not_equal_to, value: :any_value} }) #1 295 -> 1 280 (w tym 634 way) -> 1 274 (w tym 630 way) in 2017 IX  
   #end_date - catch entries deep in past and in the far future
   #TODO: exclude volcano:status   extinct
   #range_in_km = 300
@@ -549,7 +574,7 @@ out skel qt;
 # shop, bank etc with wikipedia tag
 # https://www.openstreetmap.org/changeset/49958115
 #https://www.openstreetmap.org/changeset/49785062#map=8/46.881/18.215
-#Czy są tu jakieś pozostałości po bitwie? Jeśli tak to powiny zostać zmapowane, jeśli nie to jest to do skasowania.
+#
 #"historic=battlefield to tag niezgodny z zasadami OSM, ale używany i wygląda na tolerowany."
 #To pora przestać go tolerować zanim więcej osób zacznie do OSM wsadzać wydarzenia (lepiej by wykasować to zanim sie zrobi popularne, mniej osób straci wtedy czasu na ich dodawanie)
 # https://www.openstreetmap.org/changeset/51522177#map=13/54.0944/21.6133&layers=N
