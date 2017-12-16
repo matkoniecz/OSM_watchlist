@@ -87,16 +87,18 @@ def run_watchlist
   #dump_descriptive_names_entries_to_stdout()
   displayed = 0
   watchlist_entries.each do |entry|
-    mentioned = false
+    if entry[:list].length == 0
+      next
+    end
+    puts
+    puts
+    puts entry[:message]
+    puts
+    puts "[out:xml][timeout:725][bbox:{{bbox}}];"
+    puts "("
     entry[:list].each do |data|
       if data[:lat].nil? || data[:lon].nil?
         raise "#{entry[:message]} has broken data"
-      end
-      unless mentioned
-        puts
-        puts
-        puts entry[:message]
-        mentioned = true
       end
       puts data[:type]+'('+data[:id].to_s+')' + ';'
       puts "// #{data[:url]}"
@@ -105,6 +107,9 @@ def run_watchlist
         break
       end
     end
+    puts ");"
+    puts "(._;>;);"
+    puts "out meta;"
     if displayed >= requested_watchlist_entries
       break
     end
