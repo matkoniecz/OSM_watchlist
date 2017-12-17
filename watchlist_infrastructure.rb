@@ -1,6 +1,6 @@
-# in case of note present it accepts cache
-# in case of missing note and cache that is not current it checks to be sure
 def currently_present_note_at(lat, lon)
+  # in case of note present it accepts cache
+  # in case of missing note and cache that is not current it checks to be sure
   empty = '<?xml version="1.0" encoding="UTF-8"?>
 <osm version="0.6" generator="OpenStreetMap server">
 </osm>'
