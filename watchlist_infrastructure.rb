@@ -189,7 +189,6 @@ def not_fully_matching_tag_set(json_response_tags, tags_in_dict)
   return true if json_response_tags.nil?
   tags_in_dict.each do |tag|
     if is_failing_tag_match(json_response_tags, tag)
-      puts tag[1]
       return true
     end
   end
