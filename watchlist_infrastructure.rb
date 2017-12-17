@@ -68,8 +68,6 @@ def get_node_database(json_obj)
 end
 
 def get_list(required_tags, lat = 0, lon = 0, distance_in_km = :infinity, include_history_of_tags: false)
-  puts include_history_of_tags
-  puts required_tags
   distance = :infinity
   distance = if distance_in_km == :infinity
                :infinity
