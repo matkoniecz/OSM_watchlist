@@ -156,9 +156,10 @@ def watch_auto
   #TODO reconsider
 
   message = 'Why this is not tagged as highway=steps? What is the meaning of steps=yes here? See http://overpass-turbo.eu/s/tPd for more cases (I considered armchair mapping it to highway=steps but I think that verification from local mappers is preferable)'
-  watchlist << { list: get_list({'steps' => 'yes', 'highway' => 'footway'}), message: message, overpass: 'http://overpass-turbo.eu/s/tPd' }
-  watchlist << { list: get_list({'steps' => 'yes', 'highway' => 'path'}), message: message, overpass: 'http://overpass-turbo.eu/s/tPd' }
-  watchlist << { list: get_list({'steps' => 'yes', 'highway' => {operation: :not_equal_to, value: "steps"}}), message: message, overpass: 'http://overpass-turbo.eu/s/tPd' }
+  modifiers = ['footway', 'path', {operation: :not_equal_to, value: "steps"}]
+  for modifier in modifiers
+    watchlist << { list: get_list({'steps' => 'yes', 'highway' => modifier}, include_history_of_tags: true), message: message, overpass: 'http://overpass-turbo.eu/s/tPd' }
+  end
 
   return watchlist
 end
