@@ -11,24 +11,23 @@ def currently_present_note_at(lat, lon)
   notes = CartoCSSHelper::NotesDownloader.run_note_query(lat, lon, range).strip
   return true if notes != empty
   timestamp_in_h = (Time.now - CartoCSSHelper::NotesDownloader.cache_timestamp(lat, lon, range)).to_i / 60 / 60
-  if timestamp_in_h > 1
+  if timestamp_in_h >= time_in_hours_that_forces_note_redoing
     puts "note download after discarding cache (cache age was #{timestamp_in_h}h) (note check of #{lat}, #{lon})"
     notes = CartoCSSHelper::NotesDownloader.run_note_query(lat, lon, range, invalidate_cache: true)
   end
   return notes != empty
 end
 
-def count_entries(watchlist)
-  count = 0
-  watchlist.each do |entry|
-    entry[:list].each do |data|
-      if data[:lat].nil? || data[:lon].nil?
-        raise "#{entry[:message]} has broken data"
-      end
-      count += 1
-    end
-  end
-  return count
+def get_history_query(type, id)
+return   "[out:json];
+  timeline(#{type},#{id});
+  foreach(
+    retro(u(t[created]))
+    (
+      #{type}(#{id});
+      out meta;
+    );
+  );"
 end
 
 def watchlist_query(tags, lat, lon, distance)
@@ -44,6 +43,20 @@ out skel qt;'
   return query
 end
 
+
+def count_entries(watchlist)
+  count = 0
+  watchlist.each do |entry|
+    entry[:list].each do |data|
+      if data[:lat].nil? || data[:lon].nil?
+        raise "#{entry[:message]} has broken data"
+      end
+      count += 1
+    end
+  end
+  return count
+end
+
 def get_node_database(json_obj)
   locations = {}
   json_obj["elements"].each do |entry|
@@ -54,7 +67,9 @@ def get_node_database(json_obj)
   return locations
 end
 
-def get_list(required_tags, lat = 0, lon = 0, distance_in_km = :infinity)
+def get_list(required_tags, lat = 0, lon = 0, distance_in_km = :infinity, include_history_of_tags: false)
+  puts include_history_of_tags
+  puts required_tags
   distance = :infinity
   distance = if distance_in_km == :infinity
                :infinity
@@ -62,24 +77,57 @@ def get_list(required_tags, lat = 0, lon = 0, distance_in_km = :infinity)
                distance_in_km * 1000
              end
   query = watchlist_query(required_tags, lat, lon, distance)
-  list = get_list_from_arbitrary_query(query, required_tags)
+  list = get_list_from_arbitrary_query(query, required_tags, include_history_of_tags)
   return list
 end
 
 def get_data_from_overpass(query, explanation)
-  json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, explanation, false)
+  debug = false
+  json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, explanation, debug)
   timestamp_in_h = (Time.now - CartoCSSHelper::OverpassDownloader.cache_timestamp(query)).to_i / 60 / 60
 
-  if rand(24 * 30) > timestamp_in_h
+  if time_in_hours_that_forces_query_redoing >= timestamp_in_h
     puts "not redoing #{timestamp_in_h}h old query"
     return json_string
   end
 
   puts "redoing #{timestamp_in_h}h old query"
-  return CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, explanation, false, invalidate_cache: true)
+  return CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, explanation, debug, invalidate_cache: true)
 end
 
-def get_list_from_arbitrary_query(query, required_tags = {})
+def build_string_describing_tag_appearance_from_json_history(json_history, required_tags)
+  previous_version_was_matching = false
+  appeared_in = ""
+  for v in json_history["elements"]
+    matching = fully_matching_tag_set(v["tags"], required_tags)
+    if matching and !previous_version_was_matching
+      appeared_in += ", " if appeared_in != ""
+      appeared_in = "appeared in " if appeared_in == ""
+      appeared_in += "https://www.openstreetmap.org/changeset/#{v['changeset']}"
+    end
+    previous_version_was_matching = matching
+  end
+  return appeared_in
+end
+
+def description_of_tag_appearances_in_history(type, id, required_tags)
+  # show all revisions that match and previous revision is not matchhing
+  # "appeared in CHANGESET_LINK, CHANGESET_LINK, CHANGESET_LINK"
+  json_history = get_json_history_representation(type, id)
+  return build_string_describing_tag_appearance_from_json_history(json_history, required_tags)
+end
+
+def get_json_history_representation(type, id)
+  puts "using http://dev.overpass-api.de/api_mmd - switch to normal overpass instance once possible"
+  CartoCSSHelper::Configuration.set_overpass_instance_url('http://dev.overpass-api.de/api_mmd') #TEST instance, limit querries
+  query = get_history_query(type, id)
+  explanation = "testing"
+  json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, explanation)
+  CartoCSSHelper::Configuration.set_overpass_instance_url('http://overpass-api.de/api') #restore normal instance
+  return JSON.parse(json_string)
+end
+
+def get_list_from_arbitrary_query(query, required_tags = {}, include_history_of_tags = false)
   explanation = "for watchlist #{required_tags}"
   json_string = get_data_from_overpass(query, explanation)
 
@@ -111,7 +159,11 @@ def get_list_from_arbitrary_query(query, required_tags = {})
       next
     end
     if not currently_present_note_at(lat, lon)
-      list << { lat: lat, lon: lon, url: url, id: entry['id'], type: entry['type']}
+      history = nil
+      if include_history_of_tags
+        history = description_of_tag_appearances_in_history(entry['type'], entry['id'], required_tags)
+      end
+      list << { lat: lat, lon: lon, url: url, id: entry['id'], type: entry['type'], history: history}
       if list.length >= requested_watchlist_entries
         return list
       end
@@ -127,6 +179,10 @@ def is_location_undefined(lat, lon, entry)
     return true
   end
   return false
+end
+
+def fully_matching_tag_set(json_response_tags, tags_in_dict)
+  return !not_fully_matching_tag_set(json_response_tags, tags_in_dict)
 end
 
 def not_fully_matching_tag_set(json_response_tags, tags_in_dict)

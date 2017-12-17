@@ -102,6 +102,7 @@ def run_watchlist
       end
       puts data[:type]+'('+data[:id].to_s+')' + ';'
       puts "// #{data[:url]}"
+      puts "// #{data[:history]}" if data[:history] != nil
       displayed += 1
       if displayed >= requested_watchlist_entries
         break
@@ -140,7 +141,7 @@ def watch_beton
     beton_problem = "surface=#{value}? 'beton' is word for concrete in some languages but not in the English"
     overpass_code = 'gT2'
     message = beton_problem + "\n\n" + "See http://overpass-turbo.eu/s/#{overpass_code} for more problems of this type"
-    watchlist << { list: get_list(tags), message: message }
+    watchlist << { list: get_list(tags, include_history_of_tags: true), message: message }
   end
 
   return watchlist
