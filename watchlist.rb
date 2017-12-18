@@ -238,9 +238,11 @@ def suspicious_name_watchlist_entry(name:, language_code_of_name:, description: 
   name_variants = [
     {key: 'name', value: name},
     {key: 'name', value: name.downcase},
+    {key: 'name', value: name.upcase},
     {key: 'name', value: name.capitalize},
     {key: 'name:'+language_code_of_name, value: name},
     {key: 'name:'+language_code_of_name, value: name.downcase},
+    {key: 'name:'+language_code_of_name, value: name.upcase},
     {key: 'name:'+language_code_of_name, value: name.capitalize},
   ]
 
