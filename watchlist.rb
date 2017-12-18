@@ -480,7 +480,12 @@ def watch_valid_tags_unexpected_in_krakow
   watchlist += detect_tags_in_region(lat, lon, 30, { 'highway' => 'bridleway' }, "Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?")
   watchlist += detect_tags_in_region(lat, lon, 3500, { 'highway' => 'bus_guideway' }, "#highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?")
 
-  watchlist += detect_tags_in_region(lat, lon, 1500, { 'boundary' => 'historic', 'end_date': {operation: :not_equal_to, value: :any_value} }) #1 295 -> 1 280 (w tym 634 way) -> 1 274 (w tym 630 way) in 2017 IX  
+  # historic boundaries
+  #1 295
+  #1 280 (w tym 634 way)
+  #1 274 (w tym 630 way) in 2017 IX
+  #1 231 (w tym 612 way) w 2017 XII
+  watchlist += detect_tags_in_region(lat, lon, 1500, { 'boundary' => 'historic', 'end_date': {operation: :not_equal_to, value: :any_value} })
   #end_date - catch entries deep in past and in the far future
   #TODO: exclude volcano:status   extinct
   #range_in_km = 300
