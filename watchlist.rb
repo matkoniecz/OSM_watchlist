@@ -83,6 +83,10 @@ require 'json'
 require_relative 'watchlist_infrastructure'
 require 'nokogiri'
 
+def my_location
+  return 50.069, 19.926
+end
+
 def requested_watchlist_entries
   return 20
 end
@@ -438,8 +442,7 @@ end
 
 def watch_valid_tags_unexpected_in_krakow
   watchlist = []
-  lat = 50.069
-  lon = 19.926
+  lat, lon = my_location
 
   watchlist += detect_tags_in_region(lat, lon, 20, { 'bicycle' => 'official' })
   watchlist += detect_tags_in_region(lat, lon, 100, { 'building' => 'no' })
