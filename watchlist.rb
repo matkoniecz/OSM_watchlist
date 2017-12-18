@@ -467,6 +467,8 @@ def watch_valid_tags_unexpected_in_krakow
   watchlist += detect_tags_in_region(lat, lon, 5, { 'surface' => 'cobblestone', 'smoothness': {operation: :not_equal_to, value: :any_value} })
 
   watchlist += detect_tags_in_region(lat, lon, 5, whitelist_tag_filter('cycleway', ['no', 'lane', 'opposite_lane', 'opposite']))
+
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'seamark:name' => :any_value })
   
   watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:disabled' => 'unknown' })
   watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:parent' => 'unknown' })
@@ -687,6 +689,7 @@ end
 #detect violations of nixed values in https://github.com/osmlab/name-suggestion-index/issues, consider submitting them to JOSM validator
 
 =begin
+#TODO: hunt down also other seamarks?
 
 
 albo highway=track albo landuse=residential są błędne
