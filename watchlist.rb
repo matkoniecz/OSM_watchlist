@@ -338,6 +338,9 @@ def descriptive_names_entries
     {name: 'staw', language: 'pl', matching_tags: [{'natural' => 'water'}]},
     {name: 'pond', language: 'en', matching_tags: [{'natural' => 'water'}]},
 
+    {name: 'trash can', language: 'en', matching_tags: [{'amenity' => 'waste_basket'}]},
+    {name: 'bench', language: 'en', matching_tags: [{'amenity' => 'bench'}]},
+    {name: 'bike rack', language: 'en', matching_tags: [{'amenity' => 'bicycle_parking'}]},
     {name: 'paddy field', language: 'en'},
     {name: 'Boat Ramp', language: 'en', matching_tags: [{'leisure' => 'slipway'}]},
     {name: 'picnic shelter', language: 'en', matching_tags: [{'amenity' => 'shelter'}]},
