@@ -11,14 +11,17 @@ mix of various fixes required:
 
 [out:xml][timeout:725][bbox:{{bbox}}];
 (
-  node[tourism=attraction][name](if:count_tags()==2)(area.searchArea);
-  way[tourism=attraction][name](if:count_tags()==2)(area.searchArea);
-  node["area"="yes"](if:count_tags() == 1)({{bbox}});
-  way["area"="yes"](if:count_tags() == 1)({{bbox}});
-  relation["area"="yes"](if:count_tags() == 1)({{bbox}});
+  //names - useful if you know language used by typical mapper
   node["area"="yes"][name](if:count_tags() == 2)({{bbox}});
   way["area"="yes"][name](if:count_tags() == 2)({{bbox}});
   relation["area"="yes"][name](if:count_tags() == 2)({{bbox}});
+  node[tourism=attraction][name](if:count_tags()==2)(area.searchArea);
+  way[tourism=attraction][name](if:count_tags()==2)(area.searchArea);
+
+  node["area"="yes"](if:count_tags() == 1)({{bbox}});
+  way["area"="yes"](if:count_tags() == 1)({{bbox}});
+  relation["area"="yes"](if:count_tags() == 1)({{bbox}});
+
 
   node["leisure"="pitch"]["name"="boisko"]["sport"="soccer"];
   way["leisure"="pitch"]["name"="boisko"]["sport"="soccer"];
