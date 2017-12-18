@@ -81,6 +81,7 @@ out meta;
 
 require 'json'
 require_relative 'watchlist_infrastructure'
+require 'nokogiri'
 
 def requested_watchlist_entries
   return 20
