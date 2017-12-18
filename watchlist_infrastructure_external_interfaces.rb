@@ -12,24 +12,27 @@ def get_data_from_overpass(query, explanation)
   return CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, explanation, debug, invalidate_cache: true)
 end
 
+def empty_note_xml
+  '<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="OpenStreetMap server">
+</osm>'
+end
+
 def currently_present_note_at(lat, lon)
   # in case of note present it accepts cache
   # in case of missing note and cache that is not current it checks to be sure
-  empty = '<?xml version="1.0" encoding="UTF-8"?>
-<osm version="0.6" generator="OpenStreetMap server">
-</osm>'
   range = 0.025
   if CartoCSSHelper::NotesDownloader.cache_timestamp(lat, lon, range) == nil
     puts "note download (cache was not present) (note check of #{lat}, #{lon})"
   end
   notes = CartoCSSHelper::NotesDownloader.run_note_query(lat, lon, range).strip
-  return true if notes != empty
+  return true if notes != empty_note_xml
   timestamp_in_h = (Time.now - CartoCSSHelper::NotesDownloader.cache_timestamp(lat, lon, range)).to_i / 60 / 60
   if timestamp_in_h >= time_in_hours_that_forces_note_redoing
     puts "note download after discarding cache (cache age was #{timestamp_in_h}h) (note check of #{lat}, #{lon})"
     notes = CartoCSSHelper::NotesDownloader.run_note_query(lat, lon, range, invalidate_cache: true)
   end
-  return notes != empty
+  return notes != empty_note_xml
 end
 
 def get_history_query(type, id)
