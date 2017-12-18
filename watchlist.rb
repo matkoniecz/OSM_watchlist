@@ -152,6 +152,11 @@ def watch_beton
 end
 
 def watch_auto
+  # for new edits check changeset discussion:
+  # if empty comment,
+  # if nonempty and with recent comments wait
+  # if nonempty and only with my old comment create note
+  # if nonempty and only with my old comments and some are not mine - request manual handling
   watchlist = []
   watchlist = watchlist + watch_beton
   not_present = {operation: :not_equal_to, value: :any_value}
