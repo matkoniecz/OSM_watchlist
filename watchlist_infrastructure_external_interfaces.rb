@@ -71,5 +71,5 @@ def list_of_objects_with_this_name_part(name_part)
   out body;
   >;
   out skel qt;'
-  return get_list_from_arbitrary_query(name_part_query)
+  return get_list_from_arbitrary_query(name_part_query, reason: "partial match of name to <#{name_part}> ")
 end
