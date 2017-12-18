@@ -1,3 +1,14 @@
+def get_full_changeset_xml(id, invalidate_cache: false)
+  url = "http://api.openstreetmap.org/api/0.6/changeset/#{id}?include_discussion=true"
+  timeout = 60
+  downloader = GenericCachedDownloader.new(timeout: timeout, stop_on_timeout: false)
+  description = "changeset_with_discussion_#{id}"
+  invalidate_cache = false
+  cache_filename = "/home/mateusz/Documents/OSM/CartoCSSHelper-tmp/osm-api/#{description}"
+  changeset_xml = downloader.get_specified_resource(url, cache_filename, description: description, invalidate_cache: invalidate_cache)
+end
+
+
 def get_data_from_overpass(query, explanation)
   debug = false
   json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, explanation, debug)
