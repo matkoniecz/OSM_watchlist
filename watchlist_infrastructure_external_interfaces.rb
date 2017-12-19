@@ -9,17 +9,34 @@ def get_full_changeset_xml(id, invalidate_cache: false)
 end
 
 
-def get_data_from_overpass(query, explanation)
+def get_data_from_overpass(query, explanation, invalidate_old_cache)
   debug = false
+  cache_not_present = false
+  if CartoCSSHelper::OverpassDownloader.cache_timestamp(query) == nil
+    puts "running query, cache is not present"
+    cache_not_present = true
+  end
   json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, explanation, debug)
-  timestamp_in_h = (Time.now - CartoCSSHelper::OverpassDownloader.cache_timestamp(query)).to_i / 60 / 60
+  return json_string if cache_not_present
+  cache_age_in_seconds = (Time.now - CartoCSSHelper::OverpassDownloader.cache_timestamp(query)).to_i
+  cache_age_in_minutes = cache_age_in_seconds / 60
+  cache_age_in_hours = cache_age_in_minutes / 60 / 60
 
-  if time_in_hours_that_forces_query_redoing >= timestamp_in_h
-    puts "not redoing #{timestamp_in_h}h old query"
+  timestamp_description = "#{cache_age_in_hours}h"
+  if cache_age_in_hours == 0
+    if cache_age_in_minutes < 2
+      timestamp_description = "#{cache_age_in_seconds}s"
+    else
+      timestamp_description = "#{cache_age_in_minutes}min"
+    end
+  end
+
+  if cache_age_in_hours <= time_in_hours_that_protects_query_from_redoing
+    puts "not redoing #{timestamp_description} old query (#{cache_age_in_hours} <= #{time_in_hours_that_protects_query_from_redoing})"
     return json_string
   end
 
-  puts "redoing #{timestamp_in_h}h old query"
+  puts "redoing #{timestamp_description} old query"
   return CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, explanation, debug, invalidate_cache: true)
 end
 

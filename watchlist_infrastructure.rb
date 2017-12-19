@@ -35,15 +35,13 @@ def get_list(required_tags, lat = 0, lon = 0, distance_in_km = :infinity, includ
   return list
 end
 
-def build_string_describing_tag_appearance_from_json_history(json_history, required_tags)
+def changesets_that_caused_tag_to_appear_in_history(json_history, required_tags)
   previous_version_was_matching = false
-  appeared_in = ""
+  appeared_in = []
   for v in json_history["elements"]
     matching = fully_matching_tag_set(v["tags"], required_tags)
     if matching and !previous_version_was_matching
-      appeared_in += ", " if appeared_in != ""
-      appeared_in = "appeared in " if appeared_in == ""
-      appeared_in += "https://www.openstreetmap.org/changeset/#{v['changeset']}"
+      appeared_in << v['changeset']
     end
     previous_version_was_matching = matching
   end
@@ -54,7 +52,7 @@ def description_of_tag_appearances_in_history(type, id, required_tags)
   # show all revisions that match and previous revision is not matchhing
   # "appeared in CHANGESET_LINK, CHANGESET_LINK, CHANGESET_LINK"
   json_history = get_json_history_representation(type, id)
-  return build_string_describing_tag_appearance_from_json_history(json_history, required_tags)
+  return changesets_that_caused_tag_to_appear_in_history(json_history, required_tags)
 end
 
 def get_json_history_representation(type, id)
@@ -67,33 +65,94 @@ def get_json_history_representation(type, id)
   return JSON.parse(json_string)
 end
 
-def get_list_from_arbitrary_query(query, required_tags = {}, include_history_of_tags = false)
-  explanation = "for watchlist #{required_tags}"
-  json_string = get_data_from_overpass(query, explanation)
+def get_json_history_representation_cache_age_in_seconds(type, id)
+  query = get_history_query(type, id)
+  return (Time.now - CartoCSSHelper::OverpassDownloader.cache_timestamp(query)).to_i
+end
 
+def get_date_of_latest_appearance_in_changeset_discussion(changeset_id, text, invalidate_cache)
+  doc = Nokogiri::XML(get_full_changeset_xml(changeset_id, invalidate_cache: invalidate_cache))
+  latest = nil
+  discussion = doc.at_xpath('//discussion')
+  for comment in discussion.xpath('comment')
+    text = comment.at_xpath('//text')
+    if text.find(text) != -1
+      posted_date = DateTime.parse(comment['date']).to_time.to_i
+      if latest == nil || latest < posted_date
+        latest = posted_date
+      end
+    end
+  end
+  return latest
+end
 
+def is_element_under_active_discussion(type, id, required_tags, invalidate_cache = false)
+    json_history = get_json_history_representation(type, id)
+    changesets = changesets_that_caused_tag_to_appear_in_history(json_history, required_tags)
+    for changeset_id in changesets
+      url = "https://www.openstreetmap.org/#{type}/#{id}"
+      posted_date = get_date_of_latest_appearance_in_changeset_discussion(changeset_id, url, invalidate_cache)
+      if posted_date != nil
+        time_in_seconds = DateTime.now.to_time.to_i - posted_date
+        time_in_days = time_in_seconds / 60 / 60 / 24
+        return true if time_in_days < 30 # give time to respond
+      end
+    end
+    if invalidate_cache = false
+      cache_age_in_hours = get_json_history_representation_cache_age_in_seconds(type, id) / 60 / 60
+      if cache_age_in_hours >= default_cache_timeout_age_in_hours
+        return is_element_under_active_discussion(type, id, required_tags, invalidate_cache: true)
+      end
+    end
+    return false
+end
+
+def get_location(entry, node_database)
+  lat, lon = nil, nil
+  if entry["type"] == "way"
+    lat, lon = node_database[entry["nodes"][0]]
+    if is_location_undefined(lat, lon, entry)
+      puts "location not loaded for way"
+      puts query
+      return nil, nil
+    end
+    return lat, lon
+  elsif entry["type"] == "node"
+    lat = entry["lat"].to_f
+    lon = entry["lon"].to_f
+    return lat, lon
+  else
+    puts "skipped #{entry["type"]}"
+    return nil, nil
+  end
+  return nil, nil
+end
+
+def build_string_describing_tag_appearance_from_changeset_list(changesets_that_caused_object_to_match, required_tags)
+  description = ""
+  for changeset_id in changesets_that_caused_object_to_match
+      description += ", " if description != ""
+      description = "appeared in " if description == ""
+      description += "https://www.openstreetmap.org/changeset/#{changeset_id}"
+  end
+  return description
+end
+
+def json_string_to_list_of_actionable_elements(json_string, required_tags, include_history_of_tags)
   obj = JSON.parse(json_string)
 
   list = []
-  locations = get_node_database(obj)
+  node_database = get_node_database(obj)
   elements = obj["elements"]
 
   elements.each do |entry|
     next if not_fully_matching_tag_set(entry["tags"], required_tags)
-    lat, lon = nil, nil
-    if entry["type"] == "way"
-      lat, lon = locations[entry["nodes"][0]]
-      if is_location_undefined(lat, lon, entry)
-        puts "location not loaded for way"
-        puts query
-      end
-    elsif entry["type"] == "node"
-      lat = entry["lat"].to_f
-      lon = entry["lon"].to_f
-    else
-      puts "skipped #{entry["type"]}"
+    lat, lon = get_location(entry, node_database)
+    if lat == nil or lon == nil
+      puts "no location data"
       next
     end
+
     url = "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}#map=17/#{lat}/#{lon}layers=N"
     if is_location_undefined(lat, lon, entry)
       next
@@ -101,13 +160,29 @@ def get_list_from_arbitrary_query(query, required_tags = {}, include_history_of_
     if not currently_present_note_at(lat, lon)
       history = nil
       if include_history_of_tags
+        next if is_element_under_active_discussion(entry['type'], entry['id'], required_tags)
         history = description_of_tag_appearances_in_history(entry['type'], entry['id'], required_tags)
+        history_string = build_string_describing_tag_appearance_from_changeset_list(history, required_tags)
       end
-      list << { lat: lat, lon: lon, url: url, id: entry['id'], type: entry['type'], history: history}
+      list << { lat: lat, lon: lon, url: url, id: entry['id'], type: entry['type'], history: history, history_string: history_string }
       if list.length >= requested_watchlist_entries
         return list
       end
     end
+  end
+  return list
+end
+
+def get_list_from_arbitrary_query(query, required_tags = {}, include_history_of_tags = false, reason: "")
+  reason = "#{required_tags}" if reason == ""
+  explanation = "for watchlist #{reason}"
+  invalidate_old_cache = false
+  json_string = get_data_from_overpass(query, explanation, invalidate_old_cache)
+  list = json_string_to_list_of_actionable_elements(json_string, required_tags, include_history_of_tags)
+  if list.length > 0
+    invalidate_old_cache = true
+    json_string = get_data_from_overpass(query, explanation, invalidate_old_cache)
+    list = json_string_to_list_of_actionable_elements(json_string, required_tags, include_history_of_tags)
   end
   return list
 end

@@ -95,8 +95,35 @@ def requested_watchlist_entries
   return 20
 end
 
+def time_in_hours_that_protects_query_from_redoing
+  24
+end
+
+def time_in_hours_that_forces_note_redoing
+  24
+end
+
+def default_cache_timeout_age_in_hours
+  return 24 * 30
+end
+
+def local_notes_present
+  lat, lon = my_location
+  range = 0.025
+  cache_timestamp = CartoCSSHelper::NotesDownloader.cache_timestamp(lat, lon, range)
+  if cache_timestamp == nil or cache_timestamp + 24 * 60 * 60 < DateTime.now.to_time.to_i
+    CartoCSSHelper::NotesDownloader.run_note_query(lat, lon, range, invalidate_cache: true)
+  end
+  return CartoCSSHelper::NotesDownloader.run_note_query(lat, lon, range) != empty_note_xml
+end
+
+
 def run_watchlist
+  puts "there are nearby notes" if local_notes_present
   #dump_descriptive_names_entries_to_stdout()
+
+  watch_automatic_entries
+  
   displayed = 0
   watchlist_entries.each do |entry|
     if entry[:list].length == 0
@@ -114,7 +141,7 @@ def run_watchlist
       end
       puts data[:type]+'('+data[:id].to_s+')' + ';'
       puts "// #{data[:url]}"
-      puts "// #{data[:history]}" if data[:history] != nil
+      puts "// #{data[:history_string]}" if data[:history_string] != nil
       displayed += 1
       if displayed >= requested_watchlist_entries
         break
@@ -131,7 +158,6 @@ end
 
 def watchlist_entries
   watchlist = []
-  watchlist += watch_auto if count_entries(watchlist) < requested_watchlist_entries
   watchlist += objects_using_this_name_part('naprawdę warto', 'spam') if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_other if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_invalid_wikipedia if count_entries(watchlist) < requested_watchlist_entries
@@ -159,12 +185,40 @@ def watch_beton
   return watchlist
 end
 
-def watch_auto
+def process_automatic_watchlist_entries(watchlist)
   # for new edits check changeset discussion:
-  # if empty comment,
+  # if empty comment - comment in changeset
   # if nonempty and with recent comments wait
   # if nonempty and only with my old comment create note
   # if nonempty and only with my old comments and some are not mine - request manual handling
+=begin
+      posted_date = get_date_of_latest_appearance_in_changeset_discussion(changeset_id, url, invalidate_cache)
+      if posted_date != nil
+        time_in_seconds = DateTime.now.to_time.to_i - posted_date
+        time_in_days = time_in_seconds / 60 / 60 / 24
+        return true if time_in_days < 30 # give time to respond
+      end
+=end
+  watchlist.each do |entry|
+    if entry[:list].length == 0
+      next
+    end
+    puts entry[:message]
+    entry[:list].each do |data|
+      if data[:lat].nil? || data[:lon].nil?
+        raise "#{entry[:message]} has broken data"
+      end
+      puts data[:type]+'('+data[:id].to_s+')' + ';'
+      puts "// #{data[:url]}"
+      puts "// #{data[:history_string]}" if data[:history_string] != nil
+      for changeset in data[:history]
+        puts changeset
+      end
+    end
+  end
+end
+
+def watch_automatic_entries
   watchlist = []
   watchlist = watchlist + watch_beton
   not_present = {operation: :not_equal_to, value: :any_value}
@@ -178,7 +232,7 @@ def watch_auto
     watchlist << { list: get_list({'steps' => 'yes', 'highway' => modifier}, include_history_of_tags: true), message: message, overpass: 'http://overpass-turbo.eu/s/tPd' }
   end
 
-  return watchlist
+  process_automatic_watchlist_entries(watchlist)
 end
 
 def watch_lifecycle
@@ -225,7 +279,8 @@ def watch_unusual_seasonal_for_waterway
 end
 
 def watch_unusual_seasonal_not_for_waterway
-  tags = whitelist_tag_filter('seasonal', ['yes', 'no', 'wet_season', 'dry_season', 'winter', 'summer', 'spring', 'autumn'])
+  #OSM uses British English, thus autumn not fall.
+  tags = whitelist_tag_filter('seasonal', ['yes', 'no', 'wet_season', 'dry_season', 'winter', 'summer', 'spring', 'autumn', 'spring;summer;autumn'])
   tags << ['waterway', {operation: :not_equal_to, value: :any_value}]
   return [{ list: get_list(tags), message: 'unexpected seasonal tag (not on a waterway)' }]
 end
@@ -369,7 +424,8 @@ def descriptive_names_entries
     {name: 'restauracja', language: 'pl', matching_tags: [{'amenity' => 'restaurant'}]},
     {name: 'lighthouse', language: 'en'},
     {name: 'scrub', language: 'en', matching_tags: [{'natural' => 'scrub'}]},
-    {name: 'kamieniołom', language: 'pl'},
+    {name: 'kamieniołom', language: 'pl', matching_tags: [{'landuse' => 'quarry'}]},
+    {name: 'krzyż', language: 'pl', matching_tags: [{'historic' => 'wayside_cross'}, {'man_made' => 'cross'}]},
     {name: 'quarry', language: 'en'},
     {name: 'beach', language: 'en', matching_tags: [{'natural' => 'beach'}]},
     {name: 'plaża', language: 'pl', matching_tags: [{'natural' => 'beach'}]},
@@ -398,6 +454,8 @@ def descriptive_names_entries
     {name: 'supervised parking', language: 'en', complaint: 'supervised parking tagged using name rather than proper tag', matching_tags: [{'amenity' => 'parking'}]},
     {name: 'śmietnik', language: 'pl', complaint: 'OSM data sometimes makes clear that <amenity = waste_disposal> is missing', matching_tags: [{'amenity' => 'waste_disposal'}], overpass: 'http://overpass-turbo.eu/s/qZh'},
     {name: 'dojazd do przedszkola', language: 'pl'},
+    {name: 'droga poboczna', language: 'pl'},
+    {name: 'ścieżka', language: 'pl'},
     {name: 'tablica informacyjna', language: 'pl', matching_tags: [{'information' => "board"}]},
     {name: 'wieża kościelna', language: 'pl', complaint: 'wieża kościelna (zamienić na   description = Wieża kościelna?, dodać man_made = tower)', overpass: 'http://overpass-turbo.eu/s/qZo'},
     {name: 'mieszkanie', language: 'pl'},
@@ -414,11 +472,15 @@ def descriptive_names_entries
     {name: 'drzewo', language: 'pl'},
     {name: 'torfowiska', language: 'pl', matching_tags: [{'natural' => 'wetland'}]},
     {name: 'shelter', language: 'en', matching_tags: [{'amenity' => 'shelter'}]},
+    {name: 'altana', language: 'pl', matching_tags: [{'amenity' => 'shelter'}]},
+    {name: 'altanka', language: 'pl', matching_tags: [{'amenity' => 'shelter'}]},
     {name: 'picnic shelter', language: 'en', matching_tags: [{'amenity' => 'shelter'}], complaint: "shelter_type=picnic_shelter may be added"},
     {name: 'Picnic shelter', language: 'en', matching_tags: [{'amenity' => 'shelter'}], complaint: "shelter_type=picnic_shelter may be added"},
     {name: 'picnic table', language: 'en', matching_tags: [{'leisure' => 'picnic_table'}]},
     {name: 'steps', language: 'en', matching_tags: [{'highway' => 'steps'}]},
     {name: 'Pomnik przyrody', language: 'en', matching_tags: [{'natural' => 'tree'}]},
+    {name: 'light', language: 'en', matching_tags: [{'highway' => 'street_lamp'}]},
+
 
     {name: 'big forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
     {name: 'small forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
@@ -481,7 +543,7 @@ def watch_valid_tags_unexpected_in_krakow
   watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:woman' => 'unknown' })
 
   watchlist += detect_tags_in_region(lat, lon, 50, {'highway': 'proposed', 'source': {operation: :not_equal_to, value: :any_value}})
-  watchlist += detect_tags_in_region(lat, lon, 200, { 'historic' => 'battlefield' }, 'Czy są tu jakieś pozostałości po bitwie? Jeśli tak to powiny zostać zmapowane, jeśli nie to jest to do skasowania.') #1 653 in 2017 IX
+  watchlist += detect_tags_in_region(lat, lon, 100, { 'historic' => 'battlefield' }, 'Czy są tu jakieś pozostałości po bitwie? Jeśli tak to powiny zostać zmapowane, jeśli nie to jest to do skasowania.') #1 653 in 2017 IX #200 - too far (reaches Slovakia)
   watchlist += detect_tags_in_region(lat, lon, 130, { 'horse' => 'designated' }, "to naprawdę jest specjalnie przeznaczone dla koni?") #200 - too far
   watchlist += detect_tags_in_region(lat, lon, 30, { 'highway' => 'bridleway' }, "Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?")
   watchlist += detect_tags_in_region(lat, lon, 3500, { 'highway' => 'bus_guideway' }, "#highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?")
