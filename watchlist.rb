@@ -6,6 +6,10 @@ dodajemy wszystko do TODO listy (ctrl+a by zaznaczyc wszystko)
 
 # frozen_string_literal: true
 =begin
+delete historic object unlikely to be mistakenly added back to OSM
+
+This object is still visible on some aerial images (for example Esri). It is kept to prevent mistaken remapping of this object. Delete it once aerial images are updated.
+
 
 mix of various fixes required:
 
