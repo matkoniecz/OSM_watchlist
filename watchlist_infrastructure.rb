@@ -5,7 +5,7 @@ def count_entries(watchlist)
   watchlist.each do |entry|
     entry[:list].each do |data|
       if data[:lat].nil? || data[:lon].nil?
-        raise "#{entry[:message]} has broken data"
+        raise "<#{entry[:message]}> has broken data"
       end
       count += 1
     end
