@@ -186,7 +186,7 @@ def watch_lifecycle
   #after fixing revisit https://github.com/openstreetmap/iD/issues/4501
   message = "is this object demolished or not? If demolished, it should be deleted (if stil present at least on some aerial images it should be tagged in a better way - for example object with note='demolished on 2017-10' ), if not demolished then it is wrong to tag it as "
   watchlist << { list: get_list({ 'demolished' => 'yes' }), message: message + "demolished=yes"}
-  watchlist << { list: get_list({ 'railway' => 'razed' }), message: message + "railway=razed"}
+  watchlist << { list: get_list({ 'railway' => 'razed', 'highway' => {operation: :not_equal_to, value: :any_value}}), message: message + "railway=razed"}
   watchlist << { list: get_list({ 'railway' => 'historic' }), message: message + "railway=historic"}
   watchlist << { list: get_list({ 'railway' => 'dismantled' }), message: message + "railway=dismantled"}
   watchlist << { list: get_list({ 'railway' => 'obliterated' }), message: message + "railway=obliterated"}
