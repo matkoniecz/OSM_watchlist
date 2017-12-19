@@ -92,7 +92,7 @@ def my_location
 end
 
 def requested_watchlist_entries
-  return 20
+  return 50
 end
 
 def time_in_hours_that_protects_query_from_redoing
