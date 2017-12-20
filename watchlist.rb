@@ -91,7 +91,6 @@ out meta;
 
 require 'json'
 require_relative 'watchlist_infrastructure'
-require 'nokogiri'
 
 def my_location
   return 50.069, 19.926

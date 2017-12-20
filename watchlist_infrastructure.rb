@@ -70,16 +70,14 @@ def get_json_history_representation_cache_age_in_seconds(type, id)
   return (Time.now - CartoCSSHelper::OverpassDownloader.cache_timestamp(query)).to_i
 end
 
-def get_date_of_latest_appearance_in_changeset_discussion(changeset_id, text, invalidate_cache)
-  doc = Nokogiri::XML(get_full_changeset_xml(changeset_id, invalidate_cache: invalidate_cache))
+def get_date_of_latest_appearance_in_changeset_discussion(changeset_id, wanted_text, invalidate_cache)
+  changeset = get_full_changeset_json(changeset_id, invalidate_cache: invalidate_cache)
   latest = nil
-  discussion = doc.at_xpath('//discussion')
-  for comment in discussion.xpath('comment')
-    text = comment.at_xpath('//text')
-    if text.find(text) != -1
-      posted_date = DateTime.parse(comment['date']).to_time.to_i
-      if latest == nil || latest < posted_date
-        latest = posted_date
+  for comment in changeset[:discussion]
+    text = comment[:text]
+    if text.find(wanted_text) != -1
+      if latest == nil || latest < comment[:timestamp]
+        latest = comment[:timestamp]
       end
     end
   end

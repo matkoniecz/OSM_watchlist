@@ -1,13 +1,32 @@
-def get_full_changeset_xml(id, invalidate_cache: false)
-  url = "http://api.openstreetmap.org/api/0.6/changeset/#{id}?include_discussion=true"
+require 'nokogiri'
+
+def get_full_changeset_xml(changeset_id, invalidate_cache: false)
+  url = "http://api.openstreetmap.org/api/0.6/changeset/#{changeset_id}?include_discussion=true"
   timeout = 60
   downloader = GenericCachedDownloader.new(timeout: timeout, stop_on_timeout: false)
-  description = "changeset_with_discussion_#{id}"
+  description = "changeset_with_discussion_#{changeset_id}"
   invalidate_cache = false
   cache_filename = "/home/mateusz/Documents/OSM/CartoCSSHelper-tmp/osm-api/#{description}"
   changeset_xml = downloader.get_specified_resource(url, cache_filename, description: description, invalidate_cache: invalidate_cache)
 end
 
+def get_full_changeset_json(changeset_id, invalidate_cache: false)
+  returned = {}
+  doc = Nokogiri::XML(get_full_changeset_xml(changeset_id, invalidate_cache: invalidate_cache))
+  main_metadata = doc.at_xpath('//changeset')
+  returned[:author] = main_metadata[:user]
+  returned[:timestamp] = main_metadata[:closed_at]
+  returned[:discussion] = []
+  discussion = doc.at_xpath('//discussion')
+  puts doc
+  for comment in discussion.xpath('comment')
+    puts discussion
+    text = comment.at_xpath('//text')
+    posted_timestamp = DateTime.parse(comment['date']).to_time.to_i
+    returned[:discussion] << {text: text, timestamp: posted_timestamp}
+  end
+  return returned
+end
 
 def get_data_from_overpass(query, explanation, invalidate_old_cache)
   debug = false
