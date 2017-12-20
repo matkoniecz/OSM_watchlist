@@ -138,7 +138,7 @@ def run_watchlist
     puts
     puts entry[:message]
     puts
-    puts "[out:xml][timeout:725][bbox:{{bbox}}];"
+    puts "[out:xml][timeout:725];"
     puts "("
     entry[:list].each do |data|
       if data[:lat].nil? || data[:lon].nil?
