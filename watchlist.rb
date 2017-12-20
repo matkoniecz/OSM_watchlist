@@ -553,7 +553,7 @@ def watch_valid_tags_unexpected_in_krakow
 
   watchlist += detect_tags_in_region(lat, lon, 50, {'highway': 'proposed', 'source': {operation: :not_equal_to, value: :any_value}})
   watchlist += detect_tags_in_region(lat, lon, 100, { 'historic' => 'battlefield' }, 'Czy są tu jakieś pozostałości po bitwie? Jeśli tak to powiny zostać zmapowane, jeśli nie to jest to do skasowania.') #1 653 in 2017 IX #200 - too far (reaches Slovakia)
-  watchlist += detect_tags_in_region(lat, lon, 130, { 'horse' => 'designated' }, "to naprawdę jest specjalnie przeznaczone dla koni?") #200 - too far
+  watchlist += detect_tags_in_region(lat, lon, 80, { 'horse' => 'designated' }, "to naprawdę jest specjalnie przeznaczone dla koni?") #130 - too far
   watchlist += detect_tags_in_region(lat, lon, 30, { 'highway' => 'bridleway' }, "Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?")
   watchlist += detect_tags_in_region(lat, lon, 3500, { 'highway' => 'bus_guideway' }, "#highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?")
 
