@@ -20,7 +20,7 @@ def get_data_from_overpass(query, explanation, invalidate_old_cache)
   return json_string if cache_not_present
   cache_age_in_seconds = (Time.now - CartoCSSHelper::OverpassDownloader.cache_timestamp(query)).to_i
   cache_age_in_minutes = cache_age_in_seconds / 60
-  cache_age_in_hours = cache_age_in_minutes / 60 / 60
+  cache_age_in_hours = cache_age_in_minutes / 60
 
   timestamp_description = "#{cache_age_in_hours}h"
   if cache_age_in_hours == 0
