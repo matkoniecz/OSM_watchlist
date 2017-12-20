@@ -489,7 +489,10 @@ def descriptive_names_entries
     {name: 'steps', language: 'en', matching_tags: [{'highway' => 'steps'}]},
     {name: 'Pomnik przyrody', language: 'en', matching_tags: [{'natural' => 'tree'}]},
     {name: 'light', language: 'en', matching_tags: [{'highway' => 'street_lamp'}]},
-
+    {name: 'pool', language: 'en', matching_tags: [{'leisure' => 'swimming_pool'}]},
+    {name: 'swimming pool', language: 'en', matching_tags: [{'leisure' => 'swimming_pool'}]},
+    {name: 'toilets', language: 'en', matching_tags: [{'amenity' => 'toilets'}]},
+    {name: 'toalety', language: 'pl', matching_tags: [{'amenity' => 'toilets'}]},
 
     {name: 'big forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
     {name: 'small forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
