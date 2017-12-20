@@ -193,7 +193,8 @@ end
 
 def process_automatic_watchlist_entries(watchlist)
   # for new edits check changeset discussion:
-  # if empty comment - comment in changeset
+  # if more than 1 changeset introduced changes - switch to manual
+  # if empty comment - check again with flushing cache and if empty again comment in changeset
   # if nonempty and with recent comments wait
   # if nonempty and only with my old comment create note
   # if nonempty and only with my old comments and some are not mine - request manual handling
