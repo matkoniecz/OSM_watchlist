@@ -281,6 +281,7 @@ end
 
 def watch_other
   watchlist = []
+  watchlist << { list: get_list({ 'seasonal' => '*'}), message: "What seasonal=* is supposed to mean?", include_history_of_tags: true}
   watchlist = watchlist + watch_unusual_seasonal_for_waterway
   watchlist = watchlist + watch_unusual_seasonal_not_for_waterway
 
@@ -302,15 +303,17 @@ end
 
 def watch_unusual_seasonal_for_waterway
   #see https://github.com/gravitystorm/openstreetmap-carto/pull/2982
-  tags = whitelist_tag_filter('seasonal', ['yes', 'no', 'wet_season', 'dry_season', 'winter', 'summer', 'spring', 'autumn'])
+  # seasonal=* is detected by a separate rule
+  tags = whitelist_tag_filter('seasonal', ['yes', 'no', 'wet_season', 'dry_season', 'winter', 'summer', 'spring', 'autumn', '*'])
   tags << ['waterway', :any_value]
   return [{ list: get_list(tags), message: 'unexpected seasonal tag on a waterway' }]
 end
 
 def watch_unusual_seasonal_not_for_waterway
   #OSM uses British English, thus autumn not fall.
+  # seasonal=* is detected by a separate rule
   tags = whitelist_tag_filter('seasonal', ['yes', 'no', 'wet_season',
-    'dry_season', 'winter', 'summer', 'spring', 'autumn',
+    'dry_season', 'winter', 'summer', 'spring', 'autumn', '*',
     'spring;summer;autumn', 'spring;winter;autumn', 'summer;autumn', 'spring;summer',
     'christmas',
     'dry weather only', 'No winter maintenance', 'dry_weather', 'no_snow',
