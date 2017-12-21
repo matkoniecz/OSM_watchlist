@@ -12,7 +12,8 @@ pobieramy automatycznie to co blisko
 
 # frozen_string_literal: true
 =begin
-delete historic object unlikely to be mistakenly added back to OSM
+
+delete historic data. It is unlikely to be added to OSM by mistake so it is not worth keeping as protection against invalid edits
 
 This object is still visible on some aerial images (for example Esri). It is kept to prevent mistaken remapping of this object. Delete it once aerial images are updated.
 
