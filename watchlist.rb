@@ -13,7 +13,8 @@ pobieramy automatycznie to co blisko
 # frozen_string_literal: true
 =begin
 
-delete historic data. It is unlikely to be added to OSM by mistake so it is not worth keeping as protection against invalid edits
+delete historic data. It is unlikely to be added to OSM by mistake so it is not worth keeping as protection against invalid edits. Also, this historic data should never be added to OSM - OSM is not place to map what existed in past
+
 
 This object is still visible on some aerial images (for example Esri). It is kept to prevent mistaken remapping of this object. Delete it once aerial images are updated.
 
@@ -56,7 +57,6 @@ out meta;
 
 is an area=yes remaining from unfinished edit without obvious purpose. Is it representing something or is it an area for deletion?
 
-delete historic data that should never be added to OSM
 
 
 untagged objects - memory intensive, use area smaller than małopolska:
