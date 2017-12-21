@@ -96,6 +96,10 @@ def my_location
   return 50.069, 19.926
 end
 
+def my_username
+  return "Mateusz Konieczny"
+end
+
 def requested_watchlist_entries
   return 50
 end
@@ -191,6 +195,81 @@ def watch_beton
   return watchlist
 end
 
+def is_discussion_empty_at(changeset_id)
+  changeset_data = get_full_changeset_json(changeset_id, invalidate_cache: false)
+  if changeset_data[:discussion] != []
+    return false
+  end
+  changeset_data = get_full_changeset_json(changeset_id, invalidate_cache: true)
+  if changeset_data[:discussion] != []
+    return false
+  end
+  return true
+end
+
+def is_there_active_discussion_at(changeset_id)
+  changeset_data = get_full_changeset_json(changeset_id, invalidate_cache: false)
+  latest_timestamp = changeset_data[:discussion][0][:timestamp]
+  changeset_data[:discussion].each do |comment|
+    if latest_timestamp < comment[:timestamp]
+      latest_timestamp = comment[:timestamp]
+    end
+  end
+  latest_activity_age_in_seconds = Time.now.to_i - latest_timestamp
+  latest_activity_age_in_months = latest_activity_age_in_seconds / 60 / 60 / 30
+  return latest_activity_age_in_months <= 1
+end
+
+def are_there_comment_not_mine_at(changeset_id)
+  changeset_data = get_full_changeset_json(changeset_id, invalidate_cache: false)
+  changeset_data[:discussion].each do |comment|
+    return true if comment[:user] != my_username
+  end
+  return false
+end
+
+def process_automatic_watchlist_object(object, message, already_notified)
+  # makes action, return modified already_notified object
+  #TODODODODDODODO: avoid spamming one user by multiple messages!
+  if object[:lat].nil? || object[:lon].nil?
+    raise "#{message} has broken data"
+  end
+  puts object[:type]+'('+object[:id].to_s+')' + ';'
+  puts "// #{object[:url]}"
+  puts "// #{object[:history_string]}" if object[:history_string] != nil
+  if object[:history].length != 1
+    puts "// manual mode enabled due to recurring change"
+    return already_notified
+  end
+  changeset_id = object[:history][0]
+  author = get_full_changeset_json(changeset_id)[:author_id]
+  if already_notified[:authors].include?(author)
+    puts "// skipped to avoid multiple notifications of the same person"
+    return already_notified
+  end
+  if is_discussion_empty_at(changeset_id)
+    puts "// empty discussion, comment in https://www.openstreetmap.org/changeset/#{changeset_id} by #{author}"
+    days = (Time.now.to_i - get_full_changeset_json(changeset_id)[:timestamp]) / 3600 / 24
+    comment = ""
+    comment = "Sorry for bothering you about an old change, but " if days > 400
+    comment = "Sorry for bothering you about a very old change, but " if days > 1400
+    comment = "Sorry for bothering you about an ancient change, but " if days > 2400
+    comment += "I have question about #{object[:url]} - #{message}"
+    puts comment
+    already_notified[:authors] << author
+    return already_notified
+  elsif is_there_active_discussion_at(changeset_id)
+    puts "// active discussion - skip (probably should be skipped by filtering stage)"
+    return already_notified
+  elsif are_there_comment_not_mine_at(changeset_id)
+    puts "// discussion is not active but users other than me commented - switch to manual"
+    return already_notified
+  else
+    puts "// changeset is not empty, not with comments by other and with old inactive discussion - create a note (after checking that it does not exists with flushed cache)"
+    return already_notified
+  end
+end
+
 def process_automatic_watchlist_entries(watchlist)
   # for new edits check changeset discussion:
   # if more than 1 changeset introduced changes - switch to manual
@@ -198,29 +277,15 @@ def process_automatic_watchlist_entries(watchlist)
   # if nonempty and with recent comments wait
   # if nonempty and only with my old comment create note
   # if nonempty and only with my old comments and some are not mine - request manual handling
-=begin
-      posted_date = get_date_of_latest_appearance_in_changeset_discussion(changeset_id, url, invalidate_cache)
-      if posted_date != nil
-        time_in_seconds = DateTime.now.to_time.to_i - posted_date
-        time_in_days = time_in_seconds / 60 / 60 / 24
-        return true if time_in_days < 30 # give time to respond
-      end
-=end
+  already_notified = {authors: [], locations: []}
   watchlist.each do |entry|
     if entry[:list].length == 0
       next
     end
     puts entry[:message]
-    entry[:list].each do |data|
-      if data[:lat].nil? || data[:lon].nil?
-        raise "#{entry[:message]} has broken data"
-      end
-      puts data[:type]+'('+data[:id].to_s+')' + ';'
-      puts "// #{data[:url]}"
-      puts "// #{data[:history_string]}" if data[:history_string] != nil
-      for changeset in data[:history]
-        puts changeset
-      end
+    entry[:list].each do |object|
+      already_notified = process_automatic_watchlist_object(object, entry[:message], already_notified)
+      return if already_notified[:authors].length >= 3
     end
   end
 end

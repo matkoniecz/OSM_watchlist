@@ -13,13 +13,11 @@ def get_full_changeset_json(changeset_id, invalidate_cache: false)
   returned = {}
   doc = Nokogiri::XML(get_full_changeset_xml(changeset_id, invalidate_cache: invalidate_cache))
   main_metadata = doc.at_xpath('//changeset')
-  returned[:author] = main_metadata[:user]
-  returned[:timestamp] = main_metadata[:closed_at]
+  returned[:author_id] = main_metadata[:uid]
+  returned[:timestamp] = DateTime.parse(main_metadata[:closed_at]).to_time.to_i
   returned[:discussion] = []
   discussion = doc.at_xpath('//discussion')
-  puts doc
   for comment in discussion.xpath('comment')
-    puts discussion
     text = comment.at_xpath('//text')
     posted_timestamp = DateTime.parse(comment['date']).to_time.to_i
     returned[:discussion] << {text: text, timestamp: posted_timestamp}
