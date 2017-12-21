@@ -230,7 +230,6 @@ end
 
 def process_automatic_watchlist_object(object, message, already_notified)
   # makes action, return modified already_notified object
-  #TODODODODDODODO: avoid spamming one user by multiple messages!
   if object[:lat].nil? || object[:lon].nil?
     raise "#{message} has broken data"
   end
