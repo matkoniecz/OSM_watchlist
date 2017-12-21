@@ -47,6 +47,10 @@ def get_data_from_overpass(query, explanation, invalidate_old_cache)
     end
   end
 
+  if !invalidate_old_cache
+    return json_string
+  end
+
   if cache_age_in_hours <= time_in_hours_that_protects_query_from_redoing
     puts "not redoing #{timestamp_description} old query (#{cache_age_in_hours}h <= #{time_in_hours_that_protects_query_from_redoing}h)"
     return json_string
