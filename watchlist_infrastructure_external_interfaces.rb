@@ -5,7 +5,6 @@ def get_full_changeset_xml(changeset_id, invalidate_cache: false)
   timeout = 60
   downloader = GenericCachedDownloader.new(timeout: timeout, stop_on_timeout: false)
   description = "changeset_with_discussion_#{changeset_id}"
-  invalidate_cache = false
   cache_filename = "/home/mateusz/Documents/OSM/CartoCSSHelper-tmp/osm-api/#{description}"
   changeset_xml = downloader.get_specified_resource(url, cache_filename, description: description, invalidate_cache: invalidate_cache)
 end
