@@ -182,7 +182,7 @@ end
 
 def get_list_from_arbitrary_query(query, required_tags = {}, include_history_of_tags = false, reason: "")
   reason = "#{required_tags}" if reason == ""
-  explanation = "for watchlist #{reason}"
+  explanation = "for watchlist <#{reason}>"
   invalidate_old_cache = false
   json_string = get_data_from_overpass(query, explanation, invalidate_old_cache)
   list = json_string_to_list_of_actionable_elements(json_string, required_tags, include_history_of_tags)
