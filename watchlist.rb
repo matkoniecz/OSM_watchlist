@@ -496,8 +496,8 @@ def descriptive_names_entries
     # in https://github.com/osmlab/name-suggestion-index
     #{name: 'parking', language: 'pl', matching_tags: [{'amenity' => 'parking'}]},
     #{name: 'parking', language: 'en', matching_tags: [{'amenity' => 'parking'}]},
-    #{name: 'parking lot', language: 'en', matching_tags: [{'amenity' => 'parking'}]},
-    #{name: 'Parking Lot', language: 'en', matching_tags: [{'amenity' => 'parking'}]},
+    {name: 'parking lot', language: 'en', matching_tags: [{'amenity' => 'parking'}]},
+    {name: 'Car park', language: 'en', matching_tags: [{'amenity' => 'parking'}]},
     {name: 'plac zabaw', language: 'pl', matching_tags: [{'leisure' => 'playground'}], overpass: 'http://overpass-turbo.eu/s/qZ6'},
     {name: 'playground', language: 'en', matching_tags: [{'leisure' => 'playground'}], overpass: 'http://overpass-turbo.eu/s/qZ8'},
     {name: 'boisko', language: 'pl', matching_tags: [{'leisure' => 'pitch'}], overpass: 'http://overpass-turbo.eu/s/s6F'},
