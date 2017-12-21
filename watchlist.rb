@@ -253,7 +253,7 @@ def process_automatic_watchlist_object(object, message, already_notified)
     comment = "Sorry for bothering you about an old change, but " if days > 400
     comment = "Sorry for bothering you about a very old change, but " if days > 1400
     comment = "Sorry for bothering you about an ancient change, but " if days > 2400
-    comment += "I have question about #{object[:url]} - #{message}"
+    comment += "I have a question about #{object[:url]} - #{message}"
     puts comment
     already_notified[:authors] << author
     return already_notified
