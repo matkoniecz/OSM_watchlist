@@ -96,7 +96,7 @@ def is_element_under_active_discussion(type, id, required_tags, invalidate_cache
         return true if time_in_days < 30 # give time to respond
       end
     end
-    if invalidate_cache = false
+    if invalidate_cache == false
       cache_age_in_hours = get_json_history_representation_cache_age_in_seconds(type, id) / 60 / 60
       if cache_age_in_hours >= default_cache_timeout_age_in_hours
         return is_element_under_active_discussion(type, id, required_tags, invalidate_cache: true)
