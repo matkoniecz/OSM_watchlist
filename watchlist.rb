@@ -169,6 +169,7 @@ def watchlist_entries
   watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_descriptive_names(requested_watchlist_entries - count_entries(watchlist))
   watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_wetland_tag if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_lifecycle if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_low_priority if count_entries(watchlist) < requested_watchlist_entries if count_entries(watchlist) < requested_watchlist_entries
@@ -261,6 +262,20 @@ def watch_lifecycle
   watchlist << { list: get_list({ 'razed' => 'yes', 'railway' => 'disused' }), message: "is it only disused and railway tracks remain or is it completely razed?"}
   watchlist << { list: get_list({ 'razed' => 'yes', 'railway' => {operation: :not_equal_to, value: "disused"} }), message: message + "razed=yes"}
   #more at https://taginfo.openstreetmap.org/search?q=demolished%3Dyes
+  return watchlist
+end
+
+def watch_wetland_tag
+  watchlist = []
+  message = "Is it a wetland or a water? If it is not wetland then wetland tag should be deleted, if it is a wetland than natural=wetland rather than natural=water should be used"
+  watchlist << { list: get_list({'wetland' => :any_value,  'natural' => 'water'}), message: message, include_history_of_tags: true}
+  watchlist << { list: get_list({ 'seasonal' => '*'}), message: "What seasonal=* is supposed to mean?", include_history_of_tags: true}
+
+  watchlist << { list: get_list([
+    ['wetland', :any_value],
+    ['natural', {operation: :not_equal_to, value: 'wetland'}],
+    ['natural', {operation: :not_equal_to, value: 'coastline'}]
+    ]), message: "missing natural=wetland"}
   return watchlist
 end
 
