@@ -140,13 +140,13 @@ def run_watchlist
     puts
     puts "[out:xml][timeout:725];"
     puts "("
-    entry[:list].each do |data|
-      if data[:lat].nil? || data[:lon].nil?
+    entry[:list].each do |object|
+      if object[:lat].nil? || object[:lon].nil?
         raise "#{entry[:message]} has broken data"
       end
-      puts data[:type]+'('+data[:id].to_s+')' + ';'
-      puts "// #{data[:url]}"
-      puts "// #{data[:history_string]}" if data[:history_string] != nil
+      puts object[:type]+'('+object[:id].to_s+')' + ';'
+      puts "// #{object[:url]}"
+      puts "// #{object[:history_string]}" if object[:history_string] != nil
       displayed += 1
       if displayed >= requested_watchlist_entries
         break
