@@ -721,7 +721,7 @@ def watch_lifecycle_state_in_the_name
   >;
   out skel qt;'
 
-  watchlist << { list: get_list_from_arbitrary_query(project_mess_query), message: "planowane/projektowane" }
+  watchlist << { list: get_list_from_arbitrary_query(project_mess_query, reason: "lifecycle state in name"), message: "planowane/projektowane" }
   return watchlist
 end
 
