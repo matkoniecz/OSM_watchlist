@@ -117,6 +117,23 @@ def default_cache_timeout_age_in_hours
   return 24 * 30
 end
 
+def watchlist_entries
+  watchlist = []
+  watchlist += objects_using_this_name_part('naprawdę warto', 'spam') if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_other if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_invalid_wikipedia if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_descriptive_names(requested_watchlist_entries - count_entries(watchlist))
+  watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_wetland_tag if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_lifecycle if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_low_priority if count_entries(watchlist) < requested_watchlist_entries if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_railway_lifecycle if count_entries(watchlist) < requested_watchlist_entries
+  return watchlist
+end
+
+
 def local_notes_present
   lat, lon = my_location
   range = 0.025
@@ -164,21 +181,6 @@ def run_watchlist
       break
     end
   end
-end
-
-def watchlist_entries
-  watchlist = []
-  watchlist += objects_using_this_name_part('naprawdę warto', 'spam') if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_other if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_invalid_wikipedia if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_descriptive_names(requested_watchlist_entries - count_entries(watchlist))
-  watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_wetland_tag if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_lifecycle if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_low_priority if count_entries(watchlist) < requested_watchlist_entries if count_entries(watchlist) < requested_watchlist_entries
-  return watchlist
 end
 
 def watch_beton
@@ -312,13 +314,18 @@ def watch_lifecycle
   #after fixing revisit https://github.com/openstreetmap/iD/issues/4501
   message = "is this object demolished or not? If demolished, it should be deleted (if stil present at least on some aerial images it should be tagged in a better way - for example object with note='demolished on 2017-10' ), if not demolished then it is wrong to tag it as "
   watchlist << { list: get_list({ 'demolished' => 'yes' }), message: message + "demolished=yes"}
+  #more at https://taginfo.openstreetmap.org/search?q=demolished%3Dyes
+  return watchlist
+end
+
+def watch_railway_lifecycle
+  watchlist = []
   watchlist << { list: get_list({ 'railway' => 'razed', 'highway' => {operation: :not_equal_to, value: :any_value}}), message: message + "railway=razed"}
   watchlist << { list: get_list({ 'railway' => 'historic' }), message: message + "railway=historic"}
   watchlist << { list: get_list({ 'railway' => 'dismantled' }), message: message + "railway=dismantled"}
   watchlist << { list: get_list({ 'railway' => 'obliterated' }), message: message + "railway=obliterated"}
   watchlist << { list: get_list({ 'razed' => 'yes', 'railway' => 'disused' }), message: "is it only disused and railway tracks remain or is it completely razed?"}
   watchlist << { list: get_list({ 'razed' => 'yes', 'railway' => {operation: :not_equal_to, value: "disused"} }), message: message + "razed=yes"}
-  #more at https://taginfo.openstreetmap.org/search?q=demolished%3Dyes
   return watchlist
 end
 
