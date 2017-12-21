@@ -115,6 +115,15 @@ def get_location(entry, node_database)
       return nil, nil
     end
     return lat, lon
+  elsif entry["type"] == "relation"
+    entry["members"].each do |member|
+      if member["type"] == "node"
+        lat, lon = node_database[member["ref"]]
+        return lat, lon if lat != nil && lon != nil
+      end
+    end
+    puts "skipped relation"
+    return nil, nil
   elsif entry["type"] == "node"
     lat = entry["lat"].to_f
     lon = entry["lon"].to_f
