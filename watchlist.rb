@@ -293,6 +293,8 @@ def watch_other
     watchlist << { list: get_list({key => :any_value}), message: "#{key} key?" }
   end
 
+  message = "what is the meaning of acres tag? If it is about area taken by object - note that marking something as closed way is enough to provide information about an area"
+  watchlist << { list: get_list({'acres' => :any_value}), message: message, include_history_of_tags: true }
   return watchlist
 end
 
