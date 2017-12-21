@@ -294,10 +294,16 @@ end
 
 def watch_unusual_seasonal_not_for_waterway
   #OSM uses British English, thus autumn not fall.
-  tags = whitelist_tag_filter('seasonal', ['yes', 'no', 'wet_season', 'dry_season', 'winter', 'summer', 'spring', 'autumn', 'spring;summer;autumn', 'spring;winter;autumn', 'summer;autumn'])
+  tags = whitelist_tag_filter('seasonal', ['yes', 'no', 'wet_season',
+    'dry_season', 'winter', 'summer', 'spring', 'autumn',
+    'spring;summer;autumn', 'spring;winter;autumn', 'summer;autumn', 'spring;summer',
+    'christmas',
+    'dry weather only', 'No winter maintenance', 'dry_weather', 'no_snow',
+    'low water', 'low flow'])
   # waits for osm wiki edit
   # spring;winter;autumn - for ice rink
   # summer;autumn - for roads
+  # dry weather only
   tags << ['waterway', {operation: :not_equal_to, value: :any_value}]
   return [{ list: get_list(tags), message: 'unexpected seasonal tag (not on a waterway)' }]
 end
