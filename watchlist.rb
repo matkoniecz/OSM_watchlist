@@ -233,15 +233,23 @@ def watch_automatic_entries
   #TODO reconsider
 
   message = 'Why this is not tagged as highway=steps? What is the meaning of steps=yes here? See http://overpass-turbo.eu/s/tPd for more cases (I considered armchair mapping it to highway=steps but I think that verification from local mappers is preferable)'
-  modifiers = ['footway', 'path', {operation: :not_equal_to, value: "steps"}]
+  modifiers = ['footway', 'path']
   for modifier in modifiers
-    watchlist << { list: get_list({'steps' => 'yes', 'highway' => modifier}, include_history_of_tags: true), message: message, overpass: 'http://overpass-turbo.eu/s/tPd' }
+    watchlist << { list: get_list({'steps' => 'yes', 'highway' => modifier, 'area' => {operation: :not_equal_to, value: "yes"}}, include_history_of_tags: true), message: message, overpass: 'http://overpass-turbo.eu/s/tPd' }
   end
 
   process_automatic_watchlist_entries(watchlist)
 end
 
 def watch_lifecycle
+  watchlist << { list: get_list([
+    ['steps', 'yes'],
+    ['highway', {operation: :not_equal_to, value: "steps"}],
+    ['highway', {operation: :not_equal_to, value: "path"}],
+    ['highway', {operation: :not_equal_to, value: "footway"}],
+    ['area', {operation: :not_equal_to, value: "yes"}],
+    ], include_history_of_tags: true), message: 'steps=yes on unusual object', overpass: 'http://overpass-turbo.eu/s/tPd' }
+
   watchlist = []
   #after fixing revisit https://github.com/openstreetmap/iD/issues/4501
   message = "is this object demolished or not? If demolished, it should be deleted (if stil present at least on some aerial images it should be tagged in a better way - for example object with note='demolished on 2017-10' ), if not demolished then it is wrong to tag it as "
