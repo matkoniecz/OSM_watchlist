@@ -394,7 +394,7 @@ def watch_unusual_seasonal_not_for_waterway
   tags = whitelist_tag_filter('seasonal', ['yes', 'no', 'wet_season',
     'dry_season', 'winter', 'summer', 'spring', 'autumn', '*',
     'spring;summer;autumn', 'spring;winter;autumn', 'summer;autumn', 'spring;summer',
-    'christmas',
+    'christmas', 'March to September',
     'dry weather only', 'No winter maintenance', 'dry_weather', 'no_snow',
     'low water', 'low flow'])
   # waits for osm wiki edit
