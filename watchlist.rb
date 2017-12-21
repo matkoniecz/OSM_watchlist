@@ -420,6 +420,7 @@ def descriptive_names_entries
     {name: 'staw', language: 'pl', matching_tags: [{'natural' => 'water'}]},
     {name: 'pond', language: 'en', matching_tags: [{'natural' => 'water'}]},
 
+    {name: 'Camp Greenery(Trees)', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]}, #yes, without space
     {name: 'trash can', language: 'en', matching_tags: [{'amenity' => 'waste_basket'}]},
     {name: 'bench', language: 'en', matching_tags: [{'amenity' => 'bench'}]},
     {name: 'bike rack', language: 'en', matching_tags: [{'amenity' => 'bicycle_parking'}]},
@@ -481,6 +482,7 @@ def descriptive_names_entries
     {name: 'drzewo', language: 'pl'},
     {name: 'torfowiska', language: 'pl', matching_tags: [{'natural' => 'wetland'}]},
     {name: 'shelter', language: 'en', matching_tags: [{'amenity' => 'shelter'}]},
+    {name: 'gazebo', language: 'en', matching_tags: [{'amenity' => 'shelter'}]},
     {name: 'altana', language: 'pl', matching_tags: [{'amenity' => 'shelter'}]},
     {name: 'altanka', language: 'pl', matching_tags: [{'amenity' => 'shelter'}]},
     {name: 'picnic shelter', language: 'en', matching_tags: [{'amenity' => 'shelter'}], complaint: "shelter_type=picnic_shelter may be added"},
