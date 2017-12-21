@@ -649,6 +649,14 @@ def watch_invalid_wikipedia
   return watchlist
 end
 
+# https://www.openstreetmap.org/changeset/735042#map=9/42.0666/-70.8074
+# massgis:TOWN_ID and other useless tags
+
+#https://www.openstreetmap.org/way/186766112 ERROR_FLAG and other useless tags
+
+#useless tags like facility_type
+#https://www.openstreetmap.org/node/2303161011/history
+
 # name without name:pl (dla map które pokazują name:pl, potem name:en, potem name:de, potem name - a chcemy by w polsce dalej pokazywały pl)
 # compartive advantage
 # mass edit
