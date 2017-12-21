@@ -617,6 +617,10 @@ def watch_tree_species_in_name
   watchlist << { list: get_list({ 'name' => 'dąb', 'natural' => 'tree' }), message: "opis drzewa w nazwie" }
   watchlist << { list: get_list({ 'name' => 'dąb szypułkowy', 'natural' => 'tree' }), message: "opis drzewa w nazwie" }
   watchlist << { list: get_list({ 'name' => 'Dąb szypułkowy', 'natural' => 'tree' }), message: "opis drzewa w nazwie" }
+  watchlist << { list: get_list({ 'name' => 'sosna', 'natural' => 'tree' }), message: "opis drzewa w nazwie" }
+  watchlist << { list: get_list({ 'name' => 'klon', 'natural' => 'tree' }), message: "opis drzewa w nazwie" }
+  watchlist << { list: get_list({ 'name' => 'buk', 'natural' => 'tree' }), message: "opis drzewa w nazwie" }
+  watchlist << { list: get_list({ 'name' => 'pomnik przyrody', 'natural' => 'tree' }), message: "opis drzewa w nazwie" }
   return watchlist
 end
 
