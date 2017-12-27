@@ -116,7 +116,6 @@ end
 
 def watchlist_entries
   watchlist = []
-  watchlist += watch_spam if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_other if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_invalid_wikipedia if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_watchlist_entries
@@ -125,6 +124,7 @@ def watchlist_entries
   watchlist += watch_wetland_tag if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_useless_keys if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_declared_historical_data if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_spam if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_lifecycle if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_low_priority if count_entries(watchlist) < requested_watchlist_entries if count_entries(watchlist) < requested_watchlist_entries
