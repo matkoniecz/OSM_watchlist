@@ -110,6 +110,10 @@ def default_cache_timeout_age_in_hours
   return 24 * 30
 end
 
+def age_of_historical_data_allowed_in_years
+  return 10
+end
+
 def watchlist_entries
   watchlist = []
   watchlist += watch_spam if count_entries(watchlist) < requested_watchlist_entries
@@ -120,6 +124,7 @@ def watchlist_entries
   watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_wetland_tag if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_useless_keys if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_declared_historical_data if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_lifecycle if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_low_priority if count_entries(watchlist) < requested_watchlist_entries if count_entries(watchlist) < requested_watchlist_entries
@@ -807,6 +812,24 @@ def watch_lifecycle_state_in_the_name
   return watchlist
 end
 
+def watch_declared_historical_data
+  watchlist = []
+  latest_allowed_end_date = Time.now.year - age_of_historical_data_allowed_in_years
+  known historical data
+  query = "[out:xml][timeout:25];
+(
+node[end_date](if:date(t[end_date])<#{latest_allowed_end_date})({{bbox}});
+way[end_date](if:date(t[end_date])<#{latest_allowed_end_date})({{bbox}});
+relation[end_date](if:date(t[end_date])<#{latest_allowed_end_date})({{bbox}});
+);
+out meta;
+>;
+out meta qt;"
+
+  watchlist << { list: get_list_from_arbitrary_query(query, reason: "lifecycle state in name"), message: "planowane/projektowane", include_history_of_tags: true }
+  return watchlist
+end
+
 def watch_invalid_wikipedia
   watchlist = []
   values = ["pl:Pomniki Jana Pawła II w Krakowie", "pl:Ringstand 58c"]
@@ -821,17 +844,10 @@ def watch_invalid_wikipedia
   return watchlist
 end
 
+
+
 =begin
-known historical data
-[out:xml]/*fixed by auto repair*/[timeout:25];
-// gather results
-(
-way[end_date](if:date(t[end_date])<2007)({{bbox}});
-);
-// print results
-out meta;/*fixed by auto repair*/
->;
-out meta qt;/*fixed by auto repair*/
+
 =end
 
 =begin
