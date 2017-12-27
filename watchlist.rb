@@ -887,6 +887,9 @@ seamark:type!=light_minor and seamark:type!='beacon_special_purpose' and seamark
 #useless tags like facility_type
 #https://www.openstreetmap.org/node/2303161011/history
 
+#again uselss tag:
+#LandPro08:LC
+
 # name without name:pl (dla map które pokazują name:pl, potem name:en, potem name:de, potem name - a chcemy by w polsce dalej pokazywały pl)
 # compartive advantage
 # mass edit
