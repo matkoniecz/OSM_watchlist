@@ -708,33 +708,33 @@ def watch_valid_tags_unexpected_in_krakow
     ['building', {operation: :not_equal_to, value: :any_value}],
     ['landuse', {operation: :not_equal_to, value: 'quarry'}],
   ]
-  watchlist += detect_tags_in_region(lat, lon, 20, [['disused', 'yes']] + not_trolltag_filters)
-  watchlist += detect_tags_in_region(lat, lon, 20, [['abandoned', 'yes']] + not_trolltag_filters)
+  watchlist += detect_tags_in_region(lat, lon, 50, [['disused', 'yes']] + not_trolltag_filters)
+  watchlist += detect_tags_in_region(lat, lon, 50, [['abandoned', 'yes']] + not_trolltag_filters)
 
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'surface' => 'sett', 'smoothness': {operation: :not_equal_to, value: :any_value} })
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'surface' => 'cobblestone', 'smoothness': {operation: :not_equal_to, value: :any_value} })
+  watchlist += detect_tags_in_region(lat, lon, 8, { 'surface' => 'sett', 'smoothness': {operation: :not_equal_to, value: :any_value} })
+  watchlist += detect_tags_in_region(lat, lon, 8, { 'surface' => 'cobblestone', 'smoothness': {operation: :not_equal_to, value: :any_value} })
 
   watchlist += detect_tags_in_region(lat, lon, 5, whitelist_tag_filter('cycleway', ['no', 'lane', 'opposite_lane', 'opposite']))
 
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'seamark:name' => :any_value })
+  watchlist += detect_tags_in_region(lat, lon, 25, { 'seamark:name' => :any_value })
 
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'shop' => :any_value, 'wikipedia' => :any_value }) #extend to banks etc?
+  watchlist += detect_tags_in_region(lat, lon, 25, { 'shop' => :any_value, 'wikipedia' => :any_value }) #extend to banks etc?
 
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'amenity' => 'shop' })
+  watchlist += detect_tags_in_region(lat, lon, 50, { 'amenity' => 'shop' })
 
-  watchlist += detect_tags_in_region(lat, lon, 25, { 'landuse' => 'basin', 'natural' => {operation: :not_equal_to, value: 'water'} }, message: "natural=water may be missing")
+  watchlist += detect_tags_in_region(lat, lon, 25, { 'landuse' => 'basin', 'natural' => {operation: :not_equal_to, value: 'water'}, 'fixme' => {operation: :not_equal_to, value: :any_value} }, message: "natural=water may be missing")
 
-  watchlist += detect_tags_in_region(lat, lon, 5, [['payment:bitcoin', :any_value], ['payment:bitcoin', {operation: :not_equal_to, value: 'no'}]])
+  watchlist += detect_tags_in_region(lat, lon, 15, [['payment:bitcoin', :any_value], ['payment:bitcoin', {operation: :not_equal_to, value: 'no'}]])
 
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'man_made' => 'pier', 'highway' => {operation: :not_equal_to, value: :any_value} })
+  watchlist += detect_tags_in_region(lat, lon, 15, { 'man_made' => 'pier', 'highway' => {operation: :not_equal_to, value: :any_value} })
   
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'highway' => 'track', 'name' => :any_value }, description: 'highway=track to droga do obsługi pola/lasu, stan drogi oznacza się przy pomocy tagów smoothness i surface')
+  watchlist += detect_tags_in_region(lat, lon, 15, { 'highway' => 'track', 'name' => :any_value }, description: 'highway=track to droga do obsługi pola/lasu, stan drogi oznacza się przy pomocy tagów smoothness i surface')
 
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'is_in:country' => :any_value })
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'is_in:county' => :any_value })
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'is_in:municipality' => :any_value })
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'is_in:province' => :any_value })
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'is_in' => :any_value })
+  watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:country' => :any_value })
+  watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:county' => :any_value })
+  watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:municipality' => :any_value })
+  watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:province' => :any_value })
+  watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in' => :any_value })
 
   watchlist += detect_tags_in_region(lat, lon, 5, { 'access' => 'public' })
   watchlist += detect_tags_in_region(lat, lon, 5, { 'building' => 'proposed' })
@@ -744,9 +744,9 @@ def watch_valid_tags_unexpected_in_krakow
   watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:parent' => 'unknown' })
   watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:woman' => 'unknown' })
 
-  watchlist += detect_tags_in_region(lat, lon, 1500, { 'highway' => :any_value, "addr:housenumber" => :any_value, 'website' => :any_value })
+  watchlist += detect_tags_in_region(lat, lon, 2500, { 'highway' => :any_value, "addr:housenumber" => :any_value, 'website' => :any_value })
 
-  watchlist += detect_tags_in_region(lat, lon, 50, {'highway': 'proposed', 'source': {operation: :not_equal_to, value: :any_value}})
+  watchlist += detect_tags_in_region(lat, lon, 75, {'highway': 'proposed', 'source': {operation: :not_equal_to, value: :any_value}})
   watchlist += detect_tags_in_region(lat, lon, 100, { 'historic' => 'battlefield' }, 'Czy są tu jakieś pozostałości po bitwie? Jeśli tak to powiny zostać zmapowane, jeśli nie to jest to do skasowania.') #1 653 in 2017 IX #200 - too far (reaches Slovakia)
   watchlist += detect_tags_in_region(lat, lon, 80, { 'horse' => 'designated' }, "to naprawdę jest specjalnie przeznaczone dla koni?") #130 - too far
   watchlist += detect_tags_in_region(lat, lon, 30, { 'highway' => 'bridleway' }, "Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?")
