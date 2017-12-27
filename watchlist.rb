@@ -123,6 +123,7 @@ def watchlist_entries
   watchlist += watch_wetland_tag if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_useless_keys if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_declared_historical_data if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += proposed_without_source if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_spam if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_lifecycle if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_watchlist_entries
@@ -746,7 +747,6 @@ def watch_valid_tags_unexpected_in_krakow
 
   watchlist += detect_tags_in_region(lat, lon, 2500, { 'highway' => :any_value, "addr:housenumber" => :any_value, 'website' => :any_value })
 
-  watchlist += detect_tags_in_region(lat, lon, 75, {'highway': 'proposed', 'source': {operation: :not_equal_to, value: :any_value}})
   watchlist += detect_tags_in_region(lat, lon, 100, { 'historic' => 'battlefield' }, 'Czy są tu jakieś pozostałości po bitwie? Jeśli tak to powiny zostać zmapowane, jeśli nie to jest to do skasowania.') #1 653 in 2017 IX #200 - too far (reaches Slovakia)
   watchlist += detect_tags_in_region(lat, lon, 80, { 'horse' => 'designated' }, "to naprawdę jest specjalnie przeznaczone dla koni?") #130 - too far
   watchlist += detect_tags_in_region(lat, lon, 30, { 'highway' => 'bridleway' }, "Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?")
@@ -808,6 +808,52 @@ def watch_lifecycle_state_in_the_name
   out skel qt;'
 
   watchlist << { list: get_list_from_arbitrary_query(query, reason: "lifecycle state in name"), message: "planowane/projektowane", include_history_of_tags: true }
+  return watchlist
+end
+
+def filter_across_named_region(filter, name)
+  return "[out:json][timeout:25];
+area[name='#{name}']->.searchArea;
+(
+  node#{filter}(area.searchArea);
+  way#{filter}(area.searchArea);
+  relation#{filter}(area.searchArea);
+);
+out meta;
+>;
+out meta qt;"
+end
+
+def two_pass_filter_across_named_region(filter, negative_filter, name)
+  return "[out:json][timeout:25];
+area[name='#{name}']->.searchArea;
+(
+  way#{filter}(area.searchArea);
+  node#{filter}(area.searchArea);
+  relation#{filter}(area.searchArea);
+)-> .a;
+(
+  way#{negative_filter}(area.searchArea);
+  node#{negative_filter}(area.searchArea);
+  relation#{negative_filter}(area.searchArea);
+) -> .b;
+(
+.a - .b;
+);
+out meta;
+>;
+out meta qt;"
+end
+
+
+def proposed_without_source
+  watchlist = []
+  query = two_pass_filter_across_named_region("[highway=proposed]", "[highway=proposed]['source']", "Kraków")
+  watchlist << { list: get_list_from_arbitrary_query(query, {}, reason: "proposed without source", include_history_of_tags: true), message: "proposed without source" }
+  query = two_pass_filter_across_named_region("[highway=proposed]", "[highway=proposed]['source']", "powiat legionowski")
+  watchlist << { list: get_list_from_arbitrary_query(query, {}, reason: "proposed without source", include_history_of_tags: true), message: "proposed without source" }
+  query = two_pass_filter_across_named_region("[highway=proposed]", "[highway=proposed]['source']", "województwo małopolskie")
+  watchlist << { list: get_list_from_arbitrary_query(query, {}, reason: "proposed without source", include_history_of_tags: true), message: "proposed without source" }
   return watchlist
 end
 
@@ -981,3 +1027,6 @@ out skel qt;
 
 #TODO: hunt down also other seamarks?
 
+#TODO detect that it is crashing with OOM - currently it crashes silently
+#may affect also other queries
+#watchlist += detect_tags_in_region(lat, lon, 475, {'highway': 'proposed', 'source': {operation: :not_equal_to, value: :any_value}})
