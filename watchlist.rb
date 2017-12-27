@@ -123,6 +123,7 @@ def watchlist_entries
   watchlist += watch_lifecycle if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_low_priority if count_entries(watchlist) < requested_watchlist_entries if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_generating_notes if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_railway_lifecycle if count_entries(watchlist) < requested_watchlist_entries
   return watchlist
 end
@@ -380,25 +381,41 @@ def watch_useless_keys
   return watchlist
 end
 
-def watch_other
+def watch_steps_on_unusual_highway
   watchlist = []
-
   watchlist << { list: get_list([
     ['steps', 'yes'],
     ['highway', :any_value],
     ['highway', {operation: :not_equal_to, value: "steps"}],
     ['highway', {operation: :not_equal_to, value: "path"}],
+    ['highway', {operation: :not_equal_to, value: "track"}],
     ['highway', {operation: :not_equal_to, value: "footway"}],
     ['area', {operation: :not_equal_to, value: "yes"}],
-    ], include_history_of_tags: true), message: 'steps=yes on unusual highway=*', overpass: 'http://overpass-turbo.eu/s/tPd' }
+    ], include_history_of_tags: true), message: 'steps=yes on unusual highway=* What is the meaning of steps=yes here? ', overpass: 'http://overpass-turbo.eu/s/tPd'}
+  message = 'steps=yes on highway=track What is the meaning of steps=yes here? Is it possible that it is not really road but path/footway? Maybe highway=steps should be used here?'
+  watchlist << { list: get_list({'steps' => 'yes', 'highway' => 'track', 'area' => {operation: :not_equal_to, value: "yes"}}, include_history_of_tags: true), message: message, overpass: 'http://overpass-turbo.eu/s/tPd' }
+  return watchlist
+end
 
-  watchlist << { list: get_list({ 'seasonal' => '*'}), message: "What seasonal=* is supposed to mean?", include_history_of_tags: true}
-  watchlist = watchlist + watch_unusual_seasonal_for_waterway
-  watchlist = watchlist + watch_unusual_seasonal_not_for_waterway
+def watch_generating_notes
+  watchlist = []
+  watchlist << { list: get_list({ 'waterway' => 'canal', 'area' => 'yes'}), message: "waterway=canal with area=yes"}
+  watchlist += watch_steps_on_unusual_highway
+  watchlist << { list: get_list({ 'seasonal' => '*'}, include_history_of_tags: true), message: "What seasonal=* is supposed to mean?"}
+  watchlist += watch_unusual_seasonal_for_waterway
 
-  watchlist << { list: get_list({ 'access' => 'private', 'amenity' => 'telephone' }), message: 'access=private on what is supposed to be mapped only if public (mapping phones not accessible to public may sometimes make sense but one should use a different tag)...' }
   message = 'is it really both landuse=industrial and leisure=park? leisure=park is for https://en.wikipedia.org/wiki/Park, not for industrial park https://en.wikipedia.org/wiki/Industrial_park'
   watchlist << { list: get_list({'leisure' => 'park', 'landuse' => 'industrial'}), message: message }
+  return watchlist
+end
+
+def watch_other
+  watchlist = []
+
+  message = 'access=private on what is supposed to be mapped only if public (mapping phones not accessible to public may sometimes make sense but one should use a different tag)...'
+  watchlist << { list: get_list({ 'access' => 'private', 'amenity' => 'telephone' }), message: message }
+  watchlist << { list: get_list({ 'concentration_camp' => 'nazism', 'amenity' => 'prison'}, include_history_of_tags: true), message: "Suspected tagging for renderer"}
+
   return watchlist
 end
 
@@ -439,6 +456,8 @@ end
 
 def watch_low_priority
   watchlist = []
+  watchlist += watch_unusual_seasonal_not_for_waterway
+
   watchlist << { list: get_list({ 'demolished:building' => 'yes', 'note': {operation: :not_equal_to, value: :any_value} }), message: 'still visible in some aerial images, avoid deleting for now to avoid people tagging no longer existing objects' }
 
   # waits for responses
