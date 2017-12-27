@@ -736,7 +736,7 @@ end
 
 def watch_lifecycle_state_in_the_name
   watchlist = []
-  project_mess_query = '[out:json][timeout:250];
+  query = '[out:json][timeout:250];
   (
     node["name"~"planowan"];
     way["name"~"planowan"];
@@ -758,7 +758,7 @@ def watch_lifecycle_state_in_the_name
   >;
   out skel qt;'
 
-  watchlist << { list: get_list_from_arbitrary_query(project_mess_query, reason: "lifecycle state in name"), message: "planowane/projektowane", include_history_of_tags: true }
+  watchlist << { list: get_list_from_arbitrary_query(query, reason: "lifecycle state in name"), message: "planowane/projektowane", include_history_of_tags: true }
   return watchlist
 end
 
