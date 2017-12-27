@@ -714,8 +714,28 @@ def watch_valid_tags_unexpected_in_krakow
 
   watchlist += detect_tags_in_region(lat, lon, 5, { 'seamark:name' => :any_value })
 
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'payment:bitcoin' => {operation: :not_equal_to, value: 'no'} })
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'shop' => :any_value, 'wikipedia' => :any_value }) #extend to banks etc?
+
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'amenity' => 'shop' })
+
+  watchlist += detect_tags_in_region(lat, lon, 25, { 'landuse' => 'basin', 'natural' => {operation: :not_equal_to, value: 'water'} }, message: "natural=water may be missing")
+
+  watchlist += detect_tags_in_region(lat, lon, 5, [['payment:bitcoin', :any_value], ['payment:bitcoin', {operation: :not_equal_to, value: 'no'}]])
+
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'man_made' => 'pier', 'highway' => {operation: :not_equal_to, value: :any_value} })
   
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'highway' => 'track', 'name' => :any_value }, description: 'highway=track to droga do obsługi pola/lasu, stan drogi oznacza się przy pomocy tagów smoothness i surface')
+
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'is_in:country' => :any_value })
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'is_in:county' => :any_value })
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'is_in:municipality' => :any_value })
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'is_in:province' => :any_value })
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'is_in' => :any_value })
+
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'access' => 'public' })
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'building' => 'proposed' })
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'building' => 'destroyed' })
+
   watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:disabled' => 'unknown' })
   watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:parent' => 'unknown' })
   watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:woman' => 'unknown' })
