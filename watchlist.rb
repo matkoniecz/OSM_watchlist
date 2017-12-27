@@ -75,18 +75,7 @@ out meta;
 
 #https://wiki.openstreetmap.org/wiki/Key:teryt:simc - jest link walidujący, powtarzane kody
 
-=begin
-
-
-[out:xml][timeout:25];
-(
-  relation(specific);
-);
-(._;>;);
-out meta;
-
 =end
-# http://overpass-turbo.eu/s/rEQ
 
 #https://wiki.openstreetmap.org/w/index.php?title=User:Mateusz_Konieczny&action=edit
 
