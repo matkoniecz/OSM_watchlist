@@ -184,7 +184,7 @@ def run_watchlist
     end
     puts
     puts
-    puts entry[:message]
+    puts "// #{entry[:message]}"
     puts
     puts "[out:xml][timeout:725];"
     puts "("
