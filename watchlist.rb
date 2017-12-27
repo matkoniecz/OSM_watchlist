@@ -828,8 +828,6 @@ seamark:type!=light_minor and seamark:type!='beacon_special_purpose' and seamark
 # https://www.openstreetmap.org/changeset/735042#map=9/42.0666/-70.8074
 # massgis:TOWN_ID and other useless tags
 
-#https://www.openstreetmap.org/way/186766112 ERROR_FLAG and other useless tags
-
 #useless tags like facility_type
 #https://www.openstreetmap.org/node/2303161011/history
 
