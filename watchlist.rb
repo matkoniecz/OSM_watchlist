@@ -729,13 +729,15 @@ def watch_valid_tags_unexpected_in_krakow
 
   watchlist += detect_tags_in_region(lat, lon, 15, { 'man_made' => 'pier', 'highway' => {operation: :not_equal_to, value: :any_value} })
   
-  watchlist += detect_tags_in_region(lat, lon, 15, { 'highway' => 'track', 'name' => :any_value }, description: 'highway=track to droga do obsługi pola/lasu, stan drogi oznacza się przy pomocy tagów smoothness i surface')
-
-  watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:country' => :any_value })
-  watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:county' => :any_value })
-  watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:municipality' => :any_value })
-  watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:province' => :any_value })
-  watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in' => :any_value })
+  message = 'highway=track to droga do obsługi pola/lasu, stan drogi oznacza się przy pomocy tagów smoothness i surface'
+  proper_track_names = ['Chodnik Malczewskiego', 'Astronomów', 'Tuchowska', 'Piotra Gaszowca', 'Słona Woda', 'Do Luboni',
+    'Stefana Starzyńskiego', 'Świętego Floriana', 'Słoneczna', 'Wrzosowa', 'Spacerowa', 'Topolowa']
+  tags = [['highway', 'track'], ['name', :any_value]]
+  proper_track_names.each do |name|
+    tags << ['name', {operation: :not_equal_to, value: name}]
+  end
+  watchlist += detect_tags_in_region(lat, lon, 7, tags, message)
+  # TODO - consider detecting rather highway=track without nearby field/forest, it will find also nameless ones
 
   watchlist += detect_tags_in_region(lat, lon, 5, { 'access' => 'public' })
   watchlist += detect_tags_in_region(lat, lon, 5, { 'building' => 'proposed' })
@@ -764,6 +766,15 @@ def watch_valid_tags_unexpected_in_krakow
   #watchlist << { list: get_list({ 'natural' => 'volcano' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) Is it really a good idea to tag something as natural=volcano where it was last active about X 000 years ago? In that case natural=peak is probably better..." }
   #range_in_km = 400
   #watchlist << { list: get_list({ 'natural' => 'volcano' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) Is it really a good idea to tag something as natural=volcano where it was last active about X 000 years ago? In that case natural=peak is probably better..." }
+
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'fixme' => :any_value }, 'fixmes')
+
+  watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:country' => :any_value })
+  watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:county' => :any_value })
+  watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:municipality' => :any_value })
+  watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:province' => :any_value })
+  watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in' => :any_value })
+
   return watchlist
 end
 
