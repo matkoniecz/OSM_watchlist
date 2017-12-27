@@ -112,7 +112,7 @@ end
 
 def watchlist_entries
   watchlist = []
-  watchlist += objects_using_this_name_part('naprawdę warto', 'spam') if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_spam if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_other if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_invalid_wikipedia if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_watchlist_entries
@@ -126,6 +126,31 @@ def watchlist_entries
   return watchlist
 end
 
+def blacklist_english_phrases
+  return ['Fortune 500', 'Our clients', 'I am confident', '™', 'Family-owned',
+    'tradition ', 'experienced professionals', 'best quality',
+    'reasonable prices', 'reach us', 'we come', 'boasts', 'outstanding',
+    'our team', 'we are', 'call us', 'we have', 'we offer', 'our ', 'we ',
+    'competitive price', 'We provide', 'will match any', '™']
+end
+
+def blacklist_polish_phrases
+  return ['naprawdę warto']
+end
+
+def watch_spam
+  watchlist = []
+
+  blacklist_with_false_positives = ['price', 'luxury']
+  blacklists = [blacklist_english_phrases, blacklist_polish_phrases, blacklist_with_false_positives]
+
+  blacklists.each do |spam_indicators_phrases|
+    watchlist += objects_using_this_tag_part('description', spam_indicators_phrases, 'spam detection query based on description tag')
+    watchlist += objects_using_this_tag_part('name', spam_indicators_phrases, 'spam detection query based on description tag')
+  end
+
+  return watchlist
+end
 
 def local_notes_present
   lat, lon = my_location
@@ -467,8 +492,8 @@ def suspicious_name_watchlist_entry(name:, language_code_of_name:, description: 
   return returned
 end
 
-def objects_using_this_name_part(name_part, description)
-  return [{ list: list_of_objects_with_this_name_part(name_part), message: description }]
+def objects_using_this_tag_part(tag, partial_match_wanted_list, description)
+  return [{ list: list_of_objects_with_this_tag_part(tag, partial_match_wanted_list), message: description }]
 end
 
 def watch_descriptive_names(requested_entries)
@@ -479,7 +504,7 @@ def watch_descriptive_names(requested_entries)
   # Is it really parking named parking or is it just a parking and name tag is incorrectly used as a description?
 
   watchlist = []
-  watchlist += objects_using_this_name_part('boisko do gry w', 'name used instead sport tags')
+  watchlist += objects_using_this_tag_part('name', ['boisko do gry w'], 'name used instead sport tags')
   descriptive_names_entries.each do |entry|
     return watchlist if count_entries(watchlist) >= requested_entries
     matching_tag_list = entry[:matching_tags]

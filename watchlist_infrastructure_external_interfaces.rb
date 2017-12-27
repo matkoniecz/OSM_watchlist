@@ -108,16 +108,18 @@ out skel qt;'
   return query
 end
 
-def list_of_objects_with_this_name_part(name_part)
+def list_of_objects_with_this_tag_part(tag, partial_match_wanted_list)
   watchlist = []
-  name_part_query = '[out:json][timeout:250];
-  (
-    node["name"~"' + name_part + '"];
-    way["name"~"' + name_part + '"];
-    relation["name"~"' + name_part + '"];
-  );
+  query = '[out:json][timeout:250];
+  (' + "\n"
+  partial_match_wanted_list.each do |match|
+    query += '  node["' + tag + '"~"' + match + '"];' + "\n"
+    query += '  way["' + tag + '"~"' + match + '"];' + "\n"
+    query += '  relation["' + tag + '"~"' + match + '"];' + "\n"
+  end
+  query += ');
   out body;
   >;
   out skel qt;'
-  return get_list_from_arbitrary_query(name_part_query, reason: "partial match of name to <#{name_part}> ")
+  return get_list_from_arbitrary_query(query, reason: "partial match of <#{tag}> to <#{partial_match_wanted_list}> ")
 end
