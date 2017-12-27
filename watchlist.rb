@@ -911,16 +911,6 @@ out skel qt;
 =end
 # retag rare tags from https://github.com/simonpoole/beautified-JOSM-preset/issues/35
 
-#print("https://osm.wikidata.link/candidates/relation/2768922 (Kraków)")
-#print("https://osm.wikidata.link/candidates/relation/2654452 (powiat krakowski)")
-#print("https://osm.wikidata.link/candidates/relation/2907540 (Warszawa)")
-#print("https://osm.wikidata.link/filtered/Poland")
-#https://osm.wikidata.link/candidates/relation/2675559 mazury
-#https://osm.wikidata.link/candidates/relation/2675566 mazury
-#https://osm.wikidata.link/candidates/relation/2675509 mazury
-#https://osm.wikidata.link/candidates/relation/2675563 mazury
-
-
 # https://wiki.openstreetmap.org/wiki/SPARQL_examples#Find_.22Featured.22_wiki_articles_with_location.2C_but_without_OSM_connection
 # https://wiki.openstreetmap.org/wiki/User_talk:Yurik - wait for answers
 # https://www.openstreetmap.org/changeset/49958115
