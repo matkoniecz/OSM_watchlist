@@ -988,8 +988,9 @@ out skel qt;
 #type=site relation http://overpass-turbo.eu/s/fwU 
 #name=Ogródki działkowe http://overpass-turbo.eu/s/dr3 
 #planowan* - tagowanie pod render http://overpass-turbo.eu/s/dtf 
-#landuse=basin bez natural=water
 # http://www.openstreetmap.org/changeset/39896451#map=7/51.986/19.100
+
+# https://www.openstreetmap.org/way/201259297#map=19/50.08838/19.75612 cudzysłowy w nazwach
 
 #https://www.openstreetmap.org/way/33711547
 #note=taśmociąg na filarach + highway=service
