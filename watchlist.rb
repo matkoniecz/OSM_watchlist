@@ -663,10 +663,14 @@ def watch_valid_tags_unexpected_in_krakow
   watchlist += detect_tags_in_region(lat, lon, 5, whitelist_tag_filter('cycleway', ['no', 'lane', 'opposite_lane', 'opposite']))
 
   watchlist += detect_tags_in_region(lat, lon, 5, { 'seamark:name' => :any_value })
+
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'payment:bitcoin' => {operation: :not_equal_to, value: 'no'} })
   
   watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:disabled' => 'unknown' })
   watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:parent' => 'unknown' })
   watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:woman' => 'unknown' })
+
+  watchlist += detect_tags_in_region(lat, lon, 1500, { 'highway' => :any_value, "addr:housenumber" => :any_value, 'website' => :any_value })
 
   watchlist += detect_tags_in_region(lat, lon, 50, {'highway': 'proposed', 'source': {operation: :not_equal_to, value: :any_value}})
   watchlist += detect_tags_in_region(lat, lon, 100, { 'historic' => 'battlefield' }, 'Czy są tu jakieś pozostałości po bitwie? Jeśli tak to powiny zostać zmapowane, jeśli nie to jest to do skasowania.') #1 653 in 2017 IX #200 - too far (reaches Slovakia)
