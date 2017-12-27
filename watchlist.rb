@@ -138,6 +138,7 @@ def blacklist_english_phrases
     'tradition ', 'experienced professionals', 'best quality',
     'reasonable prices', 'reach us', 'we come', 'boasts', 'outstanding',
     'our team', 'we are', 'call us', 'we have', 'we offer', 'our ', 'we ',
+    'our products',
     'competitive price', 'We provide', 'will match any', '™']
 end
 
