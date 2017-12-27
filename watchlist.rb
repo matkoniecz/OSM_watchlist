@@ -2,8 +2,8 @@
 instalujemy plugin todo w JOSMie
 
 pobieramy
+wybieramy duplicate
 konwertujemy do GPX
-pobieramy jeszcze raz
 filtr "type:node"
 dodajemy wszystko do TODO listy (ctrl+a by zaznaczyc wszystko)
 pobieramy automatycznie to co blisko
