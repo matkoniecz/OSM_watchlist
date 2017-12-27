@@ -47,9 +47,13 @@ mix of various fixes required:
   node["leisure"="pitch"]["name"="Kort tenisowy"]["sport"="tennis"];
   way["leisure"="pitch"]["name"="Kort tenisowy"]["sport"="tennis"];
   relation["leisure"="pitch"]["name"="Kort tenisowy"]["sport"="tennis"];
-  node["boundary"="historic"]["end_date"!="2017"]["end_date"!="2016"]["end_date"!="2018"];
-  way["boundary"="historic"]["end_date"!="2017"]["end_date"!="2016"]["end_date"!="2018"];
-  relation["boundary"="historic"]["end_date"!="2017"]["end_date"!="2016"]["end_date"!="2018"];
+  node["boundary"="historic"];
+  way["boundary"="historic"]["end_date"!~"2007"]["end_date"!~"2008"]["end_date"!~"2009"]["end_date"!~"2010"]["end_date"!~"2011"]["end_date"!~"2012"]["end_date"!~"2013"]["end_date"!~"2014"]["end_date"!~"2015"]["end_date"!~"2016"]["end_date"!~"2017"]["end_date"!~"2018"];
+  relation["boundary"="historic"]["end_date"!~"2007"]["end_date"!~"2008"]["end_date"!~"2009"]["end_date"!~"2010"]["end_date"!~"2011"]["end_date"!~"2012"]["end_date"!~"2013"]["end_date"!~"2014"]["end_date"!~"2015"]["end_date"!~"2016"]["end_date"!~"2017"]["end_date"!~"2018"];
+
+  node[highway]["addr:housenumber"][website];
+  way[highway]["addr:housenumber"][website];
+  relation[highway]["addr:housenumber"][website];
   );
 (._;>;);
 out meta;
