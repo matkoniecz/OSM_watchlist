@@ -355,9 +355,15 @@ def watch_other
   watchlist << { list: get_list({ 'access' => 'private', 'amenity' => 'telephone' }), message: 'access=private on what is supposed to be mapped only if public (mapping phones not accessible to public may sometimes make sense but one should use a different tag)...' }
   message = 'is it really both landuse=industrial and leisure=park? leisure=park is for https://en.wikipedia.org/wiki/Park, not for industrial park https://en.wikipedia.org/wiki/Industrial_park'
   watchlist << { list: get_list({'leisure' => 'park', 'landuse' => 'industrial'}), message: message }
-  useless_keys = ['hashtag']
+  useless_keys = ['hashtag', 'ERROR_FLAG', 'BMP', 'SYMBOL', 'TRAIL_STAT', 'ADMIN_ORG']
   useless_keys.each do |key|
     watchlist << { list: get_list({key => :any_value}), message: "#{key} key?" }
+  end
+
+  message = 'delete from tags data that is included in geometry'
+  useless_keys = ['Lgth_Miles', 'Lgth_Mtrs']
+  useless_keys.each do |key|
+    watchlist << { list: get_list({key => :any_value}), message: "#{key} key? - #{message}" }
   end
 
   message = "what is the meaning of acres tag? If it is about area taken by object - note that marking something as closed way is enough to provide information about an area"
