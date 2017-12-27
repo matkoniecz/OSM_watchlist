@@ -782,6 +782,49 @@ def watch_invalid_wikipedia
   return watchlist
 end
 
+=begin
+known historical data
+[out:xml]/*fixed by auto repair*/[timeout:25];
+// gather results
+(
+way[end_date](if:date(t[end_date])<2007)({{bbox}});
+);
+// print results
+out meta;/*fixed by auto repair*/
+>;
+out meta qt;/*fixed by auto repair*/
+=end
+
+=begin
+https://taginfo.openstreetmap.org/tags/boundary=historic#map
+
+https://wiki.openstreetmap.org/wiki/Seamarks/Lights
+
+What is the unit of seamark:light:range? It is not explicitly defined at https://wiki.openstreetmap.org/wiki/Seamarks/Lights
+
+http://wiki.openstreetmap.org/wiki/User:NKA/seamark_import mentions that this import used nautical miles as units. Is it considered as a correct tagging?
+
+What is the difference between seamark:type=light_minor and seamark:type=light_major?
+
+"A major light is a light that is intended to be seen at extended distances and will indicate the presence of prominent land masses or provide guidance into harbours or rivers."
+"A minor light is a short-range light that marks obstacles in the same way as lighted buoys and beacons"
+
+So lighthouses should have seamark:type=light_major, right?
+
+But there are many lighthouses with long-range light but with seamark:type=light_minor rather than light_major.
+See http://overpass-turbo.eu/s/u0C listing light_minor objects with seamark:light:range > 10. (I suspect that either seamark:light:range or seamark:type tag is wrong)
+
+Lighthouses with missing name, but with seamark:name - http://overpass-turbo.eu/s/u05 (it is likely that name tag is missing)
+
+Is there really a major navigational light here? I see nothing on aerial images.
+'seamark:light:1:range'=* and man_made != lighthouse and 'seamark:type' = light_major
+seamark:type!=light_minor and seamark:type!='beacon_special_purpose' and seamark:type!=platform and 'seamark:type'!=beacon_lateral
+=end
+
+#exterminate nodes mentioned in https://www.openstreetmap.org/changeset/51018746#map=19/-27.33391/-55.87173
+
+# mail to talk-us@openstreetmap.org
+
 # https://www.openstreetmap.org/changeset/735042#map=9/42.0666/-70.8074
 # massgis:TOWN_ID and other useless tags
 
