@@ -66,15 +66,17 @@ def empty_note_xml
 </osm>'
 end
 
-def currently_present_note_at(lat, lon)
+def currently_present_note_at(lat, lon, reason)
   # in case of note present it accepts cache
   # in case of missing note and cache that is not current it checks to be sure
   range = 0.025
-  if CartoCSSHelper::NotesDownloader.cache_timestamp(lat, lon, range) == nil
-    puts "note download (cache was not present) (note check of #{lat}, #{lon})"
-  end
+  fresh = CartoCSSHelper::NotesDownloader.cache_timestamp(lat, lon, range) == nil
   notes = CartoCSSHelper::NotesDownloader.run_note_query(lat, lon, range).strip
-  return true if notes != empty_note_xml
+  puts "note download (cache was not present) (note check of #{lat}, #{lon}) for #{reason}" if fresh
+  if notes != empty_note_xml
+    puts "notes found" if fresh
+    return true
+  end
   timestamp_in_h = (Time.now - CartoCSSHelper::NotesDownloader.cache_timestamp(lat, lon, range)).to_i / 60 / 60
   if timestamp_in_h >= time_in_hours_that_forces_note_redoing
     puts "note download after discarding cache (cache age was #{timestamp_in_h}h) (note check of #{lat}, #{lon})"
