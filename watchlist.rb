@@ -18,7 +18,6 @@ delete historic data. It is unlikely to be added to OSM by mistake so it is not 
 
 This object is still visible on some aerial images (for example Esri). It is kept to prevent mistaken remapping of this object. Delete it once aerial images are updated.
 
-
 mix of various fixes required:
 
 [out:xml][timeout:725][bbox:{{bbox}}];
@@ -135,10 +134,9 @@ end
 
 def blacklist_english_phrases
   return ['Fortune 500', 'Our clients', 'I am confident', '™', 'Family-owned',
-    'tradition ', 'experienced professionals', 'best quality',
-    'reasonable prices', 'reach us', 'we come', 'boasts', 'outstanding',
-    'our team', 'we are', 'call us', 'we have', 'we offer', 'our ', 'we ',
-    'our products',
+    'experienced professionals', 'best quality', 'reach us', 'we come', ' boasts ', 'outstanding',
+    'our team', 'we are', 'call us', 'we have', 'we offer', ' our ',
+    'our products', ' loans ',
     'competitive price', 'We provide', 'will match any', '™']
 end
 
@@ -149,7 +147,7 @@ end
 def watch_spam
   watchlist = []
 
-  blacklist_with_false_positives = ['price', 'luxury']
+  blacklist_with_false_positives = ['price', 'reasonable prices', 'luxury', 'tradition ', ' we '] #we - dwór we Franciszkowie
   blacklists = [blacklist_english_phrases, blacklist_polish_phrases, blacklist_with_false_positives]
 
   blacklists.each do |spam_indicators_phrases|
