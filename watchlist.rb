@@ -442,6 +442,7 @@ def watch_unusual_seasonal_for_waterway
 end
 
 def watch_unusual_seasonal_not_for_waterway
+  #all months: January;February;March;April;May;June;July;August;September;October;November;December
   #OSM uses British English, thus autumn not fall.
   # seasonal=* is detected by a separate rule
   tags = whitelist_tag_filter('seasonal', ['yes', 'no', 'wet_season',
