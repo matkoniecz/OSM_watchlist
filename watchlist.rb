@@ -404,6 +404,7 @@ end
 
 def watch_generating_notes
   watchlist = []
+  watchlist += watch_imports_failing_to_use_name
   watchlist << { list: get_list({ 'waterway' => 'canal', 'area' => 'yes'}), message: "waterway=canal with area=yes"}
   watchlist += watch_steps_on_unusual_highway
   watchlist << { list: get_list({ 'seasonal' => '*'}, include_history_of_tags: true), message: "What seasonal=* is supposed to mean?"}
@@ -822,6 +823,20 @@ def watch_lifecycle_state_in_the_name
 
   watchlist << { list: get_list_from_arbitrary_query(query, reason: "lifecycle state in name"), message: "planowane/projektowane", include_history_of_tags: true }
   return watchlist
+end
+
+def watch_imports_failing_to_use_name
+  watchlist = []
+  query = '[out:json][timeout:25];
+(
+  node["massgis:SITE_NAME"]["massgis:SITE_NAME"!="name"];
+  way["massgis:SITE_NAME"]["massgis:SITE_NAME"!="name"];
+  relation["massgis:SITE_NAME"]["massgis:SITE_NAME"!="name"];
+);
+out body;
+>;
+out skel qt;'
+  watchlist << { list: get_list_from_arbitrary_query(query, reason: "import cleanup", include_history_of_tags: true), message: "name and massgiss:SITE_NAME mismatch"}
 end
 
 def filter_across_named_region(filter, name)
