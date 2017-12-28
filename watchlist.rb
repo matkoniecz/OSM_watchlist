@@ -115,12 +115,17 @@ end
 
 def popek_eliminator()
   # revert damage caused by popek069 - this user was adding guessed maxspeed without any verification whatsoever on a massive scale
-  #TODO - extact case where popek069 added default maxspeed value and eliminate it
+  # only maxspeed values added in changesets by popek069 are deleted, only cases where popek069 was adding default maxspeed values are affected
 
-  for section_index in 0..1000
-    puts section_index
+  author_id = '6066236'
+
+  puts
+  puts "detect popek damage"
+
+  ways_for_tag_removal = []
+  section_size = 150
+  for section_index in 0..(popek_ways().length/section_size - 1)
     required_tags = {'highway' => 'motorway', 'maxspeed' => '140'}
-    section_size = 150
     query = popek_motorways_query_part(section_index * section_size, section_size)
     json_string = get_data_from_overpass(query, 'popek infestation')
     obj = JSON.parse(json_string)
@@ -130,17 +135,18 @@ def popek_eliminator()
       json_history = get_json_history_representation(entry['type'], entry['id'])
       changesets_that_caused_object_to_match = changesets_that_caused_tag_to_appear_in_history(json_history, required_tags)
       for changeset_id in changesets_that_caused_object_to_match
-        puts get_full_changeset_json(changeset_id)[:author_id]
-        puts get_full_changeset_json(changeset_id)[:author_id] == '6066236'
+        if get_full_changeset_json(changeset_id)[:author_id] == author_id
+          ways_for_tag_removal << entry['id']
+          puts "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}"
+        end
       end
     end
   end
-  puts "XXX"
+  puts ways_for_tag_removal
   sleep 10
 end
 
 def watchlist_entries
-  popek_eliminator
   watchlist = []
   watchlist += watch_other if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_invalid_wikipedia if count_entries(watchlist) < requested_watchlist_entries
@@ -231,6 +237,8 @@ def run_watchlist
       break
     end
   end
+
+  popek_eliminator
 end
 
 def watch_beton

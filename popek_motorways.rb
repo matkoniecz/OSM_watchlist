@@ -10,8 +10,6 @@ returned +=");
 (._;>;);
 out meta;
 "
-
-puts returned
 return returned
 end
 
