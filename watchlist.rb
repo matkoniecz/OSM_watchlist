@@ -173,8 +173,6 @@ end
 def run_watchlist
   puts "there are nearby notes" if local_notes_present
   #dump_descriptive_names_entries_to_stdout()
-
-  watch_automatic_entries
   
   displayed = 0
   watchlist_entries.each do |entry|
@@ -932,6 +930,7 @@ https://taginfo.openstreetmap.org/tags/boundary=historic#map
 
 =end
 
+# test how watch_automatic_entries works
 
 # mail to talk-us@openstreetmap.org
 
