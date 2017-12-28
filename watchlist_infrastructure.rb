@@ -157,6 +157,12 @@ def json_string_to_list_of_actionable_elements(json_string, required_tags, inclu
   node_database = get_node_database(obj)
   elements = obj["elements"]
 
+  list_size = 0
+  elements.each do |entry|
+    next if not_fully_matching_tag_set(entry["tags"], required_tags)
+    list_size += 1
+  end
+
   elements.each do |entry|
     next if not_fully_matching_tag_set(entry["tags"], required_tags)
     lat, lon = get_location(entry, node_database)
@@ -178,6 +184,7 @@ def json_string_to_list_of_actionable_elements(json_string, required_tags, inclu
       end
       list << { lat: lat, lon: lon, url: url, id: entry['id'], type: entry['type'], history: history, history_string: history_string }
       if list.length >= requested_watchlist_entries
+        puts "// full list has #{list_size} entries but some were skipped"
         return list
       end
     end
