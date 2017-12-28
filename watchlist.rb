@@ -806,6 +806,10 @@ def watch_lifecycle_state_in_the_name
     way["name"~"planowan"];
     relation["name"~"planowan"];
 
+    node["name"~"planned"];
+    way["name"~"planned"];
+    relation["name"~"planned"];
+
     node["name"~"projektowan"]["name"!="Nowoprojektowana"];
     way["name"~"projektowan"]["name"!="Nowoprojektowana"];
     relation["name"~"projektowan"]["name"!="Nowoprojektowana"];
@@ -817,6 +821,11 @@ def watch_lifecycle_state_in_the_name
     node["name"~"koncepcja"];
     way["name"~"koncepcja"];
     relation["name"~"koncepcja"];
+
+    // for usa see https://lists.openstreetmap.org/pipermail/talk-us/2017-September/017883.html
+    node["name"~"(historical)"];
+    way["name"~"(historical)"];
+    relation["name"~"(historical)"];
   );
   out body;
   >;
