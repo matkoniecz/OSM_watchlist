@@ -1,4 +1,5 @@
 require_relative 'watchlist_infrastructure_external_interfaces.rb'
+require_relative 'popek_motorways.rb'
 
 def count_entries(watchlist)
   count = 0
