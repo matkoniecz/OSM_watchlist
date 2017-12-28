@@ -125,7 +125,7 @@ def popek_eliminator()
   ways_for_tag_removal = []
   section_size = 150
   for section_index in 0..(popek_ways().length/section_size - 1)
-    required_tags = {'highway' => 'motorway', 'maxspeed' => '140'}
+    required_tags = {'maxspeed' => '140'}
     query = popek_motorways_query_part(section_index * section_size, section_size)
     json_string = get_data_from_overpass(query, 'popek infestation')
     obj = JSON.parse(json_string)
