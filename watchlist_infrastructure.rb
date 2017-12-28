@@ -56,10 +56,15 @@ def description_of_tag_appearances_in_history(type, id, required_tags)
 end
 
 def get_json_history_representation(type, id)
-  puts "using http://dev.overpass-api.de/api_mmd - switch to normal overpass instance once possible"
   CartoCSSHelper::Configuration.set_overpass_instance_url('http://dev.overpass-api.de/api_mmd') #TEST instance, limit querries
   query = get_history_query(type, id)
-  explanation = "testing"
+  if CartoCSSHelper::OverpassDownloader.cache_timestamp(query) == nil
+    puts "downloading using http://dev.overpass-api.de/api_mmd - switch to normal overpass instance once possible (see TODO about an automatic detection)"
+    sleep 60
+    # TODO: once a day (triggered by setting a comment to date) run dummy query on normal overpass, check is it crashing or not
+    # if this type of query works on normal server then raise exception that dev server should no longer be used
+  end
+  explanation = "using TEST instance!!!!"
   json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, explanation)
   CartoCSSHelper::Configuration.set_overpass_instance_url('http://overpass-api.de/api') #restore normal instance
   return JSON.parse(json_string)
