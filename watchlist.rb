@@ -730,8 +730,10 @@ def watch_valid_tags_unexpected_in_krakow
   watchlist += detect_tags_in_region(lat, lon, 15, { 'man_made' => 'pier', 'highway' => {operation: :not_equal_to, value: :any_value} })
   
   message = 'highway=track to droga do obsługi pola/lasu, stan drogi oznacza się przy pomocy tagów smoothness i surface'
-  proper_track_names = ['Chodnik Malczewskiego', 'Astronomów', 'Tuchowska', 'Piotra Gaszowca', 'Słona Woda', 'Do Luboni',
-    'Stefana Starzyńskiego', 'Świętego Floriana', 'Słoneczna', 'Wrzosowa', 'Spacerowa', 'Topolowa']
+  proper_track_names = ['Chodnik Malczewskiego', 'Astronomów', 'Tuchowska',
+    'Piotra Gaszowca', 'Słona Woda', 'Do Luboni', 'Stefana Starzyńskiego',
+    'Świętego Floriana', 'Słoneczna', 'Wrzosowa', 'Spacerowa', 'Topolowa',
+    'Czerwony Most']
   tags = [['highway', 'track'], ['name', :any_value]]
   proper_track_names.each do |name|
     tags << ['name', {operation: :not_equal_to, value: name}]
