@@ -25,7 +25,7 @@ def get_full_changeset_json(changeset_id, invalidate_cache: false)
   return returned
 end
 
-def get_data_from_overpass(query, explanation, invalidate_old_cache)
+def get_data_from_overpass(query, explanation, invalidate_old_cache = false)
   debug = false
   cache_not_present = false
   if CartoCSSHelper::OverpassDownloader.cache_timestamp(query) == nil
