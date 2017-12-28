@@ -905,34 +905,168 @@ end
 =begin
 https://taginfo.openstreetmap.org/tags/boundary=historic#map
 
-https://wiki.openstreetmap.org/wiki/Seamarks/Lights
-
-What is the unit of seamark:light:range? It is not explicitly defined at https://wiki.openstreetmap.org/wiki/Seamarks/Lights
-
-http://wiki.openstreetmap.org/wiki/User:NKA/seamark_import mentions that this import used nautical miles as units. Is it considered as a correct tagging?
-
-What is the difference between seamark:type=light_minor and seamark:type=light_major?
-
-"A major light is a light that is intended to be seen at extended distances and will indicate the presence of prominent land masses or provide guidance into harbours or rivers."
-"A minor light is a short-range light that marks obstacles in the same way as lighted buoys and beacons"
-
-So lighthouses should have seamark:type=light_major, right?
-
-But there are many lighthouses with long-range light but with seamark:type=light_minor rather than light_major.
-See http://overpass-turbo.eu/s/u0C listing light_minor objects with seamark:light:range > 10. (I suspect that either seamark:light:range or seamark:type tag is wrong)
-
-Lighthouses with missing name, but with seamark:name - http://overpass-turbo.eu/s/u05 (it is likely that name tag is missing)
-
-Is there really a major navigational light here? I see nothing on aerial images.
-'seamark:light:1:range'=* and man_made != lighthouse and 'seamark:type' = light_major
-seamark:type!=light_minor and seamark:type!='beacon_special_purpose' and seamark:type!=platform and 'seamark:type'!=beacon_lateral
 =end
 
-#exterminate nodes mentioned in https://www.openstreetmap.org/changeset/51018746#map=19/-27.33391/-55.87173
+
+# detect massgis:SITE_NAME without name
 
 # mail to talk-us@openstreetmap.org
 
-# https://www.openstreetmap.org/changeset/735042#map=9/42.0666/-70.8074
+# overpass search for this particular import - 186 ways:
+# http://overpass-turbo.eu/s/u3O massgis:SITE_NAME, without name
+# 'massgis:ARTICLE97' = * and 'massgis:ASSESS_ACR' = * and 'massgis:ASSESS_LOT' = * and 'massgis:ASSESS_MAP' = * and 'massgis:ATT_DATE' = * and 'massgis:BASE_MAP' = * and 'massgis:DCAM_ID' = * and 'massgis:DEED_ACRES' = * and 'massgis:EOEAINVOLV' = * and 'massgis:FEESYM' = * and 'massgis:FY_FUNDING' = * and 'massgis:LEV_PROT' = * and 'massgis:MANAGR_ABR' = * and 'massgis:MANAGR_TYP' = * and 'massgis:OS_DEED_BO' = * and 'massgis:OS_DEED_PA' = * and 'massgis:OS_ID' = * and 'massgis:OWNER_ABRV' = * and 'massgis:POLY_ID' = * and 'massgis:PRIM_PURP' = * and 'massgis:SOURCE_MAP' = * and 'massgis:SOURCE_TYP' = * and 'massgis:TOWN_ID' = *
+
+=begin
+I encountered https://www.openstreetmap.org/way/29690455 that is
+obviously result of some unfinished import - somebody dumped random
+database fields into OSM such as
+
+massgis:DEED_ACRES=0.00000000
+massgis:MANAGR_ABR=M173BS
+
+and many other tags such as:
+
+massgis:ARTICLE97
+massgis:ASSESS_ACR
+massgis:ASSESS_LOT
+massgis:ASSESS_MAP
+massgis:ATT_DATE
+massgis:EOEAINVOLV
+massgis:FEESYM
+massgis:FY_FUNDING
+massgis:LEV_PROT
+massgis:MANAGR_ABR
+massgis:MANAGR_TYP
+massgis:OS_DEED_BO
+massgis:OS_DEED_PA
+massgis:OWNER_ABRV
+massgis:PRIM_PURP
+
+There are also tags that are an internal database info and seem to be
+utterly useless for OSM.
+
+massgis:SOURCE_MAP
+massgis:SOURCE_TYP
+massgis:BASE_MAP
+massgis:DCAM_ID
+massgis:OS_ID
+massgis:POLY_ID
+massgis:TOWN_ID
+
+Area is already available from geometry itself - it should not be tagged
+separately - so this tag is also probably useless.
+
+massgis:DEED_ACRES
+
+There are also some tags that in theory may be useful but meaning is
+unclear.
+
+massgis:PUB_ACCESS
+massgis:OWNER_TYPE
+massgis:FEE_OWNER
+massgis:MANAGER
+
+And there is massgis:SITE_NAME, useful if it is different from name tag
+(there are even 1729 ways with massgis:SITE_NAME, without name tag
+indicating either really poorly done import or probably unwanted data
+deletion - see http://overpass-turbo.eu/s/u3L )
+
+Such useless tags are confusing and may mislead future users
+that dumping random tags into OSM is a good idea. I think that data
+would be improved by deleting such tags (except massgis:SITE_NAME that
+is potentially useful).
+
+Would it be OK to delete 
+
+massgis:ARTICLE97
+massgis:ASSESS_ACR
+massgis:ASSESS_LOT
+massgis:ASSESS_MAP
+massgis:ATT_DATE
+massgis:EOEAINVOLV
+massgis:FEESYM
+massgis:FY_FUNDING
+massgis:LEV_PROT
+massgis:MANAGR_ABR
+massgis:MANAGR_TYP
+massgis:OS_DEED_BO
+massgis:OS_DEED_PA
+massgis:OWNER_ABRV
+massgis:PRIM_PURP
+massgis:SOURCE_MAP
+massgis:SOURCE_TYP
+massgis:BASE_MAP
+massgis:DCAM_ID
+massgis:OS_ID
+massgis:POLY_ID
+massgis:TOWN_ID
+massgis:DEED_ACRES
+
+tags across USA? Would it be OK to do it with a mechanical edit? If yes
+- what should be done before doing that?
+
+If such tags have some value - can you consider documenting them on the
+OSM wiki?
+=end
+
+=begin
+try detecting massgis: keys
+
+if not, detect specific:
+
+massgis:ARTICLE97
+massgis:ASSESS_ACR
+massgis:ASSESS_LOT
+massgis:ASSESS_MAP
+massgis:ATT_DATE
+massgis:EOEAINVOLV
+massgis:FEESYM
+massgis:FY_FUNDING
+massgis:LEV_PROT
+massgis:MANAGR_ABR
+massgis:MANAGR_TYP
+massgis:OS_DEED_BO
+massgis:OS_DEED_PA
+massgis:OWNER_ABRV
+massgis:PRIM_PURP
+massgis:SOURCE_MAP
+massgis:SOURCE_TYP
+massgis:BASE_MAP
+massgis:DCAM_ID
+massgis:OS_ID
+massgis:POLY_ID
+massgis:TOWN_ID
+massgis:DEED_ACRES
+
+[
+['massgis:ARTICLE97', :any_value],
+['massgis:ASSESS_ACR', :any_value],
+['massgis:ASSESS_LOT', :any_value],
+['massgis:ASSESS_MAP', :any_value],
+['massgis:ATT_DATE', :any_value],
+['massgis:EOEAINVOLV', :any_value],
+['massgis:FEESYM', :any_value],
+['massgis:FY_FUNDING', :any_value],
+['massgis:LEV_PROT', :any_value],
+['massgis:MANAGR_ABR', :any_value],
+['massgis:MANAGR_TYP', :any_value],
+['massgis:OS_DEED_BO', :any_value],
+['massgis:OS_DEED_PA', :any_value],
+['massgis:OWNER_ABRV', :any_value],
+['massgis:PRIM_PURP', :any_value],
+['massgis:SOURCE_MAP', :any_value],
+['massgis:SOURCE_TYP', :any_value],
+['massgis:BASE_MAP', :any_value],
+['massgis:DCAM_ID', :any_value],
+['massgis:OS_ID', :any_value],
+['massgis:POLY_ID', :any_value],
+['massgis:TOWN_ID', :any_value],
+['massgis:DEED_ACRES', :any_value],
+]
+=end
+
+# https://www.openstreetmap.org/way/29690455 z https://www.openstreetmap.org/changeset/735042#map=9/42.0666/-70.8074
+# wyszukiwanie tagu massgis:DEED_ACRES daje 100MB danych
 # massgis:TOWN_ID and other useless tags
 
 #useless tags like facility_type
@@ -968,6 +1102,31 @@ out body;
 >;
 out skel qt; 
 =end
+
+=begin
+https://wiki.openstreetmap.org/wiki/Seamarks/Lights
+
+What is the unit of seamark:light:range? It is not explicitly defined at https://wiki.openstreetmap.org/wiki/Seamarks/Lights
+
+http://wiki.openstreetmap.org/wiki/User:NKA/seamark_import mentions that this import used nautical miles as units. Is it considered as a correct tagging?
+
+What is the difference between seamark:type=light_minor and seamark:type=light_major?
+
+"A major light is a light that is intended to be seen at extended distances and will indicate the presence of prominent land masses or provide guidance into harbours or rivers."
+"A minor light is a short-range light that marks obstacles in the same way as lighted buoys and beacons"
+
+So lighthouses should have seamark:type=light_major, right?
+
+But there are many lighthouses with long-range light but with seamark:type=light_minor rather than light_major.
+See http://overpass-turbo.eu/s/u0C listing light_minor objects with seamark:light:range > 10. (I suspect that either seamark:light:range or seamark:type tag is wrong)
+
+Lighthouses with missing name, but with seamark:name - http://overpass-turbo.eu/s/u05 (it is likely that name tag is missing)
+
+Is there really a major navigational light here? I see nothing on aerial images.
+'seamark:light:1:range'=* and man_made != lighthouse and 'seamark:type' = light_major
+seamark:type!=light_minor and seamark:type!='beacon_special_purpose' and seamark:type!=platform and 'seamark:type'!=beacon_lateral
+=end
+
 # retag rare tags from https://github.com/simonpoole/beautified-JOSM-preset/issues/35
 
 # https://wiki.openstreetmap.org/wiki/SPARQL_examples#Find_.22Featured.22_wiki_articles_with_location.2C_but_without_OSM_connection
