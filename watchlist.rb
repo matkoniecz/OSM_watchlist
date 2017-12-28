@@ -821,7 +821,7 @@ def watch_lifecycle_state_in_the_name
   >;
   out skel qt;'
 
-  watchlist << { list: get_list_from_arbitrary_query(query, reason: "lifecycle state in name"), message: "planowane/projektowane", include_history_of_tags: true }
+  watchlist << { list: get_list_from_arbitrary_query(query, reason: "lifecycle state in name", include_history_of_tags: true), message: "planowane/projektowane" }
   return watchlist
 end
 
@@ -899,7 +899,7 @@ out meta;
 >;
 out meta qt;"
 
-  watchlist << { list: get_list_from_arbitrary_query(query, reason: "lifecycle state in name"), message: "planowane/projektowane", include_history_of_tags: true }
+  watchlist << { list: get_list_from_arbitrary_query(query, reason: "lifecycle state in name", include_history_of_tags: true), message: "planowane/projektowane" }
   return watchlist
 end
 

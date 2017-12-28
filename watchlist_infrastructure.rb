@@ -31,7 +31,7 @@ def get_list(required_tags, lat = 0, lon = 0, distance_in_km = :infinity, includ
                distance_in_km * 1000
              end
   query = watchlist_query(required_tags, lat, lon, distance)
-  list = get_list_from_arbitrary_query(query, required_tags, include_history_of_tags)
+  list = get_list_from_arbitrary_query(query, required_tags, include_history_of_tags: include_history_of_tags)
   return list
 end
 
@@ -180,7 +180,7 @@ def json_string_to_list_of_actionable_elements(json_string, required_tags, inclu
   return list
 end
 
-def get_list_from_arbitrary_query(query, required_tags = {}, include_history_of_tags = false, reason: "")
+def get_list_from_arbitrary_query(query, required_tags = {}, include_history_of_tags: false, reason: "")
   reason = "#{required_tags}" if reason == ""
   explanation = "for watchlist <#{reason}>"
   invalidate_old_cache = false
