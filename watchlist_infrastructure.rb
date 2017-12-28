@@ -61,7 +61,7 @@ def get_json_history_representation(type, id)
   query = get_history_query(type, id)
   if CartoCSSHelper::OverpassDownloader.cache_timestamp(query) == nil
     puts "downloading using http://dev.overpass-api.de/api_mmd - switch to normal overpass instance once possible (see TODO about an automatic detection)"
-    sleep 60
+    sleep 120
     # TODO: once a day (triggered by setting a comment to date) run dummy query on normal overpass, check is it crashing or not
     # if this type of query works on normal server then raise exception that dev server should no longer be used
   end
