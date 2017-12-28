@@ -933,8 +933,6 @@ https://taginfo.openstreetmap.org/tags/boundary=historic#map
 =end
 
 
-# detect massgis:SITE_NAME without name
-
 # mail to talk-us@openstreetmap.org
 
 # overpass search for this particular import - 186 ways:
@@ -1135,3 +1133,4 @@ seamark:type!=light_minor and seamark:type!='beacon_special_purpose' and seamark
 #TODO detect that it is crashing with OOM - currently it crashes silently
 #may affect also other queries
 #watchlist += detect_tags_in_region(lat, lon, 475, {'highway': 'proposed', 'source': {operation: :not_equal_to, value: :any_value}})
+#maxspeed on nodes
