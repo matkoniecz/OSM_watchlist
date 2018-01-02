@@ -920,6 +920,7 @@ out body;
 >;
 out skel qt;'
   watchlist << { list: get_list_from_arbitrary_query(query, reason: "import cleanup", include_history_of_tags: true), message: "name and massgiss:SITE_NAME mismatch"}
+  return watchlist
 end
 
 def filter_across_named_region(filter, name)
