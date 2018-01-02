@@ -196,7 +196,7 @@ def watchlist_entries
   watchlist += watch_spam if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_lifecycle if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_low_priority if count_entries(watchlist) < requested_watchlist_entries if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_low_priority if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_generating_notes if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_railway_lifecycle if count_entries(watchlist) < requested_watchlist_entries
   return watchlist
