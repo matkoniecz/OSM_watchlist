@@ -27,17 +27,19 @@ mix of various fixes required:
 [out:xml][timeout:725][bbox:{{bbox}}];
 (
   //names - useful if you know language used by typical mapper
+  //not covered(?) by watchlist querries
   node["area"="yes"][name](if:count_tags() == 2)({{bbox}});
   way["area"="yes"][name](if:count_tags() == 2)({{bbox}});
   relation["area"="yes"][name](if:count_tags() == 2)({{bbox}});
   node[tourism=attraction][name](if:count_tags()==2)(area.searchArea);
   way[tourism=attraction][name](if:count_tags()==2)(area.searchArea);
 
+  //not covered(?) by watchlist querries
   node["area"="yes"](if:count_tags() == 1)({{bbox}});
   way["area"="yes"](if:count_tags() == 1)({{bbox}});
   relation["area"="yes"](if:count_tags() == 1)({{bbox}});
 
-
+  //covered by other watchlist querries
   node["leisure"="pitch"]["name"="boisko"]["sport"="soccer"];
   way["leisure"="pitch"]["name"="boisko"]["sport"="soccer"];
   relation["leisure"="pitch"]["name"="boisko"]["sport"="soccer"];
@@ -50,13 +52,27 @@ mix of various fixes required:
   node["leisure"="pitch"]["name"="Kort tenisowy"]["sport"="tennis"];
   way["leisure"="pitch"]["name"="Kort tenisowy"]["sport"="tennis"];
   relation["leisure"="pitch"]["name"="Kort tenisowy"]["sport"="tennis"];
+
+  //not covered(?) by watchlist querries
   node["boundary"="historic"];
   way["boundary"="historic"]["end_date"!~"2007"]["end_date"!~"2008"]["end_date"!~"2009"]["end_date"!~"2010"]["end_date"!~"2011"]["end_date"!~"2012"]["end_date"!~"2013"]["end_date"!~"2014"]["end_date"!~"2015"]["end_date"!~"2016"]["end_date"!~"2017"]["end_date"!~"2018"];
   relation["boundary"="historic"]["end_date"!~"2007"]["end_date"!~"2008"]["end_date"!~"2009"]["end_date"!~"2010"]["end_date"!~"2011"]["end_date"!~"2012"]["end_date"!~"2013"]["end_date"!~"2014"]["end_date"!~"2015"]["end_date"!~"2016"]["end_date"!~"2017"]["end_date"!~"2018"];
 
+  //covered by other watchlist querries
   node[highway]["addr:housenumber"][website];
   way[highway]["addr:housenumber"][website];
   relation[highway]["addr:housenumber"][website];
+
+
+  //not covered(?) by watchlist querries
+  //skip explicitly tagged as public
+  node["toilets:access"]["amenity"="toilets"]['toilets:access'!='public'];
+  way["toilets:access"]["amenity"="toilets"]['toilets:access'!='public'];
+  relation["toilets:access"]["amenity"="toilets"]['toilets:access'!='public'];
+  //include ones explicitly tagged as public and tagged as not public at the same time
+  node["toilets:access"][access]["amenity"="toilets"]['toilets:access'!='access'];
+  way["toilets:access"][access]["amenity"="toilets"]['toilets:access'!='access'];
+  relation["toilets:access"][access]["amenity"="toilets"]['toilets:access'!='access'];
   );
 (._;>;);
 out meta;
