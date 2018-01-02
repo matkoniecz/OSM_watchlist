@@ -1163,7 +1163,59 @@ seamark:type!=light_minor and seamark:type!='beacon_special_purpose' and seamark
 
 # TODO: bardzo stare highway=construction
 
-#TODO - private public toilets https://www.openstreetmap.org/node/3058828370#map=19/-16.51863/35.17363&layers=N
+#TODO - private public toilets
+# search "toilet tagging problem" mail
+=begin
+12 I - bump
+https://github.com/westnordost/StreetComplete/pull/744#issuecomment-354818367
+
+During reviewing https://github.com/westnordost/StreetComplete/pull/744
+potential data problems were noticed.
+
+It seems to originate from HOT tagging.
+
+As recommended on https://www.hotosm.org/contact-us I send email to
+info@hotosm.org to notify about data issues originating from HOT
+mapping.
+
+From looking at
+https://www.openstreetmap.org/node/3058828370#map=19/-16.51863/35.17363&layers=N
+http://www.openstreetmap.org/way/485854738/history
+http://www.openstreetmap.org/way/485841628/history
+http://www.openstreetmap.org/way/486064588/history it seems that some
+people, as part of HOT OSM editing
+
+- map private toilets as public toilets (using amenity=toilets tag)
+- frequently tag private toilets again as public (toilets:access =
+  permissive)
+- use unusual tags instead of established ones (toilets:access key
+  instead of access)
+
+Is this correct interpretation of the situation?
+
+I recommend to 
+
+- stop mapping private toilets (at least I would consider invasion of
+  my privacy to map my private toilet)
+- if for some reason mapping private toilets is considered as a good
+  idea, please stop misusing amenity=toilets tag and create a separate
+  one that would include private toilets
+- please use toilets:access instead of access key for amenity=toilets
+  objects
+- please amend edits made as part of HOT editing to fix mentioned
+  issues:
+
+- delete private toilets mapped as part of HOT mapping from OSM
+- change toilets:access to access on amenity=toilets object
+- ensure that in future people will not make this kind of mistakes or
+  that such problems will be noticed and fixed
+
+I have limited experience with Africa so I may have some false
+assumptions. If my observations/recommendation/whatever is for some
+reason wrong/incorrect - please explain what is wrong.
+
+-- Mateusz Konieczny
+=end
 
 # missing military=bunker http://overpass-turbo.eu/s/sAw
 # tourims=attraction + name http://overpass-turbo.eu/s/sAr
