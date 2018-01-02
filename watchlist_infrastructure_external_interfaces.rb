@@ -1,17 +1,40 @@
 require 'nokogiri'
 
-def get_full_changeset_xml(changeset_id, invalidate_cache: false)
-  url = "http://api.openstreetmap.org/api/0.6/changeset/#{changeset_id}?include_discussion=true"
+def get_full_user_xml(id, invalidate_cache: false)
+  url = "http://api.openstreetmap.org/api/0.6/user/#{id}"
   timeout = 60
   downloader = GenericCachedDownloader.new(timeout: timeout, stop_on_timeout: false)
-  description = "changeset_with_discussion_#{changeset_id}"
+  description = "user_#{id}"
   cache_filename = "/home/mateusz/Documents/OSM/CartoCSSHelper-tmp/osm-api/#{description}"
   changeset_xml = downloader.get_specified_resource(url, cache_filename, description: description, invalidate_cache: invalidate_cache)
 end
 
-def get_full_changeset_json(changeset_id, invalidate_cache: false)
+def get_full_user_data(id, invalidate_cache: false)
   returned = {}
-  doc = Nokogiri::XML(get_full_changeset_xml(changeset_id, invalidate_cache: invalidate_cache))
+  doc = Nokogiri::XML(get_full_user_xml(id, invalidate_cache: invalidate_cache))
+  main_metadata = doc.at_xpath('//user')
+  returned[:current_username] = main_metadata[:display_name]
+  returned[:account_created] = main_metadata[:account_created]
+  returned[:changeset_count] = main_metadata.at_xpath('//changesets')[:count]
+  returned[:trace_count] = main_metadata.at_xpath('//traces')[:count]
+  blocks = main_metadata.at_xpath('//blocks').at_xpath('//received')
+  returned[:block_count] = blocks[:count]
+  returned[:block_active] = blocks[:active]
+  return returned
+end
+
+def get_full_changeset_xml(id, invalidate_cache: false)
+  url = "http://api.openstreetmap.org/api/0.6/changeset/#{id}?include_discussion=true"
+  timeout = 60
+  downloader = GenericCachedDownloader.new(timeout: timeout, stop_on_timeout: false)
+  description = "changeset_with_discussion_#{id}"
+  cache_filename = "/home/mateusz/Documents/OSM/CartoCSSHelper-tmp/osm-api/#{description}"
+  changeset_xml = downloader.get_specified_resource(url, cache_filename, description: description, invalidate_cache: invalidate_cache)
+end
+
+def get_full_changeset_json(id, invalidate_cache: false)
+  returned = {}
+  doc = Nokogiri::XML(get_full_changeset_xml(id, invalidate_cache: invalidate_cache))
   main_metadata = doc.at_xpath('//changeset')
   returned[:author_id] = main_metadata[:uid]
   returned[:timestamp] = DateTime.parse(main_metadata[:closed_at]).to_time.to_i

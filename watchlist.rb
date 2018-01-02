@@ -121,16 +121,17 @@ def popek_eliminator()
   # only maxspeed values added in changesets by popek069 are deleted, only cases where popek069 was adding default maxspeed values are affected
 
   author_id = '6066236'
+  required_tags = {'maxspeed' => '140'}
+  nick = get_full_user_data(author_id)[:current_username]
 
   puts
-  puts "detect popek damage"
+  puts "detect #{nick} damage"
 
   ways_for_tag_removal = []
   section_size = 150
   for section_index in 0..(popek_ways().length/section_size - 1)
-    required_tags = {'maxspeed' => '140'}
     query = popek_motorways_query_part(section_index * section_size, section_size)
-    json_string = get_data_from_overpass(query, 'popek infestation')
+    json_string = get_data_from_overpass(query, "#{nick} cleanup")
     obj = JSON.parse(json_string)
     elements = obj["elements"]
     elements.each do |entry|
