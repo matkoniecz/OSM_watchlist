@@ -1,4 +1,7 @@
 =begin
+https://osm.wikidata.link/candidates/relation/2597485
+
+
 instalujemy plugin todo w JOSMie
 
 pobieramy
