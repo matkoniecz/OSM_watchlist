@@ -1,6 +1,7 @@
 =begin
+Polskoliterkowe nazwy w Polsce - ekspresowe name:pl
 https://osm.wikidata.link/candidates/relation/2597485
-
+Małopilne move massgis tag removal into next stage - check whatever fields are truly only numeric
 
 instalujemy plugin todo w JOSMie
 
