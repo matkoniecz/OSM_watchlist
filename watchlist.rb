@@ -93,6 +93,21 @@ out meta;
 
 
 #https://wiki.openstreetmap.org/wiki/Key:teryt:simc - jest link walidujący, powtarzane kody
+[out:json][timeout:625];
+// fetch area “Poland” to search in
+{{geocodeArea:Poland}}->.searchArea;
+// gather results
+(
+  // query part for: “"teryt:simc"=* and place!=city and place!=town and place!=suburb and place!=quarter and place!=neighbourhood and place!=village and place!=isolated_dwelling and place!=hamlet and place!=locality and boundary!=administrative”
+  node["teryt:simc"]["place"!="city"]["place"!="town"]["place"!="suburb"]["place"!="quarter"]["place"!="neighbourhood"]["place"!="village"]["place"!="isolated_dwelling"]["place"!="hamlet"]["place"!="locality"]["boundary"!="administrative"](area.searchArea);
+  way["teryt:simc"]["place"!="city"]["place"!="town"]["place"!="suburb"]["place"!="quarter"]["place"!="neighbourhood"]["place"!="village"]["place"!="isolated_dwelling"]["place"!="hamlet"]["place"!="locality"]["boundary"!="administrative"](area.searchArea);
+  relation["teryt:simc"]["place"!="city"]["place"!="town"]["place"!="suburb"]["place"!="quarter"]["place"!="neighbourhood"]["place"!="village"]["place"!="isolated_dwelling"]["place"!="hamlet"]["place"!="locality"]["boundary"!="administrative"](area.searchArea);
+);
+// print results
+out body;
+>;
+out skel qt;
+
 
 =end
 
