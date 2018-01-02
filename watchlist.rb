@@ -500,6 +500,8 @@ end
 
 def watch_low_priority
   watchlist = []
+  watchlist << { list: get_list({ 'name' => '.' }), message: 'name=.' }
+
   watchlist += watch_unusual_seasonal_not_for_waterway
 
   watchlist << { list: get_list({ 'demolished:building' => 'yes', 'note': {operation: :not_equal_to, value: :any_value} }), message: 'still visible in some aerial images, avoid deleting for now to avoid people tagging no longer existing objects' }
@@ -702,6 +704,7 @@ def descriptive_names_entries
     {name: 'toilets', language: 'en', matching_tags: [{'amenity' => 'toilets'}]},
     {name: 'toalety', language: 'pl', matching_tags: [{'amenity' => 'toilets'}]},
     {name: 'theatre', language: 'en', matching_tags: [{'amenity' => 'theatre'}]},
+    {name: 'rock formation', language: 'en', matching_tags: [{'natural' => 'bare_rock'}]},
 
     {name: 'big forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
     {name: 'small forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
