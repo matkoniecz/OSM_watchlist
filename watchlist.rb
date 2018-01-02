@@ -219,6 +219,7 @@ def run_watchlist
     puts
     puts
     puts "// #{entry[:message]}"
+    puts "// #{entry[:list][0][:total_size]} elements in total"
     puts
     puts "[out:xml][timeout:725];"
     puts "("

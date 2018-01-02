@@ -183,7 +183,7 @@ def json_string_to_list_of_actionable_elements(json_string, required_tags, inclu
         history = description_of_tag_appearances_in_history(entry['type'], entry['id'], required_tags)
         history_string = build_string_describing_tag_appearance_from_changeset_list(history, required_tags)
       end
-      list << { lat: lat, lon: lon, url: url, id: entry['id'], type: entry['type'], history: history, history_string: history_string }
+      list << { lat: lat, lon: lon, url: url, id: entry['id'], type: entry['type'], history: history, history_string: history_string, total_size: list_size }
       if list.length >= requested_watchlist_entries
         puts "// full list has #{list_size} entries but some were skipped"
         return list
