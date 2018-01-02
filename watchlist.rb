@@ -1002,7 +1002,7 @@ end
 
 =begin
 https://taginfo.openstreetmap.org/tags/boundary=historic#map
-
+https://forum.openstreetmap.org/viewtopic.php?pid=679376#p679376
 =end
 
 # test how watch_automatic_entries works
