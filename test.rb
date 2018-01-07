@@ -30,13 +30,6 @@ end
 
 module CartoCSSHelper
   def main
-    # see watchlist.txt
-    # watclist idea
-=begin
-name=Fontanna watchlist
-name=Playground
-OSM watchlist „Pomnik przyrody”
-=end
     debug_lister
     run_watchlist
     return
