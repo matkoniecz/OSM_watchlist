@@ -1,4 +1,4 @@
-require_relative 'watchlist.rb'
+require_relative 'query_builder.rb'
 
 def test_tag_analysis(english_country_name, country_code)
   puts english_country_name

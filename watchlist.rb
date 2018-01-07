@@ -119,6 +119,7 @@ out skel qt;
 
 require 'json'
 require_relative 'watchlist_infrastructure'
+require_relative 'query_builder.rb'
 
 def my_location
   return 50.069, 19.926
@@ -922,41 +923,6 @@ out skel qt;'
   watchlist << { list: get_list_from_arbitrary_query(query, reason: "import cleanup", include_history_of_tags: true), message: "name and massgiss:SITE_NAME mismatch"}
   return watchlist
 end
-
-def filter_across_named_region(filter, name)
-  return "[out:json][timeout:25];
-area[name='#{name}']->.searchArea;
-(
-  node#{filter}(area.searchArea);
-  way#{filter}(area.searchArea);
-  relation#{filter}(area.searchArea);
-);
-out meta;
->;
-out meta qt;"
-end
-
-def two_pass_filter_across_named_region(filter, negative_filter, name)
-  return "[out:json][timeout:25];
-area[name='#{name}']->.searchArea;
-(
-  way#{filter}(area.searchArea);
-  node#{filter}(area.searchArea);
-  relation#{filter}(area.searchArea);
-)-> .a;
-(
-  way#{negative_filter}(area.searchArea);
-  node#{negative_filter}(area.searchArea);
-  relation#{negative_filter}(area.searchArea);
-) -> .b;
-(
-.a - .b;
-);
-out meta;
->;
-out meta qt;"
-end
-
 
 def proposed_without_source
   watchlist = []
