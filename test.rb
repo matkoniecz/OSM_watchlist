@@ -30,7 +30,8 @@ end
 
 module CartoCSSHelper
   def main
-    debug_lister
+    tactile_paving_stats
+    bikeway_stats
     run_watchlist
     return
     final
