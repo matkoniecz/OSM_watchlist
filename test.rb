@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 require_relative 'require.rb'
 require_relative 'watchlist.rb'
+require_relative 'tag_analysis.rb'
 require_relative 'deferred.rb'
 
 include CartoCSSHelper
@@ -36,6 +37,7 @@ name=Fontanna watchlist
 name=Playground
 OSM watchlist „Pomnik przyrody”
 =end
+    debug_lister
     run_watchlist
     return
     final
