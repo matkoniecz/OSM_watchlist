@@ -1,12 +1,7 @@
-def overpass_escape(text)
-  raise "impossible escape <#{text}>" if text.include?("'") and text.include?('"')
-  return '"' + text + '"' if text.include?("'")
-  return "'#{text}'"
-end
-
 def filter_across_named_region(filter, name)
+  name_filter = CartoCSSHelper::OverpassQueryGenerator.turn_tag_into_overpass_filter(['name', name])
   return "[out:json][timeout:2500];
-area[name=#{overpass_escape(name)}]->.searchArea;
+area" + name_filter + "->.searchArea;
 (
   node#{filter}(area.searchArea);
   way#{filter}(area.searchArea);
@@ -19,8 +14,9 @@ end
 
 # tag negation is very slow - overpass will sometimes allow this type of query while using tag!=* will cause it to fail 
 def two_pass_filter_across_named_region(filter, negative_filter, name)
+  name_filter = CartoCSSHelper::OverpassQueryGenerator.turn_tag_into_overpass_filter(['name', name])
   return "[out:json][timeout:2500];
-area[name=#{overpass_escape(name)}]->.searchArea;
+area" + name_filter + "->.searchArea;
 (
   way#{filter}(area.searchArea);
   node#{filter}(area.searchArea);
