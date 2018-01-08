@@ -224,7 +224,13 @@ end
 def watch_spam
   watchlist = []
 
-  blacklist_with_false_positives = ['price', 'reasonable prices', 'luxury', 'tradition ', ' we '] #we - dwór we Franciszkowie
+  blacklist_with_false_positives = [
+    'price', # appears also in reasonable, nonspammy descriptions
+    'reasonable prices', # appears also in reasonable, nonspammy descriptions
+    'luxury',  # appears also in reasonable descriptions - mostly negated
+    'tradition ', # appears also in reasonable, nonspammy descriptions
+    ' we ', #we - dwór we Franciszkowie
+    ]
   blacklists = [blacklist_english_phrases, blacklist_polish_phrases, blacklist_with_false_positives]
 
   blacklists.each do |spam_indicators_phrases|
