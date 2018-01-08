@@ -256,18 +256,20 @@ def run_watchlist
   puts "there are nearby notes" if local_notes_present
   #dump_descriptive_names_entries_to_stdout()
   
+  entries = watchlist_entries
+
+  puts
+  puts
+  puts "[out:xml][timeout:725];"
+  puts "("
+
   displayed = 0
-  watchlist_entries.each do |entry|
+  entries.each do |entry|
     if entry[:list].length == 0
       next
     end
-    puts
-    puts
     puts "// #{entry[:message]}"
     puts "// #{entry[:list][0][:total_size]} elements in total"
-    puts
-    puts "[out:xml][timeout:725];"
-    puts "("
     entry[:list].each do |object|
       if object[:lat].nil? || object[:lon].nil?
         raise "#{entry[:message]} has broken data"
@@ -280,13 +282,16 @@ def run_watchlist
         break
       end
     end
-    puts ");"
-    puts "(._;>;);"
-    puts "out meta;"
+    puts "// #{entry[:message]}"
+    puts "// #{entry[:list][0][:total_size]} elements in total"
+    puts
     if displayed >= requested_watchlist_entries
       break
     end
   end
+  puts ");"
+  puts "(._;>;);"
+  puts "out meta;"
 
   popek_eliminator
 end
