@@ -21,7 +21,6 @@ pobieramy automatycznie to co blisko
 
 =end
 
-# frozen_string_literal: true
 =begin
 
 delete historic data. It is unlikely to be added to OSM by mistake so it is not worth keeping as protection against invalid edits. Also, this historic data should never be added to OSM - OSM is not place to map what existed in past
