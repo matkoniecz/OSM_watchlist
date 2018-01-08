@@ -555,7 +555,7 @@ def watch_low_priority
 
   watchlist += watch_unusual_seasonal_not_for_waterway
 
-  watchlist << { list: get_list({ 'demolished:building' => 'yes', 'note': {operation: :not_equal_to, value: :any_value} }), message: 'still visible in some aerial images, avoid deleting for now to avoid people tagging no longer existing objects' }
+  watchlist << { list: get_list({ 'demolished:building' => 'yes', 'note' => {operation: :not_equal_to, value: :any_value} }), message: 'still visible in some aerial images, avoid deleting for now to avoid people tagging no longer existing objects' }
 
   # waits for responses
   watchlist << { list: get_list({ 'access' => 'private', 'amenity' => 'toilets', 'note' => :any_value }), message: 'amenity=toilets access=private, note=*' }
@@ -591,9 +591,9 @@ def suspicious_name_watchlist_entry(name:, language_code_of_name:, description: 
   name_variants.each do |data|
     # exclude cases of locations where bizarre names may happen
     reverse_required_tags = {
-        'place': {operation: :not_equal_to, value: :any_value},
-        'amenity': {operation: :not_equal_to, value: "restaurant"},
-        'natural': {operation: :not_equal_to, value: "peak"}
+        'place' => {operation: :not_equal_to, value: :any_value},
+        'amenity' => {operation: :not_equal_to, value: "restaurant"},
+        'natural' => {operation: :not_equal_to, value: "peak"}
       }
     matching_tag_list.each.each do |key, value|
       if value.class == Hash
@@ -778,7 +778,7 @@ def watch_tree_species_in_name
   watchlist << { list: get_list({ 'name' => 'sosna', 'natural' => 'tree' }), message: "opis drzewa w nazwie" }
   watchlist << { list: get_list({ 'name' => 'klon', 'natural' => 'tree' }), message: "opis drzewa w nazwie" }
   watchlist << { list: get_list({ 'name' => 'buk', 'natural' => 'tree' }), message: "opis drzewa w nazwie" }
-  watchlist << { list: get_list({ 'name' => 'pomnik przyrody', 'natural' => 'tree' }), message: "opis drzewa w nazwie" }
+  watchlist << { list: get_list({ 'name' => 'pomnik przyrody', 'natural' => 'tree' }), message: "opis drzewa w nazwie, use natural=monument" }
   return watchlist
 end
 
@@ -805,8 +805,8 @@ def watch_valid_tags_unexpected_in_krakow
   watchlist += detect_tags_in_region(lat, lon, 50, [['disused', 'yes']] + not_trolltag_filters)
   watchlist += detect_tags_in_region(lat, lon, 50, [['abandoned', 'yes']] + not_trolltag_filters)
 
-  watchlist += detect_tags_in_region(lat, lon, 8, { 'surface' => 'sett', 'smoothness': {operation: :not_equal_to, value: :any_value} })
-  watchlist += detect_tags_in_region(lat, lon, 8, { 'surface' => 'cobblestone', 'smoothness': {operation: :not_equal_to, value: :any_value} })
+  watchlist += detect_tags_in_region(lat, lon, 8, { 'surface' => 'sett', 'smoothness' => {operation: :not_equal_to, value: :any_value} })
+  watchlist += detect_tags_in_region(lat, lon, 8, { 'surface' => 'cobblestone', 'smoothness' => {operation: :not_equal_to, value: :any_value} })
 
   watchlist += detect_tags_in_region(lat, lon, 5, whitelist_tag_filter('cycleway', ['no', 'lane', 'opposite_lane', 'opposite']))
 
@@ -854,7 +854,7 @@ def watch_valid_tags_unexpected_in_krakow
   #1 280 (w tym 634 way)
   #1 274 (w tym 630 way) in 2017 IX
   #1 231 (w tym 612 way) w 2017 XII
-  watchlist += detect_tags_in_region(lat, lon, 1500, { 'boundary' => 'historic', 'end_date': {operation: :not_equal_to, value: :any_value} })
+  watchlist += detect_tags_in_region(lat, lon, 1500, { 'boundary' => 'historic', 'end_date' => {operation: :not_equal_to, value: :any_value} })
   #end_date - catch entries deep in past and in the far future
   #TODO: exclude volcano:status   extinct
   #range_in_km = 300
