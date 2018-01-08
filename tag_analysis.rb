@@ -125,12 +125,12 @@ end
 
 def show_whitelist_blacklist(whitelist, blacklist)
     puts
-    puts
+    puts "whitelist:"
     for country_description in whitelist
       print "#{country_description}, "
     end
     puts
-    puts
+    puts "blacklist:"
     for country_description in blacklist
       print "#{country_description}, "
     end
