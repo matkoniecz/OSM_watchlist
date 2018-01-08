@@ -55,7 +55,7 @@ def set_paths(cartocss_project_location)
   CartoCSSHelper::Configuration.set_style_specific_data(CartoCSSHelper::StyleDataForDefaultOSM.get_style_data)
   CartoCSSHelper::Configuration.set_path_to_cartocss_project_folder(cartocss_project_location)
   CartoCSSHelper::Configuration.set_path_to_folder_for_output(File.join(ENV['HOME'], 'Documents', 'OSM', 'CartoCSSHelper-output', ''))
-  CartoCSSHelper::Configuration.set_path_to_folder_for_cache(File.join(ENV['HOME'], 'Documents', 'OSM', 'CartoCSSHelper-tmp', ''))
+  CartoCSSHelper::Configuration.set_path_to_folder_for_cache('/media/mateusz/5bfa9dfc-ed86-4d19-ac36-78df1060707c/OSM-cache')
   CartoCSSHelper::Configuration.set_path_to_kosmtik(File.join(ENV['HOME'], 'Desktop', 'kosmtik', ''))
 end
 
