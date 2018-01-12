@@ -5,7 +5,7 @@ def get_full_user_xml(id, invalidate_cache: false)
   timeout = 60
   downloader = GenericCachedDownloader.new(timeout: timeout, stop_on_timeout: false)
   description = "user_#{id}"
-  cache_filename = "/home/mateusz/Documents/OSM/CartoCSSHelper-tmp/osm-api/#{description}"
+  cache_filename = CartoCSSHelper::Configuration.get_path_to_folder_for_cache + "/osm-api/#{description}"
   changeset_xml = downloader.get_specified_resource(url, cache_filename, description: description, invalidate_cache: invalidate_cache)
 end
 
@@ -28,7 +28,7 @@ def get_full_changeset_xml(id, invalidate_cache: false)
   timeout = 60
   downloader = GenericCachedDownloader.new(timeout: timeout, stop_on_timeout: false)
   description = "changeset_with_discussion_#{id}"
-  cache_filename = "/home/mateusz/Documents/OSM/CartoCSSHelper-tmp/osm-api/#{description}"
+  cache_filename = CartoCSSHelper::Configuration.get_path_to_folder_for_cache + "/osm-api/#{description}"
   changeset_xml = downloader.get_specified_resource(url, cache_filename, description: description, invalidate_cache: invalidate_cache)
 end
 
