@@ -202,13 +202,13 @@ def watchlist_entries
   # adapt TODO list JOSM plugin to autoremove descriptive names
   # watchlist += watch_descriptive_names(requested_watchlist_entries - count_entries(watchlist))
   watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_useless_keys if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_declared_historical_data if count_entries(watchlist) < requested_watchlist_entries
   watchlist += proposed_without_source if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_spam if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_lifecycle if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_low_priority if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_useless_keys if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_generating_notes(requested_watchlist_entries) if count_entries(watchlist) < requested_watchlist_entries
   return watchlist
 end
