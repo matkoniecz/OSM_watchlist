@@ -1273,3 +1273,4 @@ reason wrong/incorrect - please explain what is wrong.
 # https://lists.openstreetmap.org/pipermail/tagging/2018-January/034644.html - make edits to wiki
 # TODO: bardzo stare highway=construction
 # http://www.openstreetmap.org/changeset/55285635
+# https://www.openstreetmap.org/note/526072#map=17/31.72100/35.13865
