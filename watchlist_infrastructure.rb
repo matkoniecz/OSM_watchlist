@@ -198,17 +198,22 @@ def json_string_to_list_of_actionable_elements(json_string, required_tags, inclu
 end
 
 def get_list_from_arbitrary_query(query, required_tags = {}, include_history_of_tags: false, reason: "")
-  reason = "#{required_tags}" if reason == ""
-  explanation = "for watchlist <#{reason}>"
-  invalidate_old_cache = false
-  json_string = get_data_from_overpass(query, explanation, invalidate_old_cache)
-  list = json_string_to_list_of_actionable_elements(json_string, required_tags, include_history_of_tags, reason)
-  if list.length > 0
-    invalidate_old_cache = true
+  begin
+    reason = "#{required_tags}" if reason == ""
+    explanation = "for watchlist <#{reason}>"
+    invalidate_old_cache = false
     json_string = get_data_from_overpass(query, explanation, invalidate_old_cache)
     list = json_string_to_list_of_actionable_elements(json_string, required_tags, include_history_of_tags, reason)
+    if list.length > 0
+      invalidate_old_cache = true
+      json_string = get_data_from_overpass(query, explanation, invalidate_old_cache)
+      list = json_string_to_list_of_actionable_elements(json_string, required_tags, include_history_of_tags, reason)
+    end
+    return list
+  rescue NoMethodError => e
+    puts query
+    raise e
   end
-  return list
 end
 
 def is_location_undefined(lat, lon, entry)
