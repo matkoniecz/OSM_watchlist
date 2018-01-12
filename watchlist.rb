@@ -756,7 +756,6 @@ def descriptive_names_entries
     {name: 'Picnic shelter', language: 'en', matching_tags: [{'amenity' => 'shelter'}], complaint: "shelter_type=picnic_shelter may be added"},
     {name: 'picnic table', language: 'en', matching_tags: [{'leisure' => 'picnic_table'}]},
     {name: 'steps', language: 'en', matching_tags: [{'highway' => 'steps'}]},
-    {name: 'Pomnik przyrody', language: 'en', matching_tags: [{'natural' => 'tree'}]},
     {name: 'light', language: 'en', matching_tags: [{'highway' => 'street_lamp'}]},
     {name: 'pool', language: 'en', matching_tags: [{'leisure' => 'swimming_pool'}]},
     {name: 'swimming pool', language: 'en', matching_tags: [{'leisure' => 'swimming_pool'}]},
@@ -786,7 +785,7 @@ def watch_tree_species_in_name
   watchlist << { list: get_list({ 'name' => 'sosna', 'natural' => 'tree' }), message: "opis drzewa w nazwie" }
   watchlist << { list: get_list({ 'name' => 'klon', 'natural' => 'tree' }), message: "opis drzewa w nazwie" }
   watchlist << { list: get_list({ 'name' => 'buk', 'natural' => 'tree' }), message: "opis drzewa w nazwie" }
-  watchlist << { list: get_list({ 'name' => 'pomnik przyrody', 'natural' => 'tree' }), message: "opis drzewa w nazwie, use natural=monument" }
+  watchlist << { list: get_list({ 'name' => 'pomnik przyrody', 'natural' => 'tree' }), message: "opis drzewa w nazwie, use denotation=natural_monument" }
   return watchlist
 end
 
