@@ -50,9 +50,9 @@ def entry_to_url(entry)
 end
 
 def sanity_check_of_territories(parsed_json_with_territories)
-  countries = parsed_json_with_territories["elements"]
+  territories = parsed_json_with_territories["elements"]
   who_has_code = {}
-  countries.each do |entry|
+  territories.each do |entry|
     area_code = get_iso3166_code(entry)
     if who_has_code[area_code] != nil && area_code != nil
       puts "duplicate: #{area_code} has both #{entry_to_url(entry)} and #{who_has_code[area_code]}"
@@ -87,9 +87,9 @@ end
 
 def value_distribution_for_each_territory(parsed_areas, key, filter="")
   sanity_check_of_territories(parsed_areas)
-  countries = parsed_areas["elements"]
+  territories = parsed_areas["elements"]
   list_of_stats = []
-  countries.each do |entry|
+  territories.each do |entry|
     iso3166_code = get_iso3166_code(entry)
     next if iso3166_code == nil
     name = get_name(entry)
@@ -104,10 +104,10 @@ def tactile_paving_stats
   filters.each do |filter|
     key = "tactile_paving"
     value_distribution_for_each_territory(json_overpass_list_of_countries(), key, filter).each do |entry|
-      country_description = entry[:english_name] + " (" + entry[:iso3166_code] + ")"
+      description = entry[:english_name] + " (" + entry[:iso3166_code] + ")"
       filter_description = "#{key} on #{filter}"
       filter_description = "#{key}" if filter == ""
-      show_stats(entry[:stats], filter_description + " in " + country_description)
+      show_stats(entry[:stats], filter_description + " in " + description)
 
 
       blacklist = []
@@ -118,10 +118,10 @@ def tactile_paving_stats
       next if yes + no == 0
       percent = yes*100/(yes+no)
       if no > 500 && percent < 5
-        blacklist << country_description
+        blacklist << description
       end
       if yes > 100 && percent > 5
-        whitelist << country_description
+        whitelist << description
       end
     end
     show_whitelist_blacklist(whitelist, blacklist)
@@ -164,7 +164,7 @@ def show_empty_stats(stats)
   if stats.length != 0
     return false
   end
-  puts "tag is not present in this country"
+  puts "tag is not present in this area"
   return true
 end
 
@@ -213,15 +213,15 @@ def bikeway_stats_by_territory_group(territory_areas)
   filters.each do |filter|
     keys = ["cycleway:both", "cycleway", "cycleway:left", "cycleway:right"]
     data = {}
-    merged_data_for_each_country = {}
+    merged_data_for_each_territory = {}
     keys.each do |key|
       data = value_distribution_for_each_territory(territory_areas, key, filter)
       data.each do |entry|
         key = entry[:english_name] + " (" + entry[:iso3166_code] + ")"
-        merged_data_for_each_country[key] ||= {}
+        merged_data_for_each_territory[key] ||= {}
         entry[:stats].each do |value, count|
-          merged_data_for_each_country[key][value] ||= 0
-          merged_data_for_each_country[key][value] += count
+          merged_data_for_each_territory[key][value] ||= 0
+          merged_data_for_each_territory[key][value] += count
         end
       end
     end
@@ -229,7 +229,7 @@ def bikeway_stats_by_territory_group(territory_areas)
     blacklist = []
     whitelist = []
 
-    merged_data_for_each_country.each do |english_identifier, stats|
+    merged_data_for_each_territory.each do |english_identifier, stats|
       yes = yes_no_stats(stats)[:other] + yes_no_stats(stats)[:yes]
       no = yes_no_stats(stats)[:no]
       next if yes + no == 0
