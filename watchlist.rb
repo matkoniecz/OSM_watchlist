@@ -193,12 +193,15 @@ end
 
 def watchlist_entries
   watchlist = []
+  watchlist += watch_is_in if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_other if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_invalid_wikipedia if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_descriptive_names(requested_watchlist_entries - count_entries(watchlist))
+  if !local_notes_present
+    watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_watchlist_entries
+  end
+  # adapt TODO list JOSM plugin to autoremove descriptive names
+  # watchlist += watch_descriptive_names(requested_watchlist_entries - count_entries(watchlist))
   watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_wetland_tag if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_useless_keys if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_declared_historical_data if count_entries(watchlist) < requested_watchlist_entries
   watchlist += proposed_without_source if count_entries(watchlist) < requested_watchlist_entries
@@ -206,8 +209,7 @@ def watchlist_entries
   watchlist += watch_lifecycle if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_low_priority if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_generating_notes if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_railway_lifecycle if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_generating_notes(requested_watchlist_entries) if count_entries(watchlist) < requested_watchlist_entries
   return watchlist
 end
 
@@ -492,9 +494,10 @@ def watch_steps_on_unusual_highway
   return watchlist
 end
 
-def watch_generating_notes
+def watch_generating_notes(requested_watchlist_entries)
   watchlist = []
-  watchlist += watch_imports_failing_to_use_name
+  watchlist += watch_wetland_tag if count_entries(watchlist) < requested_watchlist_entries
+  watchlist += watch_imports_failing_to_use_name if count_entries(watchlist) < requested_watchlist_entries
   watchlist << { list: get_list({ 'waterway' => 'canal', 'area' => 'yes'}), message: "waterway=canal with area=yes"}
   watchlist += watch_steps_on_unusual_highway
   watchlist << { list: get_list({ 'seasonal' => '*'}, include_history_of_tags: true), message: "What seasonal=* is supposed to mean?"}
@@ -502,6 +505,9 @@ def watch_generating_notes
 
   message = 'is it really both landuse=industrial and leisure=park? leisure=park is for https://en.wikipedia.org/wiki/Park, not for industrial park https://en.wikipedia.org/wiki/Industrial_park'
   watchlist << { list: get_list({'leisure' => 'park', 'landuse' => 'industrial'}), message: message }
+
+  watchlist += watch_railway_lifecycle if count_entries(watchlist) < requested_watchlist_entries
+
   return watchlist
 end
 
@@ -925,6 +931,14 @@ def watch_lifecycle_state_in_the_name
   out skel qt;'
 
   watchlist << { list: get_list_from_arbitrary_query(query, reason: "lifecycle state in name", include_history_of_tags: true), message: "planowane/projektowane" }
+  return watchlist
+end
+
+def watch_is_in
+  watchlist = []
+  query = filter_across_named_region('[is_in=Rybnik]', 'Rybnik')
+  puts query
+  watchlist << { list: get_list_from_arbitrary_query(query, {}, reason: "useless is_in=Rybnik", include_history_of_tags: true), message: "useless is_in=Rybnik" }
   return watchlist
 end
 
