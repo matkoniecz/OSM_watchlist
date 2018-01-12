@@ -1069,6 +1069,8 @@ massgis:DEED_ACRES
 # compartive advantage
 # mass edit
 
+# http://www.openstreetmap.org/changeset/55169697
+# http://www.openstreetmap.org/changeset/55121221
 # https://taginfo.openstreetmap.org/tags/construction=yes#combinations
 # noname=no
 =begin
@@ -1093,31 +1095,26 @@ out body;
 out skel qt; 
 =end
 
+# https://www.openstreetmap.org/note/1251752
 # floating relation: http://www.openstreetmap.org/changeset/51959274#map=17/-8.64976/118.22048
 
 =begin
-https://wiki.openstreetmap.org/wiki/Seamarks/Lights
 
-What is the unit of seamark:light:range? It is not explicitly defined at https://wiki.openstreetmap.org/wiki/Seamarks/Lights
 
-http://wiki.openstreetmap.org/wiki/User:NKA/seamark_import mentions that this import used nautical miles as units. Is it considered as a correct tagging?
 
-What is the difference between seamark:type=light_minor and seamark:type=light_major?
-
-"A major light is a light that is intended to be seen at extended distances and will indicate the presence of prominent land masses or provide guidance into harbours or rivers."
-"A minor light is a short-range light that marks obstacles in the same way as lighted buoys and beacons"
-
-So lighthouses should have seamark:type=light_major, right?
-
-But there are many lighthouses with long-range light but with seamark:type=light_minor rather than light_major.
-See http://overpass-turbo.eu/s/u0C listing light_minor objects with seamark:light:range > 10. (I suspect that either seamark:light:range or seamark:type tag is wrong)
+# see comments in http://www.openstreetmap.org/changeset/43401704
 
 Lighthouses with missing name, but with seamark:name - http://overpass-turbo.eu/s/u05 (it is likely that name tag is missing)
+
+See http://overpass-turbo.eu/s/u0C listing light_minor objects with
+seamark:light:range > 10.
 
 Is there really a major navigational light here? I see nothing on aerial images.
 'seamark:light:1:range'=* and man_made != lighthouse and 'seamark:type' = light_major
 seamark:type!=light_minor and seamark:type!='beacon_special_purpose' and seamark:type!=platform and 'seamark:type'!=beacon_lateral
 =end
+
+# http://www.openstreetmap.org/changeset/31009200#map=15/43.8895/-0.5003 fix remaining - see http://overpass-turbo.eu/s/uoy
 
 # retag rare tags from https://github.com/simonpoole/beautified-JOSM-preset/issues/35
 
@@ -1149,10 +1146,8 @@ seamark:type!=light_minor and seamark:type!='beacon_special_purpose' and seamark
 #note=taśmociąg na filarach + highway=service
 #to man_made=goods_conveyor
 
-# TODO: bardzo stare highway=construction
-
 #TODO - private public toilets
-# search "toilet tagging problem" mail
+# search "toilet tagging problem" mail (17 I)
 =begin
 12 I - bump
 https://github.com/westnordost/StreetComplete/pull/744#issuecomment-354818367
@@ -1255,3 +1250,11 @@ reason wrong/incorrect - please explain what is wrong.
 # http://www.h-renrew.de/h/osm/osmchecks/02_Relationstypen/empty_relations.html - notify, delete
 
 # https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example#Multipolygons_with_inappropiate_member_roles
+# http://www.openstreetmap.org/changeset/21669560 - suspicious import
+# smoothness dla mojego sett/cobblestone
+#https://www.openstreetmap.org/changeset/53689019?node_page=85
+#https://www.openstreetmap.org/changeset/53843529?node_page=3&xhr=1#map=12/17.8731/104.5758
+
+# https://lists.openstreetmap.org/pipermail/tagging/2018-January/034644.html - make edits to wiki
+# TODO: bardzo stare highway=construction
+# http://www.openstreetmap.org/changeset/55285635
