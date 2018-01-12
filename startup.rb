@@ -2,7 +2,8 @@ require 'open3'
 
 # frozen_string_literal: true
 def get_project_location(project_name)
-  return File.join(ENV['HOME'], 'Documents', 'MapBox', 'project', project_name, '')
+  return '/home/mateusz/Desktop/kolejka/Na_później/Na_później/Na później/OSM-style-dev/openstreetmap-carto'
+  #return File.join(ENV['HOME'], 'Documents', 'MapBox', 'project', project_name, '')
 end
 
 def destination_of_frozen_copy(project)
