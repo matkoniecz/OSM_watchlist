@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 require_relative 'require.rb'
 require_relative 'watchlist.rb'
-require_relative 'tag_analysis.rb'
+require_relative 'tag_analysis_for_streetcomplete.rb'
 require_relative 'deferred.rb'
 
 include CartoCSSHelper
@@ -30,8 +30,8 @@ end
 
 module CartoCSSHelper
   def main
-    tactile_paving_stats
-    bikeway_stats
+    #tactile_paving_stats #TODO idea - make an actionable list (load what SC allows, compare to outputs, output diff)
+    #bikeway_stats
     run_watchlist
     return
     final
