@@ -161,6 +161,8 @@ def popek_eliminator()
 
   author_id = '6066236'
   required_tags = {'maxspeed' => '140'}
+  # TODO: build ways here, split here 
+  # suspected_ways = []
   nick = get_full_user_data(author_id)[:current_username]
 
   puts
