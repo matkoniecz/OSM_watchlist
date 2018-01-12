@@ -33,6 +33,7 @@ def get_full_changeset_xml(id, invalidate_cache: false)
 end
 
 def get_full_changeset_json(id, invalidate_cache: false)
+  #TODO: it is not JSON!
   returned = {}
   doc = Nokogiri::XML(get_full_changeset_xml(id, invalidate_cache: invalidate_cache))
   main_metadata = doc.at_xpath('//changeset')
