@@ -122,6 +122,10 @@ def get_location(entry, node_database)
     end
     return lat, lon
   elsif entry["type"] == "relation"
+    if entry["members"] == nil
+      puts "https://www.openstreetmap.org/relation/#{entry["id"]} has no members"
+      return nil, nil
+    end
     entry["members"].each do |member|
       if member["type"] == "node"
         lat, lon = node_database[member["ref"]]
