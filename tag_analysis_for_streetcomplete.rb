@@ -8,7 +8,7 @@ def tactile_paving_stats
       description = entry[:english_name] + " (" + entry[:iso3166_code] + ")"
       filter_description = "#{key} on #{filter}"
       filter_description = "#{key}" if filter == ""
-      show_stats(entry[:stats], filter_description + " in " + description)
+      show_yes_no_stats(entry[:stats], filter_description + " in " + description)
 
 
       blacklist = []
@@ -81,7 +81,7 @@ def bikeway_stats_by_territory_group(territory_areas)
 
       filter_description = "#{keys} on #{filter}"
       filter_description = "#{keys}" if filter == ""
-      show_stats(stats, filter_description + " in " + english_identifier)
+      show_yes_no_stats(stats, filter_description + " in " + english_identifier)
     end
 
     show_whitelist_blacklist(whitelist, blacklist)
@@ -101,4 +101,37 @@ def show_whitelist_blacklist(whitelist, blacklist)
     end
     puts
     puts
+end
+
+
+def yes_no_stats(stats)
+  yes = stats["yes"]
+  no = stats["no"]
+  yes = 0 if yes == nil
+  no = 0 if no == nil
+  other = 0
+  stats.each do |value, count|
+    if value != "yes" and value != "no"
+      other += count
+    end
+  end
+  return {yes: yes, no: no, other: other}
+end
+
+def show_yes_no_stats(stats)
+  yes = yes_no_stats(stats)[:yes]
+  no = yes_no_stats(stats)[:no]
+  other = yes_no_stats(stats)[:other]
+  if yes + no < other * 10
+    return false
+  end
+  total = yes + no + other
+  if total == 0
+    return false
+  end
+  puts "yes: #{yes*100/total}%"
+  puts "no: #{no*100/total}%"
+  puts "other: #{other*100/total}%"
+  puts stats
+  return true
 end

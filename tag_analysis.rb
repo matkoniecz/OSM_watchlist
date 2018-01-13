@@ -99,38 +99,6 @@ def value_distribution_for_each_territory(parsed_areas, key, filter="")
   return list_of_stats
 end
 
-def yes_no_stats(stats)
-  yes = stats["yes"]
-  no = stats["no"]
-  yes = 0 if yes == nil
-  no = 0 if no == nil
-  other = 0
-  stats.each do |value, count|
-    if value != "yes" and value != "no"
-      other += count
-    end
-  end
-  return {yes: yes, no: no, other: other}
-end
-
-def show_yes_no_stats(stats)
-  yes = yes_no_stats(stats)[:yes]
-  no = yes_no_stats(stats)[:no]
-  other = yes_no_stats(stats)[:other]
-  if yes + no < other * 10
-    return false
-  end
-  total = yes + no + other
-  if total == 0
-    return false
-  end
-  puts "yes: #{yes*100/total}%"
-  puts "no: #{no*100/total}%"
-  puts "other: #{other*100/total}%"
-  puts stats
-  return true
-end
-
 def show_empty_stats(stats)
   if stats.length != 0
     return false
