@@ -139,10 +139,38 @@ def show_empty_stats(stats)
   return true
 end
 
+def show_numbers_stats(stats)
+  numbers = {}
+  numbers_count = 0
+  other = {}
+  other_count = 0
+  stats.each do |value, count|
+    number = false
+    number = true if value =~ /^\d+$/
+    number = true if value =~ /^\d+\.\d+$/
+    number = true if value =~ /^\d+,\d+$/
+    if number
+      numbers[value] = count
+      numbers_count += count
+    else
+      other[value] = count
+      other_count += count
+    end
+  end
+  if numbers_count < other_count * 10 * 0
+    return false
+  end
+  puts "#{numbers_count*100/(numbers_count+other_count)}% are numbers"
+  puts "exceptions:"
+  puts other
+  return true
+end
+
 def show_stats(stats, description)
   puts
   puts description
   return if show_empty_stats(stats)
+  return if show_numbers_stats(stats)
   return if show_yes_no_stats(stats)
   puts stats
 end
