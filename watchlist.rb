@@ -991,40 +991,111 @@ def watch_invalid_wikipedia
 end
 
 =begin
-Hi Greg,
 
-If Mateusz has good scripts written and debugged to remove tags in
-bulk and is willing to run the automated edit, I would be happy to
-support him.
+PROPOSED FOR DELETION ON MAILING LIST:
+'massgis:FEE_OWNER',
+'massgis:TOWN_ID',
+'massgis:OWNER_TYPE',
+'massgis:FEESYM',
+'massgis:EOEAINVOLV',
+'massgis:FY_FUNDING',
+'massgis:ATT_DATE',
+'massgis:LEV_PROT',
+'massgis:DEED_ACRES',
+'massgis:OS_DEED_BO',
+'massgis:OS_DEED_PA',
+'massgis:ASSESS_ACR',
+'massgis:SHAPE_AREA',
+'massgis:ACRES',
+'massgis:OS_ID',
+'massgis:OWNER_ABRV',
+'massgis:SOURCE_MAP',
+'massgis:ASSESS_MAP',
+'massgis:ASSESS_LOT',
+'massgis:BASE_MAP',
 
-Removing the tags listed in Mateusz email would improve OSM.
+I started now more thorough analysis of tags considered for deletion.
 
-In fact, I would support removing virtually all of the massgis: tags.
+Jason's keep list (so tags on this list will not be deleted)
 
-Jason's keep list
+massgis:WETCODE
+massgis:SITE_NAME
+massgis:ref
+massgis:school_id
 
-massgis:WETCODE 38840
-massgis:SITE_NAME 21773
-massgis:ref 1286
-massgis:school_id 878
-
-I am not 100% sure that following should be removed so I will not touch them (Jason proposed to delete them):
+I am not 100% sure that following should be removed so I will not touch them:
 
 attribution="Office of Geographic and Environmental Information (MassGIS)"
 source=massgis_import_*
 massgis:SOURCE
 
-I located documentation for database keys - it is available at http://www.mass.gov/anf/docs/itd/services/massgis/os-schema.pdf
-
 There are some tags where after value analysis and consulting database documentation I am not sure whatever deletion is the best solution:
 
 massgis:PUB_ACCESS - massgis:PUB_ACCESS=Y and massgis:PUB_ACCESS=N are usable for editors and these dominate values. It may be worth removing if access=* is tagged but I will leave it for separate edit.
+
 massgis:PRIM_PURP - potentially convertible to protect_class https://wiki.openstreetmap.org/wiki/Tag:boundary%3Dprotected_area#Classification
+
 massgis:MANAGER - 'Manager of the property (only if different from FEE_OWNER).' - potentially retag as operator?
+
 massgis:schoolid - retag to massgis:school_id?
+
 massgis:COMMENTS - requires manual review to check whatever it is worth keeping
+
 massgis:IT_VALDESC - human readable description, some values are popular. May be removed if description duplicates OSM tags, but I prefer to do it as a separate edit to reduce complexity
-massgis:ALT_SITE_N - potentially cobertible to alt_name
+
+massgis:ALT_SITE_N - potentially convertible to alt_name
+
+I located documentation for database keys - it is available at http://www.mass.gov/anf/docs/itd/services/massgis/os-schema.pdf
+
+After analysis I consider following tags as candidates for deletion and plan on deleting them:
+
+massgis:FEE_OWNER - Owner or grantor of the land represented by the polygon' so not convertible to OSM tags without research that is not worth the effort
+
+massgis:TOWN_ID - 99% are numbers, other cases are ;-separated numbers, it is basically is_in in special format so not worth keeping
+
+massgis:OWNER_TYPE - one letter codes, useless without documentation
+
+massgis:FEESYM - codes, useless without documentation
+
+massgis:EOEAINVOLV - mysterious and bizarre, useless without documentation
+
+massgis:FY_FUNDING - funding date (?), useless if that guess is true, useless without documentation
+
+massgis:ATT_DATE', 'Date attributes were last modifed.' - useless metadata from external database
+
+massgis:LEV_PROT - 'Code for the level of protection given to the land.' - with values: perpetuity (P), term limited (T), limited (L). I see no value here.
+
+massgis:DEED_ACRES - area is provided by geometry itself in OSM
+
+massgis:OS_DEED_BO - 'The book that the deed was recorded in on CAL_DATE_REC.' - useless
+
+massgis:OS_DEED_PA - 'The page of OS_DEED_BOOK that the deed was recorded in.' - useless
+
+massgis:ASSESS_ACR - 'Acreage of polygon according to local assessor.', again OSM stores area in geometry itself
+
+massgis:SHAPE_AREA - numbers that probably represent area of feature what is not useful in OSM
+
+massgis:ACRES - numbers that probably represent area of feature what is not useful in OSM
+
+massgis:OS_ID -  'Unique ID for feature class ([TOWN_ID]-[POLY_ID]).' - useless
+
+massgis:OWNER_ABRV -  'Abbreviation of FEE_OWNER kept in OSNAMES table.' - useless
+
+massgis:SOURCE_MAP -  'Source map used to enter linework/attributes.' - useless
+
+massgis:ASSESS_MAP -  'Local Assessor’s Map.' - useless
+
+massgis:ASSESS_LOT -  'Local Assessor’s Lot.' - useless
+
+massgis:BASE_MAP -  'Recompilation map name/type.' - useless
+
+There are still many tags that wait for review - I posted message now to avoid making it too long.
+
+=
+
+What is the preferred way of chunking edits?
+Single massive edit with tens of thusands objects is not feasible for multiple reasons. What would be preferable - several edits, each changing 500 objects? Separate edit for every object? Some other changeset size?
+
 
 not present in this region
 massgis:cat
@@ -1080,8 +1151,6 @@ massgis:OFF_ROAD_M
 massgis:SNOWMOBILE
 massgis:FROM_
 
-What is the preferred way of chunking edits?
-Single massive edit with tens of thusands objects is not feasible for multiple reasons. What would be preferable - several edits, each changing 500 objects? Separate edit for every object? Some other changeset size?
 
 
 

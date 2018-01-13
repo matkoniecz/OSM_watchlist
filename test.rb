@@ -36,7 +36,6 @@ module CartoCSSHelper
     json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, explanation)
     parsed = JSON.parse(json_string)
     tags = [
-      #'massgis:IT_VALC', # short codes with unknown meaning, useless with documentation, probably useless anyway I found potential match but it was not helpful - 'Wetland label abbreviations' as listed in http://www.mass.gov/anf/research-and-tech/it-serv-and-support/application-serv/office-of-geographic-information-massgis/datalayers/wetchange.html 
       #'massgis:FEE_OWNER', 'Owner or grantor of the land represented by the polygon' so not convertible to OSM tags without research that is not worth the effort
       #'massgis:TOWN_ID', - 99% are numbers, other cases are ;-separated numbers, it is basically is_in in special format so not worth keeping
       #'massgis:OWNER_TYPE', - one letter codes, useless without documentation
@@ -58,6 +57,7 @@ module CartoCSSHelper
       #'massgis:ASSESS_LOT', # 'Local Assessor’s Lot.' - useless
       #'massgis:BASE_MAP', # 'Recompilation map name/type.' - useless
 
+      #'massgis:IT_VALC', # short codes with unknown meaning, useless with documentation, probably useless anyway I found potential match but it was not helpful - 'Wetland label abbreviations' as listed in http://www.mass.gov/anf/research-and-tech/it-serv-and-support/application-serv/office-of-geographic-information-massgis/datalayers/wetchange.html 
       #'massgis:way_id', # 99% are numbers, other cases are ;-separated numbers - useless id
       #'massgis:OLI_1_INT', #always value is "CR" or "APR"
       #'massgis:INTSYM', #always value is "CR" or "APR"
