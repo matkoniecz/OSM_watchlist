@@ -1,5 +1,4 @@
 =begin
-notes w Porto - zwłaszcza moje https://www.openstreetmap.org/note/1116526#map=17/41.14020/-8.60975&layers=N
 Polacy:
 CivilEng
 https://ent8r.github.io/NotesReview/?query=StreetComplete&limit=3000
