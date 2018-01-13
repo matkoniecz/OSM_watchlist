@@ -38,19 +38,23 @@ module CartoCSSHelper
     tags = [
       #'massgis:IT_VALC', # short codes with unknown meaning, useless with documentation, probably useless anyway I found potential match but it was not helpful - 'Wetland label abbreviations' as listed in http://www.mass.gov/anf/research-and-tech/it-serv-and-support/application-serv/office-of-geographic-information-massgis/datalayers/wetchange.html 
       #'massgis:way_id', # 99% are numbers, other cases are ;-separated numbers - useless id
-      #'massgis:OLI_1_INT', #always value is "CR" or "APR"
       #'massgis:INTSYM', #always value is "CR" or "APR"
       #'massgis:OLI_1_ORG', #human readable values
       #'massgis:OLI_2_ORG', #human readable values
+      'massgis:OLI_3_ORG',
       #'massgis:OLI_1_TYPE', values are always "S", "L" or "M"
       #'massgis:OLI_2_TYPE', #values are always "S", "L" or "M"
+      'massgis:OLI_3_TYPE',
       #'massgis:OLI_1_ABRV', #some text codes, without obvious meaning
       #'massgis:OLI_2_ABRV', #some text codes, without obvious meaning
+      'massgis:OLI_3_ABRV',
       #'massgis:ASSESS_BLK', #'Local Assessor’s Block.' - sounds useless, YA another internal id
 
       #'massgis:SHAPE_LEN', #numbers
       #'massgis:GRANTTYPE1', #values are always "S" or "F"
+      #'massgis:GRANTTYPE2', #values are always "S" or "F"
       'massgis:GRANTPROG1',
+      'massgis:GRANTPROG2',
       'massgis:SOURCE_TYP',
       #'massgis:SOURCE_ACC', #value is always "3"
       'massgis:CAL_DATE_R',
@@ -59,7 +63,9 @@ module CartoCSSHelper
       'massgis:PROJ_ID2',
       'massgis:LOC_ID', # 'Link to MassGIS Standard Parcel data (LOC_ID).' - yet another useless id
       'massgis:geom_id',
+      #'massgis:OLI_1_INT', #always value is "CR" or "APR"
       'massgis:OLI_2_INT',
+      'massgis:OLI_3_INT',
       'massgis:BOND_ACCT',
       'massgis:MANAGR_ABR',
       #'massgis:MANAGR_TYP', value is always "M"
@@ -68,8 +74,6 @@ module CartoCSSHelper
       'massgis:PicLink',
       'massgis:HistLink',
       'massgis:TypeCode',
-      'massgis:GRANTPROG2',
-      'massgis:GRANTTYPE2',
       'massgis:GridNum',
       'massgis:NameOffc',
       'massgis:BanCod',
@@ -84,13 +88,13 @@ module CartoCSSHelper
       'massgis:TOTAL',
       'massgis:TIME_',
       'massgis:DAY_',
+      'massgis:OBJECTID_1',
       'massgis:OBJECTID_2',
       'massgis:Shape_Le_1',
       'massgis:HNC',
       'massgis:F_S_D',
       'massgis:S_V',
       'massgis:RES',
-      'massgis:OBJECTID_1',
       'massgis:UNLD',
       'massgis:MC',
       'massgis:F_S',
@@ -104,17 +108,11 @@ module CartoCSSHelper
       'massgis:Type',
       'massgis:Surface',
       'massgis:NAME_1',
-      'massgis:OLI_3_INT',
-      'massgis:OLI_3_ABRV',
-      'massgis:OLI_3_ORG',
-      'massgis:OLI_3_TYPE',
       'massgis:DisplayNam',
       'massgis:StPrfx',
       'massgis:town_id',
       'massgis:fourcolor',
       'massgis:landuse',
-
-
       'massgis:MAP_ID',
       'massgis:PWSID',
       'massgis:SITE_ADDR',
