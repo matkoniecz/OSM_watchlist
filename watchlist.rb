@@ -8,7 +8,6 @@ Polskoliterkowe nazwy w Polsce - ekspresowe name:pl
 https://osm.wikidata.link/candidates/relation/224462
 https://osm.wikidata.link/candidates/relation/130919
 https://osm.wikidata.link/candidates/relation/2597485
-Małopilne move massgis tag removal into next stage - check whatever fields are truly only numeric
 
 instalujemy plugin todo w JOSMie
 
@@ -998,80 +997,118 @@ def watch_invalid_wikipedia
   return watchlist
 end
 
-# mass scale damaging automatic edit - see http://www.openstreetmap.org/user/Khalil%20Laleh/history#map=6/32.898/52.976
-
 =begin
+Hi Greg,
+
+If Mateusz has good scripts written and debugged to remove tags in
+bulk and is willing to run the automated edit, I would be happy to
+support him.
+
+Removing the tags listed in Mateusz email would improve OSM.
+
+In fact, I would support removing virtually all of the massgis: tags.
+
+Jason's keep list
+
+massgis:WETCODE 38840
+massgis:SITE_NAME 21773
+massgis:ref 1286
+massgis:school_id 878
+
+I am not 100% sure that following should be removed so I will not touch them (Jason proposed to delete them):
+
+attribution="Office of Geographic and Environmental Information (MassGIS)"
+source=massgis_import_*
+massgis:SOURCE
+
+I located documentation for database keys - it is available at http://www.mass.gov/anf/docs/itd/services/massgis/os-schema.pdf
+
+There are some tags where after value analysis and consulting database documentation I am not sure whatever deletion is the best solution:
+
+massgis:PUB_ACCESS - massgis:PUB_ACCESS=Y and massgis:PUB_ACCESS=N are usable for editors and these dominate values. It may be worth removing if access=* is tagged but I will leave it for separate edit.
+massgis:PRIM_PURP - potentially convertible to protect_class https://wiki.openstreetmap.org/wiki/Tag:boundary%3Dprotected_area#Classification
+massgis:MANAGER - 'Manager of the property (only if different from FEE_OWNER).' - potentially retag as operator?
+massgis:schoolid - retag to massgis:school_id?
+massgis:COMMENTS - requires manual review to check whatever it is worth keeping
+massgis:IT_VALDESC - human readable description, some values are popular. May be removed if description duplicates OSM tags, but I prefer to do it as a separate edit to reduce complexity
+massgis:ALT_SITE_N - potentially cobertible to alt_name
+
+not present in this region
+massgis:cat
+massgis:OldMapNo
+massgis:UseCode
+massgis:StNum
+massgis:LastEdit
+massgis:NAME
+massgis:UNIT_TYPE
+massgis:UNIT_NAME
+massgis:tex
+massgis:GIS_NOTES
+massgis:UNIT_CODE
+massgis:DATE_EDIT
+massgis:PERIMETER
+massgis:NAME1
+massgis:URL
+massgis:STATE
+massgis:AGBUR
+massgis:STATE_FIPS
+massgis:FEATURE1
+massgis:DESCRIZION
+massgis:FEDLANP020
+massgis:OldName
+massgis:ADA_ACCESS
+massgis:BIKING
+massgis:COUNTY
+massgis:TO_
+massgis:ACCT_ID
+massgis:MGMT
+massgis:MGMT_ZIP
+massgis:STATUS
+massgis:NAME01
+massgis:SHAPE_Leng
+massgis:INTERPRETI
+massgis:EQUESTRIAN
+massgis:METHOD
+massgis:MGMT_WEBSI
+massgis:ATV
+massgis:RORT
+massgis:HIKING
+massgis:RAILINE
+massgis:SURFACE
+massgis:UPDATE_
+massgis:MGMT_ADDR
+massgis:MGMT_CITY
+massgis:CROSS_COUN
+massgis:FOUR_WHEEL
+massgis:MGMT_CON_1
+massgis:MGMT_CON_2
+massgis:MGMT_STATE
+massgis:OFF_ROAD_M
+massgis:SNOWMOBILE
+massgis:FROM_
+
+What is the preferred way of chunking edits?
+Single massive edit with tens of thusands objects is not feasible for multiple reasons. What would be preferable - several edits, each changing 500 objects? Separate edit for every object? Some other changeset size?
+
+
+
+
+Hey all,
+
+I agree with Jason's lists. DEP site numbers are posted physically so those
+should definitely stay (in some form or another). Ref number makes sense in
+case anyone wants to trace back for some reason. The rest has little or no
+value to keep in OSM.
+
+Nick
+
 https://taginfo.openstreetmap.org/tags/boundary=historic#map
-https://forum.openstreetmap.org/viewtopic.php?pid=679376#p679376
 =end
 
-# test how watch_automatic_entries works
-
-# mail to talk-us@openstreetmap.org
-
-# overpass search for this particular import - 186 ways:
-# http://overpass-turbo.eu/s/u3O massgis:SITE_NAME, without name
-# 'massgis:ARTICLE97' = * and 'massgis:ASSESS_ACR' = * and 'massgis:ASSESS_LOT' = * and 'massgis:ASSESS_MAP' = * and 'massgis:ATT_DATE' = * and 'massgis:BASE_MAP' = * and 'massgis:DCAM_ID' = * and 'massgis:DEED_ACRES' = * and 'massgis:EOEAINVOLV' = * and 'massgis:FEESYM' = * and 'massgis:FY_FUNDING' = * and 'massgis:LEV_PROT' = * and 'massgis:MANAGR_ABR' = * and 'massgis:MANAGR_TYP' = * and 'massgis:OS_DEED_BO' = * and 'massgis:OS_DEED_PA' = * and 'massgis:OS_ID' = * and 'massgis:OWNER_ABRV' = * and 'massgis:POLY_ID' = * and 'massgis:PRIM_PURP' = * and 'massgis:SOURCE_MAP' = * and 'massgis:SOURCE_TYP' = * and 'massgis:TOWN_ID' = *
+# Talk-us-massachusetts automated edits and massgis tags mail
 
 =begin
-try detecting massgis: keys
-
-if not, detect specific:
-
-massgis:ARTICLE97
-massgis:ASSESS_ACR
-massgis:ASSESS_LOT
-massgis:ASSESS_MAP
-massgis:ATT_DATE
-massgis:EOEAINVOLV
-massgis:FEESYM
-massgis:FY_FUNDING
-massgis:LEV_PROT
-massgis:MANAGR_ABR
-massgis:MANAGR_TYP
-massgis:OS_DEED_BO
-massgis:OS_DEED_PA
-massgis:OWNER_ABRV
-massgis:PRIM_PURP
-massgis:SOURCE_MAP
-massgis:SOURCE_TYP
-massgis:BASE_MAP
-massgis:DCAM_ID
-massgis:OS_ID
-massgis:POLY_ID
-massgis:TOWN_ID
-massgis:DEED_ACRES
-
-[
-['massgis:ARTICLE97', :any_value],
-['massgis:ASSESS_ACR', :any_value],
-['massgis:ASSESS_LOT', :any_value],
-['massgis:ASSESS_MAP', :any_value],
-['massgis:ATT_DATE', :any_value],
-['massgis:EOEAINVOLV', :any_value],
-['massgis:FEESYM', :any_value],
-['massgis:FY_FUNDING', :any_value],
-['massgis:LEV_PROT', :any_value],
-['massgis:MANAGR_ABR', :any_value],
-['massgis:MANAGR_TYP', :any_value],
-['massgis:OS_DEED_BO', :any_value],
-['massgis:OS_DEED_PA', :any_value],
-['massgis:OWNER_ABRV', :any_value],
-['massgis:PRIM_PURP', :any_value],
-['massgis:SOURCE_MAP', :any_value],
-['massgis:SOURCE_TYP', :any_value],
-['massgis:BASE_MAP', :any_value],
-['massgis:DCAM_ID', :any_value],
-['massgis:OS_ID', :any_value],
-['massgis:POLY_ID', :any_value],
-['massgis:TOWN_ID', :any_value],
-['massgis:DEED_ACRES', :any_value],
-]
-=end
-
 # https://www.openstreetmap.org/way/29690455 z https://www.openstreetmap.org/changeset/735042#map=9/42.0666/-70.8074
-# wyszukiwanie tagu massgis:DEED_ACRES daje 100MB danych
-# massgis:TOWN_ID and other useless tags
 
 #useless tags like facility_type
 #https://www.openstreetmap.org/node/2303161011/history
