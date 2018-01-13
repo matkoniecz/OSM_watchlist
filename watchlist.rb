@@ -96,7 +96,7 @@ rel(bw.w1);way(r)->.w2;
 out meta;
 
 
-#https://wiki.openstreetmap.org/wiki/Key:teryt:simc - jest link walidujący, powtarzane kody
+#https://wiki.openstreetmap.org/wiki/Key:teryt:simc - jest link walidujący, powtarzane kody - skopiowany poniżęj
 [out:json][timeout:625];
 // fetch area “Poland” to search in
 {{geocodeArea:Poland}}->.searchArea;
