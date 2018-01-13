@@ -36,27 +36,6 @@ module CartoCSSHelper
     json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, explanation)
     parsed = JSON.parse(json_string)
     tags = [
-      #'massgis:FEE_OWNER', 'Owner or grantor of the land represented by the polygon' so not convertible to OSM tags without research that is not worth the effort
-      #'massgis:TOWN_ID', - 99% are numbers, other cases are ;-separated numbers, it is basically is_in in special format so not worth keeping
-      #'massgis:OWNER_TYPE', - one letter codes, useless without documentation
-      #'massgis:FEESYM', - codes, useless without documentation
-      #'massgis:EOEAINVOLV', - mysterious and bizarre, useless without documentation
-      #'massgis:FY_FUNDING', - funding date (?), useless if that guess is true, useless without documentation
-      #'massgis:ATT_DATE', 'Date attributes were last modifed.' - useless metadata from external database
-      #'massgis:LEV_PROT', - 'Code for the level of protection given to the land.' - with values: perpetuity (P), term limited (T), limited (L). I see no value here.
-      #'massgis:DEED_ACRES', - area is provided by geometry itself in OSM
-      #'massgis:OS_DEED_BO', - 'The book that the deed was recorded in on CAL_DATE_REC.' - useless
-      #'massgis:OS_DEED_PA', - 'The page of OS_DEED_BOOK that the deed was recorded in.' - useless
-      #'massgis:ASSESS_ACR', - 'Acreage of polygon according to local assessor.', again OSM stores area in geometry itself
-      #'massgis:SHAPE_AREA', #numbers that probably represent area of feature what is not useful in OSM
-      #'massgis:ACRES', #numbers that probably represent area of feature what is not useful in OSM
-      #'massgis:OS_ID', # 'Unique ID for feature class ([TOWN_ID]-[POLY_ID]).' - useless
-      #'massgis:OWNER_ABRV', # 'Abbreviation of FEE_OWNER kept in OSNAMES table.' - useless
-      #'massgis:SOURCE_MAP', # 'Source map used to enter linework/attributes.' - useless
-      #'massgis:ASSESS_MAP', # 'Local Assessor’s Map.' - useless
-      #'massgis:ASSESS_LOT', # 'Local Assessor’s Lot.' - useless
-      #'massgis:BASE_MAP', # 'Recompilation map name/type.' - useless
-
       #'massgis:IT_VALC', # short codes with unknown meaning, useless with documentation, probably useless anyway I found potential match but it was not helpful - 'Wetland label abbreviations' as listed in http://www.mass.gov/anf/research-and-tech/it-serv-and-support/application-serv/office-of-geographic-information-massgis/datalayers/wetchange.html 
       #'massgis:way_id', # 99% are numbers, other cases are ;-separated numbers - useless id
       #'massgis:OLI_1_INT', #always value is "CR" or "APR"
