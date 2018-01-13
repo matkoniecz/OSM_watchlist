@@ -125,20 +125,89 @@ def show_numbers_stats(stats)
       other_count += count
     end
   end
-  if numbers_count < other_count * 10 * 0
+  if numbers_count < other_count * 10
     return false
   end
   puts "#{numbers_count*100/(numbers_count+other_count)}% are numbers"
-  puts "exceptions:"
-  puts other
+  if other != {}
+    puts "exceptions:"
+    puts other
+  end
   return true
+end
+
+def show_alphanumeric_soup_stats(stats)
+  soup = {}
+  soup_count = 0
+  other = {}
+  other_count = 0
+  stats.each do |value, count|
+    nonmuber_count = 0
+    number_count = 0
+    value.each_char do |letter|
+      if ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].include?(letter)
+        number_count += 1
+      else
+        nonmuber_count += 1
+      end
+    end
+    if number_count > 0 && nonmuber_count <= 1
+      soup[value] = count
+      soup_count += count
+    else
+      other[value] = count
+      other_count += count
+    end
+    if soup_count < other_count * 10
+      return false
+    end
+    puts "#{soup_count*100/(soup_count+other_count)}% are mix of number(s) with at most one other character"
+    if other != {}
+      puts "exceptions:"
+      puts other
+    end
+    return true
+  end
+end
+
+def show_limited_values_stats(stats, values_count)
+  total_count = 0
+  stats.each do |key, count|
+    total_count += count
+  end
+
+  count_of_top_ones = 0
+
+  sorted = stats.to_a 
+  sorted.sort_by! {|a| -a[1]}
+  (0..values_count-1).each do |i|
+    count_of_top_ones += sorted[i][1]
+  end
+
+  if count_of_top_ones < (total_count - count_of_top_ones) * 10
+    return false
+  end
+  (0..values_count-1).each do |i|
+    puts "#{sorted[i][0]} x#{sorted[i][1]}"
+    stats.delete([i][0])
+    count_of_top_ones += sorted[i][1]
+  end
+  puts "exceptions:"
+  (values_count..stats.length).each do |i|
+    puts stats[i]
+  end
 end
 
 def show_stats(stats, description)
   puts
   puts description
   return if show_empty_stats(stats)
+
+  return if show_limited_values_stats(stats, 1)
+  return if show_limited_values_stats(stats, 2)
+  return if show_limited_values_stats(stats, 3)
+  return if show_limited_values_stats(stats, 4)
   return if show_numbers_stats(stats)
-  return if show_yes_no_stats(stats)
+  return if show_alphanumeric_soup_stats(stats)
   puts stats
 end
