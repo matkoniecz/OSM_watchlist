@@ -970,18 +970,17 @@ end
 def watch_declared_historical_data
   watchlist = []
   latest_allowed_end_date = Time.now.year - age_of_historical_data_allowed_in_years
-  known historical data
-  query = "[out:xml][timeout:25];
+  query = "[out:json][timeout:2500];
 (
-node[end_date](if:date(t[end_date])<#{latest_allowed_end_date})({{bbox}});
-way[end_date](if:date(t[end_date])<#{latest_allowed_end_date})({{bbox}});
-relation[end_date](if:date(t[end_date])<#{latest_allowed_end_date})({{bbox}});
+node[end_date](if:date(t[end_date])<#{latest_allowed_end_date});
+way[end_date](if:date(t[end_date])<#{latest_allowed_end_date});
+relation[end_date](if:date(t[end_date])<#{latest_allowed_end_date});
 );
 out meta;
 >;
 out meta qt;"
 
-  watchlist << { list: get_list_from_arbitrary_query(query, reason: "lifecycle state in name", include_history_of_tags: true), message: "planowane/projektowane" }
+  watchlist << { list: get_list_from_arbitrary_query(query, reason: "end_date revealing historical data", include_history_of_tags: true), message: "planowane/projektowane" }
   return watchlist
 end
 
