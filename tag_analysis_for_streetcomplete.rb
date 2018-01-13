@@ -87,3 +87,18 @@ def bikeway_stats_by_territory_group(territory_areas)
     show_whitelist_blacklist(whitelist, blacklist)
   end
 end
+
+def show_whitelist_blacklist(whitelist, blacklist)
+    puts
+    puts "whitelist:"
+    for area_description in whitelist
+      puts "- #{area_description}"
+    end
+    puts
+    puts "blacklist:"
+    for area_description in blacklist
+      puts "- #{area_description}"
+    end
+    puts
+    puts
+end

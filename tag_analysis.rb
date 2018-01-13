@@ -146,18 +146,3 @@ def show_stats(stats, description)
   return if show_yes_no_stats(stats)
   puts stats
 end
-
-def show_whitelist_blacklist(whitelist, blacklist)
-    puts
-    puts "whitelist:"
-    for area_description in whitelist
-      puts "- #{area_description}"
-    end
-    puts
-    puts "blacklist:"
-    for area_description in blacklist
-      puts "- #{area_description}"
-    end
-    puts
-    puts
-end
