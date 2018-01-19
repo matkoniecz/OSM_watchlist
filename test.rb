@@ -29,6 +29,59 @@ def test_placename(branch, z_levels = 4..11)
 end
 
 module CartoCSSHelper
+  def main
+    religion_stats_by_country
+    analyse_import_tags
+    #tactile_paving_stats #TODO idea - make an actionable list (load what SC allows, compare to outputs, output diff)
+    #bikeway_stats
+    run_watchlist
+    return
+    final
+
+    generate_preview('master')
+    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'pub', 'name' => :any_value }, skip: 0)
+    diff_on_loaded_database(location_provider: locator, to: 'noto_710', from: 'master', zlevels: 16..18, image_size: 700, count: 1)
+    run_tests
+    final
+
+    CartoCSSHelper::Configuration.set_renderer(:kosmtik)
+    location = [[49.91002, -122.78525, "pnorman example"], [49.0907, 22.5646, "Bieszczady"], [37.41499, -111.55294, "staircase"]]
+
+    iterate_over('dissolve_national_parks_proof_of_concept', 'master', 7..14, location)
+    # iterate_over('case_nightmare_green', 'master', 7..10, [[38.122, -110.237, "staircase"]])
+
+    CartoCSSHelper::Configuration.set_renderer(:kosmtik)
+    test_710_variants(1)
+
+    final
+
+    # wat(50, 20)
+    # wat(51.5, 0)
+    # wat(0, 0)
+
+    test_placename('wat', 7..12)
+    # test_placename('gradual_forest', 6..12)
+
+    puts "-----"
+    test_710_variants(10)
+    test_710_variants(15)
+    test_710_variants(5)
+
+    # show_military_danger_areas('danger')
+    # execute_command("echo \"layer, time, sample, branch\" > tested_file.txt", true)
+    # compare_time('master', 'speedtest', 5, 'new_data.txt')
+    # test_office(15, 'master')
+    # railway_station_areas_label('area_station')
+    # CartoCSSHelper.add_mapzen_extract('las_vegas', 'las-vegas_nevada')
+    # CartoCSSHelper.add_mapzen_extract('ateny', 'athens_greece')
+
+    final
+
+    CartoCSSHelper::VisualDiff.enable_job_pooling
+    CartoCSSHelper::VisualDiff.shuffle_jobs(8)
+    CartoCSSHelper::VisualDiff.run_jobs
+  end
+
   def analyse_import_tags
     area_name = "Massachusetts"
     query = '[out:json];relation[boundary=administrative][type!=multilinestring][name=' + area_name + '];out;'
@@ -139,59 +192,6 @@ module CartoCSSHelper
         show_stats(entry[:stats], tag + " in " + area_name)
       end
     end
-  end
-
-
-  def main
-    analyse_import_tags
-    #tactile_paving_stats #TODO idea - make an actionable list (load what SC allows, compare to outputs, output diff)
-    #bikeway_stats
-    run_watchlist
-    return
-    final
-
-    generate_preview('master')
-    locator = CartoCSSHelper::LocateTagsInsideLoadedDatabases.new({ 'amenity' => 'pub', 'name' => :any_value }, skip: 0)
-    diff_on_loaded_database(location_provider: locator, to: 'noto_710', from: 'master', zlevels: 16..18, image_size: 700, count: 1)
-    run_tests
-    final
-
-    CartoCSSHelper::Configuration.set_renderer(:kosmtik)
-    location = [[49.91002, -122.78525, "pnorman example"], [49.0907, 22.5646, "Bieszczady"], [37.41499, -111.55294, "staircase"]]
-
-    iterate_over('dissolve_national_parks_proof_of_concept', 'master', 7..14, location)
-    # iterate_over('case_nightmare_green', 'master', 7..10, [[38.122, -110.237, "staircase"]])
-
-    CartoCSSHelper::Configuration.set_renderer(:kosmtik)
-    test_710_variants(1)
-
-    final
-
-    # wat(50, 20)
-    # wat(51.5, 0)
-    # wat(0, 0)
-
-    test_placename('wat', 7..12)
-    # test_placename('gradual_forest', 6..12)
-
-    puts "-----"
-    test_710_variants(10)
-    test_710_variants(15)
-    test_710_variants(5)
-
-    # show_military_danger_areas('danger')
-    # execute_command("echo \"layer, time, sample, branch\" > tested_file.txt", true)
-    # compare_time('master', 'speedtest', 5, 'new_data.txt')
-    # test_office(15, 'master')
-    # railway_station_areas_label('area_station')
-    # CartoCSSHelper.add_mapzen_extract('las_vegas', 'las-vegas_nevada')
-    # CartoCSSHelper.add_mapzen_extract('ateny', 'athens_greece')
-
-    final
-
-    CartoCSSHelper::VisualDiff.enable_job_pooling
-    CartoCSSHelper::VisualDiff.shuffle_jobs(8)
-    CartoCSSHelper::VisualDiff.run_jobs
   end
 end
 
