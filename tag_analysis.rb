@@ -107,31 +107,40 @@ def show_empty_stats(stats)
   return true
 end
 
-def show_numbers_stats(stats)
-  numbers = {}
-  numbers_count = 0
-  other = {}
-  other_count = 0
+def categorize_using_regexp(stats, list_of_patterns)
+  returned = {}
+  returned[:match_count] = 0
+  returned[:match] = {}
+  returned[:other_count] = 0
+  returned[:other] = {}
   stats.each do |value, count|
-    number = false
-    number = true if value =~ /^\d+$/
-    number = true if value =~ /^\d+\.\d+$/
-    number = true if value =~ /^\d+,\d+$/
-    if number
-      numbers[value] = count
-      numbers_count += count
+    match = false
+    list_of_patterns.each do |pattern|
+      match = true if value =~ pattern
+    end
+    if match
+      returned[:match_count] += count
+      returned[:match][value] = count
     else
-      other[value] = count
-      other_count += count
+      returned[:other_count] += count
+      returned[:other][value] = count
     end
   end
+  return returned
+end
+
+def show_numbers_stats(stats)
+  list_of_patterns = [/^\d+$/, /^\d+\.\d+$/, /^\d+,\d+$/]
+  data = categorize_using_regexp(stats, list_of_patterns)
+  numbers_count = data[:match_count]
+  other_count = data[:other_count]
   if numbers_count < other_count * 10
     return false
   end
   puts "#{numbers_count*100/(numbers_count+other_count)}% are numbers"
-  if other != {}
+  if data[:other] != {}
     puts "exceptions:"
-    puts other
+    puts data[:other]
   end
   return true
 end
@@ -192,10 +201,29 @@ def show_limited_values_stats(stats, values_count)
     stats.delete([i][0])
     count_of_top_ones += sorted[i][1]
   end
-  puts "exceptions:"
-  (values_count..stats.length).each do |i|
-    puts stats[i]
+  if stats != {} 
+    puts "exceptions:"
+    puts stats
   end
+  return true
+end
+
+def date_in_evil_american_format(stats)
+  #MM/DD/YYYY
+  mmddyyyy_leading_zero = /(01|02|03|04|05|06|07|08|09|10|11|12)\/\d\d\/\d\d\d\d/
+  mmddyy = /(1|2|3|4|5|6|7|8|9|10|11|12)\/(\d|\d\d)\/\d\d\d\d/
+  list_of_patterns = [mmddyyyy_leading_zero, mmddyy]
+  description = "dates in evil american format (MM/DD/YYYY or mm/dd/yyyy)"
+  data = categorize_using_regexp(stats, list_of_patterns)
+  if data[:match_count] < data[:other_count] * 10
+    return false
+  end
+  puts "#{data[:match_count]*100/(data[:match_count] + data[:other_count])}% are #{description}"
+  if data[:other] != {}
+    puts "exceptions:"
+    puts data[:other]
+  end
+  return true
 end
 
 def show_stats(stats, description)
