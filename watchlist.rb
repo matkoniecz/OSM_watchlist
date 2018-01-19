@@ -1,7 +1,5 @@
 =begin
-Polacy:
-CivilEng
-https://ent8r.github.io/NotesReview/?query=StreetComplete&limit=3000
+US tag cleaning - wait for mailing list reply - switch to relation spam cleaning https://www.openstreetmap.org/note/526072 and boundary=historic
 
 Polskoliterkowe nazwy w Polsce - ekspresowe name:pl
 https://osm.wikidata.link/candidates/relation/224462
@@ -1237,6 +1235,10 @@ reason wrong/incorrect - please explain what is wrong.
 -- Mateusz Konieczny
 =end
 
+# https://ent8r.github.io/NotesReview/expert/?query=StreetComplete&limit=3000&start=true
+# Polacy:
+# CivilEng
+
 # missing military=bunker http://overpass-turbo.eu/s/sAw
 # tourims=attraction + name http://overpass-turbo.eu/s/sAr
 # https://forum.openstreetmap.org/viewtopic.php?pid=666735#p666735
@@ -1295,5 +1297,9 @@ reason wrong/incorrect - please explain what is wrong.
 # https://lists.openstreetmap.org/pipermail/tagging/2018-January/034644.html - make edits to wiki
 # TODO: bardzo stare highway=construction
 # http://www.openstreetmap.org/changeset/55285635
-# https://www.openstreetmap.org/note/526072
 # https://forum.openstreetmap.org/viewtopic.php?pid=679376#p679376 - wiki zmodyfikowana, poczekać do 20 I
+#https://taginfo.openstreetmap.org/tags/dataset=buildings#map
+# https://forum.openstreetmap.org/viewtopic.php?pid=679671#p679671
+#building=yes + shop=supermarket (70k cases - make app?)
+# document Wikidata copyright status on WIkidata https://www.wikidata.org/w/index.php?title=Wikidata:Project_chat&diff=576668866&oldid=576665752
+# https://stevebennett.me/2017/08/23/openstreetmap-vector-tiles-mixing-and-matching-engines-schemas-and-styles/
