@@ -148,9 +148,12 @@ end
 def popek_eliminator()
   # revert damage caused by popek069 - this user was adding guessed maxspeed without any verification whatsoever on a massive scale
   # only maxspeed values added in changesets by popek069 are deleted, only cases where popek069 was adding default maxspeed values are affected
-
   author_id = '6066236'
   required_tags = {'maxspeed' => '140'}
+  list_where_tag_was_added_by(author_id, required_tags)
+end
+  
+def list_where_tag_was_added_by(author_id, required_tags)
   # TODO: build ways here, split here 
   # suspected_ways = []
   nick = get_full_user_data(author_id)[:current_username]
