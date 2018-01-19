@@ -2,8 +2,8 @@ require_relative 'tag_analysis.rb'
 
 def tactile_paving_stats
   filters = ["[highway=crossing]", "[highway=bus_stop]"]
+  key = "tactile_paving"
   filters.each do |filter|
-    key = "tactile_paving"
     value_distribution_for_each_territory(json_overpass_list_of_countries(), key, filter).each do |entry|
       description = entry[:english_name] + " (" + entry[:iso3166_code] + ")"
       filter_description = "#{key} on #{filter}"
