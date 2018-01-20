@@ -1,8 +1,12 @@
 require_relative 'tag_analysis.rb'
 
 def religion_stats_by_country
-  filters = ["[amenity=place_of_worship]"] #'[historic=wayside_shrine'], '[man_made=cross]', '[historic=wayside_cross']
-  key = "religion"
+  filters = ["[amenity=place_of_worship]", '[historic=wayside_shrine]', '[man_made=cross]', '[historic=wayside_cross]']
+  show_generic_stats_by_coutry("religion", filters)
+  show_generic_stats_by_coutry("denomination", filters)
+end
+
+def show_generic_stats_by_coutry(key, filters)
   filters.each do |filter|
     value_distribution_for_each_territory(json_overpass_list_of_countries(), key, filter).each do |entry|
       description = entry[:english_name] + " (" + entry[:iso3166_code] + ")"
