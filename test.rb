@@ -31,6 +31,7 @@ end
 module CartoCSSHelper
   def main
     religion_stats_by_country
+    return
     analyse_import_tags
     #tactile_paving_stats #TODO idea - make an actionable list (load what SC allows, compare to outputs, output diff)
     #bikeway_stats
