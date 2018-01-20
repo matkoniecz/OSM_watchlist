@@ -198,7 +198,7 @@ def show_limited_values_stats(stats, values_count)
   end
   (0..values_count-1).each do |i|
     puts "#{sorted[i][0]} x#{sorted[i][1]}"
-    stats.delete([i][0])
+    stats.delete(sorted[i][0])
     count_of_top_ones += sorted[i][1]
   end
   if stats != {} 
