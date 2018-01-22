@@ -4,28 +4,31 @@ def religion_stats_by_country
   filters = ["[amenity=place_of_worship]", '[historic=wayside_shrine]', '[man_made=cross]', '[historic=wayside_cross]']
   show_generic_stats_by_coutry("religion", filters)
   show_generic_stats_by_coutry("denomination", filters)
+
+def stats_description(location_description, main_key, filter)
+    filter_description = "#{main_key} on #{filter}"
+    filter_description = "#{main_key}" if filter == ""
+    return filter_description + " in " + location_description
 end
 
-def show_generic_stats_by_coutry(key, filters)
+def show_generic_stats_by_coutry(main_key, filters)
   filters.each do |filter|
-    value_distribution_for_each_territory(json_overpass_list_of_countries(), key, filter).each do |entry|
-      description = entry[:english_name] + " (" + entry[:iso3166_code] + ")"
-      filter_description = "#{key} on #{filter}"
-      filter_description = "#{key}" if filter == ""
-      show_stats(entry[:stats], filter_description + " in " + description)
+    value_distribution_for_each_territory(json_overpass_list_of_countries(), main_key, filter).each do |entry|
+      location_description = entry[:english_name] + " (" + entry[:iso3166_code] + ")"
+      info = stats_description(location_description, main_key, filter)
+      show_stats(entry[:stats], info)
     end
   end
 end
 
 def tactile_paving_stats
   filters = ["[highway=crossing]", "[highway=bus_stop]"]
-  key = "tactile_paving"
+  main_key = "tactile_paving"
   filters.each do |filter|
-    value_distribution_for_each_territory(json_overpass_list_of_countries(), key, filter).each do |entry|
-      description = entry[:english_name] + " (" + entry[:iso3166_code] + ")"
-      filter_description = "#{key} on #{filter}"
-      filter_description = "#{key}" if filter == ""
-      show_yes_no_stats(entry[:stats], filter_description + " in " + description)
+    value_distribution_for_each_territory(json_overpass_list_of_countries(), main_key, filter).each do |entry|
+      location_description = entry[:english_name] + " (" + entry[:iso3166_code] + ")"
+      info = stats_description(location_description, main_key, filter)
+      show_yes_no_stats(entry[:stats], info)
 
 
       blacklist = []
