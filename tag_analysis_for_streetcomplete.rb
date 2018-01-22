@@ -1,9 +1,42 @@
 require_relative 'tag_analysis.rb'
 
 def religion_stats_by_country
-  filters = ["[amenity=place_of_worship]", '[historic=wayside_shrine]', '[man_made=cross]', '[historic=wayside_cross]']
-  show_generic_stats_by_coutry("religion", filters)
-  show_generic_stats_by_coutry("denomination", filters)
+  filters = ["[amenity=place_of_worship]"] # '[historic=wayside_shrine]'
+  filters.each do |filter|
+    produce_religious_data(filter)
+  end
+end
+
+def produce_religious_data(filter)
+  main_key = 'religion'
+  subkey = 'denomination'
+  data = {}
+  value_distribution_for_each_territory(json_overpass_list_of_countries(), main_key, filter).each do |entry|
+      location_description = entry[:english_name] + " (" + entry[:iso3166_code] + ")"
+      info = stats_description(location_description, main_key, filter)
+      stats = entry[:stats]
+      sorted = stats.to_a
+      sorted.sort_by! {|a| -a[1]}
+      next if sorted.length == 0
+      max_count = sorted[0][1]
+      if max_count < 100
+        next
+      end
+      puts
+      puts info
+      (0..sorted.length-1).each do |i|
+        if sorted[i][1] < 100
+          break
+        end
+        puts "#{sorted[i][0]} x#{sorted[i][1]}"
+      end
+  end
+  # filter out low data entries, rare values, sort values
+  # v2 enrich by adding denominations
+  # collect data over all entries, build global database, make local overrides
+  # convert to yml
+  # v0 write tests
+end
 
 def stats_description(location_description, main_key, filter)
     filter_description = "#{main_key} on #{filter}"
