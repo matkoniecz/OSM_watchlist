@@ -57,6 +57,7 @@ def description_of_tag_appearances_in_history(type, id, required_tags)
 end
 
 def get_json_history_representation(type, id)
+  # see https://github.com/drolbr/Overpass-API/issues/282
   CartoCSSHelper::Configuration.set_overpass_instance_url('http://dev.overpass-api.de/api_mmd') #TEST instance, limit querries
   query = get_history_query(type, id)
   if CartoCSSHelper::OverpassDownloader.cache_timestamp(query) == nil
