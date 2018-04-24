@@ -113,7 +113,7 @@ def get_history_query(type, id)
 return   "[out:json];
   timeline(#{type},#{id});
   foreach(
-    retro(u(t[created]))
+    retro(u(t['created']))
     (
       #{type}(#{id});
       out meta;
