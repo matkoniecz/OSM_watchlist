@@ -103,7 +103,7 @@ def get_minutes_spend_on(start, finish)
   return (finish - start).to_i / 60
 end
 
-def encoutered_exception(e, start_time, load_end, end_time)
+def encountered_exception(e, start_time, load_end, end_time)
   puts e.class
   puts e
   puts
@@ -126,6 +126,6 @@ def run_and_report_the_end
     main
   rescue => e
     end_time = Time.now
-    encoutered_exception(e, start_time, load_end, end_time) while true
+    encountered_exception(e, start_time, load_end, end_time) while true
   end
 end

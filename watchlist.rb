@@ -1,4 +1,31 @@
 =begin
+disused:boundary https://taginfo.openstreetmap.org/keys/disused%3Aboundary
+disused:political_division https://taginfo.openstreetmap.org/keys/disused%3Apolitical_division
+other from https://taginfo.openstreetmap.org/keys/end_date#combinations
+
+https://wiki.openstreetmap.org/wiki/Tag:amenity%3Dwater
+amenity=water? What is this?
+
+If it is place with drinking water amenity=drinking_water is typically used.
+
+man_made=water_tap may be added if it is a water tap.
+
+man_made=water_tap with drinking_water=no is typically used to indicate tap without drinking water
+
+
+
+covered=no, shelter=yes - it seems contradictory
+So it this bus stop with a shelter providing cover or not?
+
+http://overpass-turbo.eu/s/wT2
+
+after solving that: analyse tactile for covered=no
+=end
+
+
+
+# http://resultmaps.neis-one.org/newestosmfeed.php?lon=19.91674&lat=50.11020&deg=0.15  - nowi edytujący w Krakowie
+=begin
 US tag cleaning - wait for mailing list reply - switch to relation spam cleaning https://www.openstreetmap.org/note/526072 and boundary=historic
 
 Polskoliterkowe nazwy w Polsce - ekspresowe name:pl
@@ -24,7 +51,54 @@ delete historic data. It is unlikely to be added to OSM by mistake so it is not 
 
 This object is still visible on some aerial images (for example Esri). It is kept to prevent mistaken remapping of this object. Delete it once aerial images are updated.
 
+area=yes on inners
+
+
+
+Provide autofix to remove completely useless area=yes (useless both as a tag and as indicator of real issues) from inner multipolygons ways
+
+There is a repeated minor tagging issue - multipolygons with area=yes at inner ways that are not tagged with other tags. Such area=yes ag is utterly useless.
+
+Unlike standalone ways without tags other tahn area=yes this areas are not indicating unfinished edit, in my experience (after processing hundrets cases of such ways) are not useful as indicators of further problems, and may be safely removed automatically.
+
+- it would allow to split "missing tag - incomplete object: only area" warning into two categories - one requiring detailed investigation and one that may be quickly processed
+- in this case this tag is utterly useless and may eb safely removed
+- some people may become confused and start to think that area=yes tag is necessary in such cases
+- people searching for ways with just area=yes (with http://overpass-turbo.eu/s/y6v or similar) to fix mistakes by newbies and finish their edits are spammed by useless area=yes on inners (yes - it is possible to make more complicated query filtering out area=yes on inners, but each person doing this wuld need to vcraft their own query or find it)
+
+Examples:
+
+https://www.openstreetmap.org/way/301002606
+https://www.openstreetmap.org/way/311398712
+https://www.openstreetmap.org/way/563806248
+https://www.openstreetmap.org/way/434845918
+https://www.openstreetmap.org/way/427315084
+
+Such cases of area=yes may be found using http://overpass-turbo.eu/s/y6w
+
+[out:xml][timeout:725];
+rel({{bbox}})[type=multipolygon]->.relations;
+(  way(r.relations:"inner")(if:count_tags() == 1)[area=yes];
+);
+(._;>;);
+out meta;
+
+
+
 mix of various fixes required:
+
+[out:xml][timeout:725][bbox:{{bbox}}];
+(
+  node["area"="yes"][name](if:count_tags() == 2)({{bbox}});
+  way["area"="yes"][name](if:count_tags() == 2)({{bbox}});
+  relation["area"="yes"][name](if:count_tags() == 2)({{bbox}});
+
+  node["area"="yes"](if:count_tags() == 1)({{bbox}});
+  way["area"="yes"](if:count_tags() == 1)({{bbox}});
+  relation["area"="yes"](if:count_tags() == 1)({{bbox}});
+);
+(._;>;);
+out meta;
 
 [out:xml][timeout:725][bbox:{{bbox}}];
 (
@@ -33,8 +107,8 @@ mix of various fixes required:
   node["area"="yes"][name](if:count_tags() == 2)({{bbox}});
   way["area"="yes"][name](if:count_tags() == 2)({{bbox}});
   relation["area"="yes"][name](if:count_tags() == 2)({{bbox}});
-  node[tourism=attraction][name](if:count_tags()==2)(area.searchArea);
-  way[tourism=attraction][name](if:count_tags()==2)(area.searchArea);
+  node[tourism=attraction][name](if:count_tags()==2)({{bbox}});
+  way[tourism=attraction][name](if:count_tags()==2)({{bbox}});
 
   //not covered(?) by watchlist querries
   node["area"="yes"](if:count_tags() == 1)({{bbox}});
@@ -75,6 +149,10 @@ mix of various fixes required:
   node["toilets:access"][access]["amenity"="toilets"]['toilets:access'!='access'];
   way["toilets:access"][access]["amenity"="toilets"]['toilets:access'!='access'];
   relation["toilets:access"][access]["amenity"="toilets"]['toilets:access'!='access'];
+
+  //certainly not covered by watchlist querries
+  way[man_made=bridge][building]({{bbox}});
+  way[opening_date](if:date(t[opening_date])<date("{{date:0 days}}"))({{bbox}});
   );
 (._;>;);
 out meta;
@@ -115,7 +193,11 @@ out skel qt;
 
 require 'json'
 require_relative 'watchlist_infrastructure'
-require_relative 'query_builder.rb'
+require 'overhelper.rb'
+require_relative 'require.rb'
+require_relative 'deferred.rb'
+
+include CartoCSSHelper
 
 def my_location
   return 50.069, 19.926
@@ -759,6 +841,8 @@ def descriptive_names_entries
 
     {name: 'big forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
     {name: 'small forest', language: 'en', matching_tags: [{'natural' => 'wood'}, {'landuse' => 'forest'}]},
+
+    {name: 'Zbiornik ppoż.', language: 'pl', matching_tags: [{'landuse' => 'reservoir'}]},
   ]
 end
 
@@ -786,16 +870,77 @@ def watch_valid_tags_unexpected_in_krakow
   watchlist = []
   lat, lon = my_location
 
-  watchlist += detect_tags_in_region(lat, lon, 20, { 'bicycle' => 'official' })
-  watchlist += detect_tags_in_region(lat, lon, 100, { 'building' => 'no' })
+  watchlist += detect_tags_in_region(lat, lon, 8, { 'surface' => 'sett', 'smoothness' => {operation: :not_equal_to, value: :any_value} })
+  watchlist += detect_tags_in_region(lat, lon, 8, { 'surface' => 'cobblestone', 'smoothness' => {operation: :not_equal_to, value: :any_value} })
 
-  valid_oneway_values = ['yes', 'no']
-  filter = [['oneway', :any_value]]
-  for valid in valid_oneway_values
-    filter << ['oneway', {operation: :not_equal_to, value: valid}]
-  end
-  watchlist += detect_tags_in_region(lat, lon, 20, filter)
+  watchlist += detect_tags_in_region(lat, lon, 50, { 'amenity' => 'shop' })
+
+  watchlist += detect_tags_in_region(lat, lon, 25, { 'landuse' => 'basin', 'natural' => {operation: :not_equal_to, value: 'water'}, 'fixme' => {operation: :not_equal_to, value: :any_value} }, message: "natural=water may be missing")
+
+
+  watchlist += detect_tags_in_region(lat, lon, 15, { 'man_made' => 'pier', 'highway' => {operation: :not_equal_to, value: :any_value} })
   
+  watchlist += detect_tags_in_region(lat, lon, 2500, { 'highway' => :any_value, "addr:housenumber" => :any_value, 'website' => :any_value })
+
+
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'fixme' => :any_value }, 'fixmes')
+
+  watchlist = watchlist + watch_for_tags_not_present_in_krakow
+  watchlist = watchlist + watch_for_disliked_tags
+  watchlist = watchlist + watch_for_useless_unknown
+  watchlist = watchlist + watch_trolltags_in_krakow
+  watchlist = watchlist + watch_oneway_in_krakow
+  watchlist = watchlist + watch_track_misuse_in_krakow
+  watchlist = watchlist + watch_is_in_in_krakow
+  return watchlist
+end
+
+def watch_for_tags_not_present_in_krakow
+  watchlist = []
+  #TODO: exclude volcano:status   extinct
+  #range_in_km = 300
+  #watchlist << { list: get_list({ 'natural' => 'volcano' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) Is it really a good idea to tag something as natural=volcano where it was last active about X 000 years ago? In that case natural=peak is probably better..." }
+  #range_in_km = 400
+  #watchlist << { list: get_list({ 'natural' => 'volcano' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) Is it really a good idea to tag something as natural=volcano where it was last active about X 000 years ago? In that case natural=peak is probably better..." }
+  watchlist += detect_tags_in_region(lat, lon, 5, whitelist_tag_filter('cycleway', ['no', 'lane', 'opposite_lane', 'opposite']))
+  watchlist += detect_tags_in_region(lat, lon, 25, { 'shop' => :any_value, 'wikipedia' => :any_value }) #extend to banks etc?
+  watchlist += detect_tags_in_region(lat, lon, 80, { 'horse' => 'designated' }, "to naprawdę jest specjalnie przeznaczone dla koni?") #130 - too far
+  watchlist += detect_tags_in_region(lat, lon, 30, { 'highway' => 'bridleway' }, "Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?")
+  watchlist += detect_tags_in_region(lat, lon, 3500, { 'highway' => 'bus_guideway' }, "#highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?")
+  return watchlist
+end
+
+def watch_for_disliked_tags
+  watchlist = []
+
+  # historic boundaries
+  #1 295
+  #1 280 (w tym 634 way)
+  #1 274 (w tym 630 way) in 2017 IX
+  #1 231 (w tym 612 way) w 2017 XII
+  #1 096 (w tym 538 way) w 2018 IV
+  watchlist += detect_tags_in_region(lat, lon, 1500, { 'boundary' => 'historic', 'end_date' => {operation: :not_equal_to, value: :any_value} })
+  #end_date - catch entries deep in past and in the far future
+
+  watchlist += detect_tags_in_region(lat, lon, 100, { 'building' => 'no' })
+  watchlist += detect_tags_in_region(lat, lon, 15, [['payment:bitcoin', :any_value], ['payment:bitcoin', {operation: :not_equal_to, value: 'no'}]])
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'access' => 'public' })
+  watchlist += detect_tags_in_region(lat, lon, 20, { 'bicycle' => 'official' })
+  watchlist += detect_tags_in_region(lat, lon, 25, { 'seamark:name' => :any_value })
+  watchlist += detect_tags_in_region(lat, lon, 100, { 'historic' => 'battlefield' }, 'Czy są tu jakieś pozostałości po bitwie? Jeśli tak to powiny zostać zmapowane, jeśli nie to jest to do skasowania.') #1 653 in 2017 IX #200 - too far (reaches Slovakia)
+  return watchlist
+end
+
+def watch_for_useless_unknown
+  watchlist = []
+  watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:disabled' => 'unknown' })
+  watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:parent' => 'unknown' })
+  watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:woman' => 'unknown' })
+  return watchlist
+end
+
+def watch_trolltags_in_krakow
+  watchlist = []
   #after fixing revisit https://github.com/openstreetmap/iD/issues/4501
   not_trolltag_filters = [
     ['man_made', {operation: :not_equal_to, value: 'mineshaft'}],
@@ -805,23 +950,24 @@ def watch_valid_tags_unexpected_in_krakow
   watchlist += detect_tags_in_region(lat, lon, 50, [['disused', 'yes']] + not_trolltag_filters)
   watchlist += detect_tags_in_region(lat, lon, 50, [['abandoned', 'yes']] + not_trolltag_filters)
 
-  watchlist += detect_tags_in_region(lat, lon, 8, { 'surface' => 'sett', 'smoothness' => {operation: :not_equal_to, value: :any_value} })
-  watchlist += detect_tags_in_region(lat, lon, 8, { 'surface' => 'cobblestone', 'smoothness' => {operation: :not_equal_to, value: :any_value} })
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'building' => 'proposed' })
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'building' => 'destroyed' })
+  return watchlist
+end
 
-  watchlist += detect_tags_in_region(lat, lon, 5, whitelist_tag_filter('cycleway', ['no', 'lane', 'opposite_lane', 'opposite']))
+def watch_oneway_in_krakow
+  watchlist = []
+  valid_oneway_values = ['yes', 'no']
+  filter = [['oneway', :any_value]]
+  for valid in valid_oneway_values
+    filter << ['oneway', {operation: :not_equal_to, value: valid}]
+  end
+  watchlist += detect_tags_in_region(lat, lon, 20, filter)
+  return watchlist
+end
 
-  watchlist += detect_tags_in_region(lat, lon, 25, { 'seamark:name' => :any_value })
-
-  watchlist += detect_tags_in_region(lat, lon, 25, { 'shop' => :any_value, 'wikipedia' => :any_value }) #extend to banks etc?
-
-  watchlist += detect_tags_in_region(lat, lon, 50, { 'amenity' => 'shop' })
-
-  watchlist += detect_tags_in_region(lat, lon, 25, { 'landuse' => 'basin', 'natural' => {operation: :not_equal_to, value: 'water'}, 'fixme' => {operation: :not_equal_to, value: :any_value} }, message: "natural=water may be missing")
-
-  watchlist += detect_tags_in_region(lat, lon, 15, [['payment:bitcoin', :any_value], ['payment:bitcoin', {operation: :not_equal_to, value: 'no'}]])
-
-  watchlist += detect_tags_in_region(lat, lon, 15, { 'man_made' => 'pier', 'highway' => {operation: :not_equal_to, value: :any_value} })
-  
+def watch_track_misuse_in_krakow
+  watchlist = []
   message = 'highway=track to droga do obsługi pola/lasu, stan drogi oznacza się przy pomocy tagów smoothness i surface'
   proper_track_names = ['Chodnik Malczewskiego', 'Astronomów', 'Tuchowska',
     'Piotra Gaszowca', 'Słona Woda', 'Do Luboni', 'Stefana Starzyńskiego',
@@ -833,44 +979,17 @@ def watch_valid_tags_unexpected_in_krakow
   end
   watchlist += detect_tags_in_region(lat, lon, 7, tags, message)
   # TODO - consider detecting rather highway=track without nearby field/forest, it will find also nameless ones
+  return watchlist
+end
 
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'access' => 'public' })
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'building' => 'proposed' })
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'building' => 'destroyed' })
-
-  watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:disabled' => 'unknown' })
-  watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:parent' => 'unknown' })
-  watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:woman' => 'unknown' })
-
-  watchlist += detect_tags_in_region(lat, lon, 2500, { 'highway' => :any_value, "addr:housenumber" => :any_value, 'website' => :any_value })
-
-  watchlist += detect_tags_in_region(lat, lon, 100, { 'historic' => 'battlefield' }, 'Czy są tu jakieś pozostałości po bitwie? Jeśli tak to powiny zostać zmapowane, jeśli nie to jest to do skasowania.') #1 653 in 2017 IX #200 - too far (reaches Slovakia)
-  watchlist += detect_tags_in_region(lat, lon, 80, { 'horse' => 'designated' }, "to naprawdę jest specjalnie przeznaczone dla koni?") #130 - too far
-  watchlist += detect_tags_in_region(lat, lon, 30, { 'highway' => 'bridleway' }, "Czy naprawdę tu w Krakowie jest urwany kawałek szlaku dla koni?")
-  watchlist += detect_tags_in_region(lat, lon, 3500, { 'highway' => 'bus_guideway' }, "#highway=bus_guideway Czy tu naprawdę jest coś takiego jak opisane na http://wiki.openstreetmap.org/wiki/Tag:highway=bus%20guideway?uselang=pl ? Czy po prostu zwykła droga po której tylko autobusy mogą jeździć?")
-
-  # historic boundaries
-  #1 295
-  #1 280 (w tym 634 way)
-  #1 274 (w tym 630 way) in 2017 IX
-  #1 231 (w tym 612 way) w 2017 XII
-  watchlist += detect_tags_in_region(lat, lon, 1500, { 'boundary' => 'historic', 'end_date' => {operation: :not_equal_to, value: :any_value} })
-  #end_date - catch entries deep in past and in the far future
-  #TODO: exclude volcano:status   extinct
-  #range_in_km = 300
-  #watchlist << { list: get_list({ 'natural' => 'volcano' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) Is it really a good idea to tag something as natural=volcano where it was last active about X 000 years ago? In that case natural=peak is probably better..." }
-  #range_in_km = 400
-  #watchlist << { list: get_list({ 'natural' => 'volcano' }, 50, 20, range_in_km), message: "(#{range_in_km}km range) Is it really a good idea to tag something as natural=volcano where it was last active about X 000 years ago? In that case natural=peak is probably better..." }
-
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'fixme' => :any_value }, 'fixmes')
-
+def watch_is_in_in_krakow
+  watchlist = []
   watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:country' => :any_value })
   watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:county' => :any_value })
   watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:municipality' => :any_value })
   watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:province' => :any_value })
   watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in' => :any_value })
-
-  return watchlist
+  return watchlist  
 end
 
 def detect_tags_in_region(lat, lon, range_in_km, tags, message="")
@@ -928,7 +1047,7 @@ end
 
 def watch_is_in
   watchlist = []
-  query = filter_across_named_region('[is_in=Rybnik]', 'Rybnik')
+  query = ComplexQueryBuilder.filter_across_named_region('[is_in=Rybnik]', 'Rybnik')
   puts query
   watchlist << { list: get_list_from_arbitrary_query(query, {}, reason: "useless is_in=Rybnik", include_history_of_tags: true), message: "useless is_in=Rybnik" }
   return watchlist
@@ -951,11 +1070,11 @@ end
 
 def proposed_without_source
   watchlist = []
-  query = two_pass_filter_across_named_region("[highway=proposed]", "[highway=proposed]['source']", "Kraków")
+  query = ComplexQueryBuilder.two_pass_filter_across_named_region("[highway=proposed]", "[highway=proposed]['source']", "Kraków")
   watchlist << { list: get_list_from_arbitrary_query(query, {}, reason: "proposed without source", include_history_of_tags: true), message: "proposed without source" }
-  query = two_pass_filter_across_named_region("[highway=proposed]", "[highway=proposed]['source']", "powiat legionowski")
+  query = ComplexQueryBuilder.two_pass_filter_across_named_region("[highway=proposed]", "[highway=proposed]['source']", "powiat legionowski")
   watchlist << { list: get_list_from_arbitrary_query(query, {}, reason: "proposed without source", include_history_of_tags: true), message: "proposed without source" }
-  query = two_pass_filter_across_named_region("[highway=proposed]", "[highway=proposed]['source']", "województwo małopolskie")
+  query = ComplexQueryBuilder.two_pass_filter_across_named_region("[highway=proposed]", "[highway=proposed]['source']", "województwo małopolskie")
   watchlist << { list: get_list_from_arbitrary_query(query, {}, reason: "proposed without source", include_history_of_tags: true), message: "proposed without source" }
   return watchlist
 end
@@ -965,9 +1084,9 @@ def watch_declared_historical_data
   latest_allowed_end_date = Time.now.year - age_of_historical_data_allowed_in_years
   query = "[out:json][timeout:2500];
 (
-node[end_date](if:date(t[end_date])<#{latest_allowed_end_date});
-way[end_date](if:date(t[end_date])<#{latest_allowed_end_date});
-relation[end_date](if:date(t[end_date])<#{latest_allowed_end_date});
+node[end_date](if:date(t[end_date])<date(#{latest_allowed_end_date}));
+way[end_date](if:date(t[end_date])<date(#{latest_allowed_end_date}));
+relation[end_date](if:date(t[end_date])<date(#{latest_allowed_end_date}));
 );
 out meta;
 >;
@@ -1102,11 +1221,10 @@ https://taginfo.openstreetmap.org/tags/boundary=historic#map
 #LandPro08:LC
 
 # name without name:pl (dla map które pokazują name:pl, potem name:en, potem name:de, potem name - a chcemy by w polsce dalej pokazywały pl)
-# compartive advantage
+# comparative advantage
 # mass edit
 
 # http://www.openstreetmap.org/changeset/55169697
-# http://www.openstreetmap.org/changeset/55121221
 # https://taginfo.openstreetmap.org/tags/construction=yes#combinations
 # noname=no
 # mass scale damaging automatic edit - see http://www.openstreetmap.org/user/Khalil%20Laleh/history#map=6/32.898/52.976
@@ -1132,20 +1250,17 @@ out body;
 out skel qt; 
 =end
 
-# https://www.openstreetmap.org/note/1251752
-
 # poprawić notki w terenie - potem zwiększyć zasięg w watch_valid_tags_unexpected_in_krakow
 
 =begin
-
+https://www.openstreetmap.org/changeset/57918111#map=17/33.09098/-117.20817
 
 
 # see comments in http://www.openstreetmap.org/changeset/43401704
 
 Lighthouses with missing name, but with seamark:name - http://overpass-turbo.eu/s/u05 (it is likely that name tag is missing)
 
-See http://overpass-turbo.eu/s/u0C listing light_minor objects with
-seamark:light:range > 10.
+See http://overpass-turbo.eu/s/u0C listing light_minor objects with seamark:light:range > 10.
 
 Is there really a major navigational light here? I see nothing on aerial images.
 'seamark:light:1:range'=* and man_made != lighthouse and 'seamark:type' = light_major
@@ -1154,7 +1269,6 @@ seamark:type!=light_minor and seamark:type!='beacon_special_purpose' and seamark
 
 # http://www.openstreetmap.org/changeset/31009200#map=15/43.8895/-0.5003 fix remaining - see http://overpass-turbo.eu/s/uoy
 
-# retag rare tags from https://github.com/simonpoole/beautified-JOSM-preset/issues/35
 
 # https://wiki.openstreetmap.org/wiki/SPARQL_examples#Find_.22Featured.22_wiki_articles_with_location.2C_but_without_OSM_connection
 # https://wiki.openstreetmap.org/wiki/User_talk:Yurik - wait for answers
@@ -1164,7 +1278,6 @@ seamark:type!=light_minor and seamark:type!='beacon_special_purpose' and seamark
 #"historic=battlefield to tag niezgodny z zasadami OSM, ale używany i wygląda na tolerowany."
 #To pora przestać go tolerować zanim więcej osób zacznie do OSM wsadzać wydarzenia (lepiej by wykasować to zanim sie zrobi popularne, mniej osób straci wtedy czasu na ich dodawanie)
 # https://www.openstreetmap.org/changeset/51522177#map=13/54.0944/21.6133&layers=N
-#name   Zbiornik ppoż.
 # wszystkie nawiasy http://overpass-turbo.eu/s/rpH
 # watchlist for rare landuse, surface values in Kraków
 # more https://github.com/osmlab/name-suggestion-index/blob/master/filter.json https://lists.openstreetmap.org/pipermail/talk/2015-May/072923.html
@@ -1238,6 +1351,8 @@ reason wrong/incorrect - please explain what is wrong.
 -- Mateusz Konieczny
 =end
 
+# search „undiscussed automatic edit (blindly adding maxspeed tags)” mail
+
 # https://ent8r.github.io/NotesReview/expert/?query=StreetComplete&limit=3000&start=true
 # Polacy:
 # CivilEng
@@ -1299,10 +1414,25 @@ reason wrong/incorrect - please explain what is wrong.
 
 # https://lists.openstreetmap.org/pipermail/tagging/2018-January/034644.html - make edits to wiki
 # TODO: bardzo stare highway=construction
-# http://www.openstreetmap.org/changeset/55285635
 # https://forum.openstreetmap.org/viewtopic.php?pid=679376#p679376 - wiki zmodyfikowana, poczekać do 20 I
 #https://taginfo.openstreetmap.org/tags/dataset=buildings#map
 # https://forum.openstreetmap.org/viewtopic.php?pid=679671#p679671
 #building=yes + shop=supermarket (70k cases - make app?)
 # document Wikidata copyright status on WIkidata https://www.wikidata.org/w/index.php?title=Wikidata:Project_chat&diff=576668866&oldid=576665752
 # https://stevebennett.me/2017/08/23/openstreetmap-vector-tiles-mixing-and-matching-engines-schemas-and-styles/
+# fixme:action fixme:requires_aerial_image fixme:use_better_tagging_scheme bez fixme
+# https://www.openstreetmap.org/way/158245125 area:size:ha _SITE_CODE_
+# wiki.openstreetmap.org/wiki/Relations/Proposed/Site switch to multipolygons
+# openstreetmap-carto todo +{"power_source"=>"wind", "power"=>"generator"} + wiatrak w Polsce
+#add to JOSM validator and this one http://keepright.ipax.at/report_map.php?zoom=15&lat=50.08336&lon=19.8917&layers=B0T&ch=0%2C30%2C40%2C50%2C70%2C90%2C100%2C110%2C120%2C130%2C150%2C160%2C170%2C180%2C191%2C192%2C193%2C194%2C195%2C196%2C197%2C198%2C201%2C202%2C203%2C204%2C205%2C206%2C207%2C208%2C210%2C220%2C231%2C232%2C270%2C281%2C282%2C283%2C284%2C285%2C291%2C292%2C293%2C294%2C311%2C312%2C313%2C320%2C350%2C370%2C380%2C401%2C402%2C411%2C412%2C413%2C20%2C60%2C300%2C360%2C390&show_ign=0&show_tmpign=0
+#add to JOSM validator and this one http://mapa.abakus.net.pl/raporty/
+#add to JOSM validator and this one http://tools.geofabrik.de/osmi/?view=routing&lon=19.88591&lat=50.07833&zoom=16&opacity=0.69
+#add to JOSM validator and this one https://wiki.openstreetmap.org/wiki/Quality_assurance
+#use_sidepath adding http://overpass-turbo.eu/s/khD 
+#stationary fixme fun http://overpass-turbo.eu/s/fyg 
+# https://wiki.openstreetmap.org/wiki/Key:seamark:fixme exterminate
+# bother users of unclear undocumented tags from https://github.com/simonpoole/beautified-JOSM-preset/issues/35
+# automatic edit for amenity=shop later process other from https://github.com/simonpoole/beautified-JOSM-preset/issues/35
+
+CartoCSSHelper::Configuration.set_path_to_folder_for_cache('/media/mateusz/5bfa9dfc-ed86-4d19-ac36-78df1060707c/OSM-cache')
+run_watchlist
