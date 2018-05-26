@@ -1090,12 +1090,13 @@ end
 
 def proposed_without_source
   watchlist = []
+  reason = "proposed without source"
   query = ComplexQueryBuilder.two_pass_filter_across_named_region("[highway=proposed]", "[highway=proposed]['source']", "Kraków")
-  watchlist << { list: get_list_from_arbitrary_query(query, {}, reason: "proposed without source", include_history_of_tags: true), message: "proposed without source" }
+  watchlist << { list: get_list_from_arbitrary_query(query, {}, reason: reason, include_history_of_tags: true), message: reason }
   query = ComplexQueryBuilder.two_pass_filter_across_named_region("[highway=proposed]", "[highway=proposed]['source']", "powiat legionowski")
-  watchlist << { list: get_list_from_arbitrary_query(query, {}, reason: "proposed without source", include_history_of_tags: true), message: "proposed without source" }
+  watchlist << { list: get_list_from_arbitrary_query(query, {}, reason: reason, include_history_of_tags: true), message: reason }
   query = ComplexQueryBuilder.two_pass_filter_across_named_region("[highway=proposed]", "[highway=proposed]['source']", "województwo małopolskie")
-  watchlist << { list: get_list_from_arbitrary_query(query, {}, reason: "proposed without source", include_history_of_tags: true), message: "proposed without source" }
+  watchlist << { list: get_list_from_arbitrary_query(query, {}, reason: reason, include_history_of_tags: true), message: reason }
   return watchlist
 end
 
