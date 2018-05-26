@@ -1,4 +1,16 @@
 =begin
+https://taginfo.openstreetmap.org/tags/wikipedia=en%3AMunicipalities_of_Albania
+
+#
+download from taginfo, discard highway=*, waterway, rail=*
+report offenders
+https://taginfo.openstreetmap.org/api/4/key/values?key=wikipedia&filter=all&lang=en&sortname=count&sortorder=desc&page=1&rp=21&qtype=value&format=json_pretty
+
+po maroku: (DWG pinged, search Turkey) https://www.openstreetmap.org/changeset/46304500#map=6/39.132/35.350 - retag wikidata, wikipedia en masse (if entire import is not revertable)
+
+https://www.openstreetmap.org/node/2703989478 - are there toilets here? then toilets=yes should be added https://wiki.openstreetmap.org/wiki/Key:toilets
+toilets:wheelchair
+
 disused:boundary https://taginfo.openstreetmap.org/keys/disused%3Aboundary
 disused:political_division https://taginfo.openstreetmap.org/keys/disused%3Apolitical_division
 other from https://taginfo.openstreetmap.org/keys/end_date#combinations
@@ -20,6 +32,7 @@ So it this bus stop with a shelter providing cover or not?
 http://overpass-turbo.eu/s/wT2
 
 after solving that: analyse tactile for covered=no
+floor = x -> add also level = x
 =end
 
 
@@ -157,6 +170,7 @@ out meta;
 (._;>;);
 out meta;
 
+http://overpass-turbo.eu/s/yMm - vehicle=destination in Kraków, usually (always?) wrong
 
 is an area=yes remaining from unfinished edit without obvious purpose. Is it representing something or is it an area for deletion?
 
@@ -188,7 +202,13 @@ out body;
 >;
 out skel qt;
 
+# highway=* z name=żółty szlak rowerowy
+https://github.com/osmlab/name-suggestion-index/issues/91
 
+
+dodać to info na wiki:
+Bar mleczny w nazwie z amenity=bar - scan
+Dla baru mlecznego pasuje amenity=fast_food, ewentualnie amenity=restaurant
 =end
 
 require 'json'
@@ -1390,6 +1410,7 @@ reason wrong/incorrect - please explain what is wrong.
 
 #poprawiać za pomocą "confirm website" bazowaną na add wikidata
 #błedne linki do parafii http://overpass-turbo.eu/s/rpy
+#toilets:wheelchair=yes bez toilets
 
 #(name=Żabka or name=żabka) and shop!=convenience (if generally true submit normalization to https://github.com/osmlab/name-suggestion-index/issues )
 #detect violations of nixed values in https://github.com/osmlab/name-suggestion-index/issues, consider submitting them to JOSM validator
