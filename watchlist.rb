@@ -247,43 +247,62 @@ def age_of_historical_data_allowed_in_years
   return 10
 end
 
+class MatcherForAddedTagsBySpecificUser
+  def initialize(required_tags, author_id)
+    @required_tags = required_tags
+    @author_id = author_id
+  end
+  def self.is_matching(entry)
+    json_history = get_json_history_representation(entry['type'], entry['id'])
+    changesets_that_caused_object_to_match = changesets_that_caused_tag_to_appear_in_history(json_history, @required_tags)
+    for changeset_id in changesets_that_caused_object_to_match
+      if get_full_changeset_json(changeset_id)[:author_id] == @author_id
+        puts "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}"
+        return true
+      end
+    end
+    return false
+  end
+end
+
 def popek_eliminator()
   # revert damage caused by popek069 - this user was adding guessed maxspeed without any verification whatsoever on a massive scale
   # only maxspeed values added in changesets by popek069 are deleted, only cases where popek069 was adding default maxspeed values are affected
   author_id = '6066236'
   required_tags = {'maxspeed' => '140'}
-  list_where_tag_was_added_by(author_id, required_tags)
-end
-  
-def list_where_tag_was_added_by(author_id, required_tags)
-  # TODO: build ways here, split here 
-  # suspected_ways = []
   nick = get_full_user_data(author_id)[:current_username]
-
-  puts
   puts "detect #{nick} damage"
 
   ways_for_tag_removal = []
-  section_size = 150
-  for section_index in 0..(popek_ways().length/section_size - 1)
+  section_size = 150 #170 passed, 172 crashes connection
+  for section_index in 0..(popek_ways_in_query_format().length/section_size - 1)
     query = popek_motorways_query_part(section_index * section_size, section_size)
     json_string = get_data_from_overpass(query, "#{nick} cleanup")
-    obj = JSON.parse(json_string)
-    elements = obj["elements"]
-    elements.each do |entry|
-      next if not_fully_matching_tag_set(entry["tags"], required_tags)
-      json_history = get_json_history_representation(entry['type'], entry['id'])
-      changesets_that_caused_object_to_match = changesets_that_caused_tag_to_appear_in_history(json_history, required_tags)
-      for changeset_id in changesets_that_caused_object_to_match
-        if get_full_changeset_json(changeset_id)[:author_id] == author_id
-          ways_for_tag_removal << entry['id']
-          puts "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}"
-        end
+    ways_for_tag_removal += list_where_tag_was_added_by(author_id, required_tags, json_string)
+    list_affected_objects(MatcherForAddedTagsBySpecificUser.new(required_tags, author_id), json_string)
+  end
+  puts ways_for_tag_removal
+end
+
+def list_affected_objects(matcher, osm_data_for_filtering_as_json_string)
+end
+
+def list_where_tag_was_added_by(author_id, required_tags, osm_data_for_filtering_as_json_string)
+  obj = JSON.parse(osm_data_for_filtering_as_json_string)
+  elements = obj["elements"]
+  ways_for_tag_removal = []
+  elements.each do |entry|
+    next if not_fully_matching_tag_set(entry["tags"], required_tags)
+    json_history = get_json_history_representation(entry['type'], entry['id'])
+    changesets_that_caused_object_to_match = changesets_that_caused_tag_to_appear_in_history(json_history, required_tags)
+    for changeset_id in changesets_that_caused_object_to_match
+      if get_full_changeset_json(changeset_id)[:author_id] == author_id
+        ways_for_tag_removal << entry['id']
+        puts "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}"
       end
     end
   end
-  puts ways_for_tag_removal
-  sleep 10
+  return ways_for_tag_removal
 end
 
 def watchlist_entries

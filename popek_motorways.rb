@@ -3,7 +3,7 @@ returned = "[out:json][timeout:725];
 ("
 
 for i in start..(start+count)
-  returned += popek_ways()[i]
+  returned += popek_ways_in_query_format()[i]
 end
 
 returned +=");
@@ -13,7 +13,7 @@ out meta;
 return returned
 end
 
-def popek_ways()
+def popek_ways_in_query_format()
 return "way(201259301)[highway=motorway][maxspeed=140];
 way(111542038)[highway=motorway][maxspeed=140];
 way(111542039)[highway=motorway][maxspeed=140];
