@@ -1,4 +1,9 @@
 =begin
+poprawić mojego bota i wyedytowac co już mogę
+założyć wątek na temat spamu fixme rowersa
+założyć strony opisujące edycje mojego bota
+zamówienie: https://wiki.openstreetmap.org/w/index.php?title=Talk:Key:aerodrome:type&curid=201335&diff=1613026&oldid=1612596
+
 https://taginfo.openstreetmap.org/tags/wikipedia=en%3AMunicipalities_of_Albania
 
 #
