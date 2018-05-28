@@ -107,6 +107,14 @@ mix of various fixes required:
 
 [out:xml][timeout:725][bbox:{{bbox}}];
 (
+  node["OBJECTID_height_lidar"][height]["source:height"](if:count_tags() == 3)({{bbox}});
+);
+(._;>;);
+out meta;
+
+
+[out:xml][timeout:725][bbox:{{bbox}}];
+(
   node["area"="yes"][name](if:count_tags() == 2)({{bbox}});
   way["area"="yes"][name](if:count_tags() == 2)({{bbox}});
   relation["area"="yes"][name](if:count_tags() == 2)({{bbox}});
