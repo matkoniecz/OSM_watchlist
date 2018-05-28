@@ -260,12 +260,15 @@ def age_of_historical_data_allowed_in_years
   return 10
 end
 
-class MatcherForAddedTagsBySpecificUser
+class MatcherForStilPresentTagsAddedBySpecificUser
   def initialize(required_tags, author_id)
     @required_tags = required_tags
     @author_id = author_id
   end
-  def self.is_matching(entry)
+  def is_matching(entry)
+    if not_fully_matching_tag_set(entry["tags"], @required_tags)
+      return false
+    end
     json_history = get_json_history_representation(entry['type'], entry['id'])
     changesets_that_caused_object_to_match = changesets_that_caused_tag_to_appear_in_history(json_history, @required_tags)
     for changeset_id in changesets_that_caused_object_to_match
@@ -291,31 +294,22 @@ def popek_eliminator()
   for section_index in 0..(popek_ways_in_query_format().length/section_size - 1)
     query = popek_motorways_query_part(section_index * section_size, section_size)
     json_string = get_data_from_overpass(query, "#{nick} cleanup")
-    ways_for_tag_removal += list_where_tag_was_added_by(author_id, required_tags, json_string)
-    list_affected_objects(MatcherForAddedTagsBySpecificUser.new(required_tags, author_id), json_string)
+    ways_for_tag_removal += list_affected_objects(MatcherForStilPresentTagsAddedBySpecificUser.new(required_tags, author_id), json_string)
   end
   puts ways_for_tag_removal
 end
 
 def list_affected_objects(matcher, osm_data_for_filtering_as_json_string)
-end
-
-def list_where_tag_was_added_by(author_id, required_tags, osm_data_for_filtering_as_json_string)
   obj = JSON.parse(osm_data_for_filtering_as_json_string)
   elements = obj["elements"]
-  ways_for_tag_removal = []
+  matched = []
   elements.each do |entry|
-    next if not_fully_matching_tag_set(entry["tags"], required_tags)
-    json_history = get_json_history_representation(entry['type'], entry['id'])
-    changesets_that_caused_object_to_match = changesets_that_caused_tag_to_appear_in_history(json_history, required_tags)
-    for changeset_id in changesets_that_caused_object_to_match
-      if get_full_changeset_json(changeset_id)[:author_id] == author_id
-        ways_for_tag_removal << entry['id']
-        puts "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}"
-      end
+    if matcher.is_matching(entry)
+      matched_object_url = "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}"
+      matched << matched_object_url
     end
   end
-  return ways_for_tag_removal
+  return matched
 end
 
 def watchlist_entries
