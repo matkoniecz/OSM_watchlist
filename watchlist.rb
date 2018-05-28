@@ -281,6 +281,24 @@ class MatcherForStilPresentTagsAddedBySpecificUser
   end
 end
 
+class MatcherForTagRemovalBySpecificUser
+  def initialize(required_tags, author_id)
+    @required_tags = required_tags
+    @author_id = author_id
+  end
+  def is_matching(entry)
+    json_history = get_json_history_representation(entry['type'], entry['id'])
+    changesets_that_caused_object_to_match = changesets_that_caused_tag_to_disappear_in_history(json_history, @required_tags)
+    for changeset_id in changesets_that_caused_object_to_match
+      if get_full_changeset_json(changeset_id)[:author_id] == @author_id
+        puts "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}"
+        return true
+      end
+    end
+    return false
+  end
+end
+
 def popek_eliminator()
   # revert damage caused by popek069 - this user was adding guessed maxspeed without any verification whatsoever on a massive scale
   # only maxspeed values added in changesets by popek069 are deleted, only cases where popek069 was adding default maxspeed values are affected
@@ -297,6 +315,28 @@ def popek_eliminator()
     ways_for_tag_removal += list_affected_objects(MatcherForStilPresentTagsAddedBySpecificUser.new(required_tags, author_id), json_string)
   end
   puts ways_for_tag_removal
+end
+
+def geozeisig_mechanical_edit()
+  author_id = '66391'
+  nick = get_full_user_data(author_id)[:current_username]
+  puts "analysis of changes by #{nick}"
+  required_tags = {'aerodrome' => :any_value}
+
+  query = '[date:"2017-11-01T06:55:00Z"]
+[out:json][timeout:250];
+(
+  node["aerodrome"];
+  way["aerodrome"];
+  relation["aerodrome"];
+);
+out body;
+>;
+out skel qt;'
+  affected_elements = []
+  json_string = get_data_from_overpass(query, "#{nick} cleanup")
+  ways_for_tag_removal += list_affected_objects(MatcherForTagRemovalBySpecificUser.new(required_tags, author_id), json_string)
+  puts affected_elements
 end
 
 def list_affected_objects(matcher, osm_data_for_filtering_as_json_string)
@@ -419,6 +459,7 @@ def run_watchlist
   puts "out meta;"
 
   popek_eliminator
+  geozeisig_mechanical_edit
 end
 
 def watch_beton

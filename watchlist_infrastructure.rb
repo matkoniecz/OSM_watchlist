@@ -49,6 +49,19 @@ def changesets_that_caused_tag_to_appear_in_history(json_history, required_tags)
   return appeared_in
 end
 
+def changesets_that_caused_tag_to_disappear_in_history(json_history, required_tags)
+  previous_version_was_matching = false
+  disappeared_in = []
+  for v in json_history["elements"]
+    matching = fully_matching_tag_set(v["tags"], required_tags)
+    if !matching and previous_version_was_matching
+      disappeared_in << v['changeset']
+    end
+    previous_version_was_matching = matching
+  end
+  return disappeared_in
+end
+
 def description_of_tag_appearances_in_history(type, id, required_tags)
   # show all revisions that match and previous revision is not matchhing
   # "appeared in CHANGESET_LINK, CHANGESET_LINK, CHANGESET_LINK"
