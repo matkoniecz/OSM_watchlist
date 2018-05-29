@@ -300,12 +300,7 @@ class MatcherForTagRemovalBySpecificUser
 end
 
 def geozeisig_mechanical_edit()
-  author_id = '66391'
-  nick = get_full_user_data(author_id)[:current_username]
-  puts "analysis of changes by #{nick}"
-  required_tags = {'aerodrome' => :any_value}
-
-  query = '[date:"2017-11-01T06:55:00Z"]
+  query_deleted_in_2018_up_to_29_may = '[date:"2018-01-01T04:55:00Z"]
 [out:json][timeout:250];
 (
   node["aerodrome"];
@@ -315,11 +310,36 @@ def geozeisig_mechanical_edit()
 out body;
 >;
 out skel qt;'
+  geozeisig_mechanical_edit_with_assumed_data(query_deleted_in_2018_up_to_29_may)
+
+  query_check_promoted_tag = "[out:json][timeout:250];
+// gather results
+(
+  // query part for: “aerodrome=*”
+  node['aerodrome:type'];
+  way['aerodrome:type'];
+  relation['aerodrome:type'];
+);
+// print results
+out body;
+>;
+out skel qt;"
+  geozeisig_mechanical_edit_with_assumed_data(query_check_promoted_tag)
+end
+
+def geozeisig_mechanical_edit_with_assumed_data(query_for_data_seeding)
+  author_id = '66391'
+  nick = get_full_user_data(author_id)[:current_username]
+  puts "analysis of changes by #{nick}"
+  required_tags = {'aerodrome' => :any_value}
+
   affected_elements = []
-  json_string = get_data_from_overpass(query, "#{nick} cleanup")
+  json_string = get_data_from_overpass(query_for_data_seeding, "#{nick} cleanup")
   ways_for_tag_removal += list_affected_objects(MatcherForTagRemovalBySpecificUser.new(required_tags, author_id), json_string)
   puts affected_elements
+  puts affected_elements.length
 end
+
 
 def list_affected_objects(matcher, osm_data_for_filtering_as_json_string)
   obj = JSON.parse(osm_data_for_filtering_as_json_string)
