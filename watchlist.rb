@@ -365,7 +365,7 @@ def watchlist_entries
   # adapt TODO list JOSM plugin to autoremove descriptive names
   # watchlist += watch_descriptive_names(requested_watchlist_entries - count_entries(watchlist))
   watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_spam if count_entries(watchlist) < requested_watchlist_entries
+  #watchlist += watch_spam if count_entries(watchlist) < requested_watchlist_entries #TODO - reeenable it, it was causing overpass issues
   watchlist += watch_lifecycle if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_low_priority if count_entries(watchlist) < requested_watchlist_entries
@@ -377,11 +377,11 @@ def watchlist_entries
 end
 
 def blacklist_english_phrases
-  return ['Fortune 500', 'Our clients', 'I am confident', '™', 'Family-owned',
+  return ['Fortune 500', 'Our clients', 'I am confident', 'Family-owned',
     'experienced professionals', 'best quality', 'reach us', 'we come', ' boasts ', 'outstanding',
     'our team', 'we are', 'call us', 'we have', 'we offer', ' our ',
     'our products', ' loans ',
-    'competitive price', 'We provide', 'will match any', '™']
+    'competitive price', 'We provide', 'will match any', '™', '®', '℗', '℠']
 end
 
 def blacklist_polish_phrases
@@ -401,10 +401,9 @@ def watch_spam
   blacklists = [blacklist_english_phrases, blacklist_polish_phrases, blacklist_with_false_positives]
 
   blacklists.each do |spam_indicators_phrases|
-    watchlist += objects_using_this_tag_part('description', spam_indicators_phrases, 'spam detection query based on description tag')
-    watchlist += objects_using_this_tag_part('name', spam_indicators_phrases, 'spam detection query based on description tag')
+    watchlist += objects_using_this_tag_part('description', spam_indicators_phrases, 'spam detection query based on description tag - for level0: http://overpass-turbo.eu/s/z9P')
+    watchlist += objects_using_this_tag_part('name', spam_indicators_phrases, 'spam detection query based on description tag - for level0: http://overpass-turbo.eu/s/z9P')
   end
-
   return watchlist
 end
 

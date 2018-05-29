@@ -54,6 +54,7 @@ def get_data_from_overpass(query, explanation, invalidate_old_cache = false)
   cache_not_present = false
   if CartoCSSHelper::OverpassDownloader.cache_timestamp(query) == nil
     puts "running query, cache is not present"
+    puts query
     cache_not_present = true
   end
   json_string = CartoCSSHelper::OverpassQueryGenerator.get_overpass_query_results(query, explanation, debug)
