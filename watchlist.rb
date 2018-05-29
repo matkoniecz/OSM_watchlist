@@ -13,38 +13,10 @@ report offenders
 https://taginfo.openstreetmap.org/api/4/key/values?key=wikipedia&filter=all&lang=en&sortname=count&sortorder=desc&page=1&rp=21&qtype=value&format=json_pretty
 =end
 
-=begin
-usunięcie bazy danych punktów z LIDARa, z nieznanych przyczyn wrzuconą do OSM
-
-[out:xml][timeout:725][bbox:{{bbox}}];
-(
-  node["OBJECTID_height_lidar"][height]["source:height"](if:count_tags() == 3)({{bbox}});
-);
-(._;>;);
-out meta;
-=end
 
 =begin
-po 7 maja
-amenity=fuel breaking wikipedia tag rules and copyright
-DWG pinged, search Turkey
-https://www.openstreetmap.org/changeset/46304500#map=6/39.132/35.350
-
-spam fixme rowersa
-https://forum.openstreetmap.org/viewtopic.php?id=62477
-=end
-
-=begin
-
-=end
-
-
-
 # http://resultmaps.neis-one.org/newestosmfeed.php?lon=19.91674&lat=50.11020&deg=0.15  - nowi edytujący w Krakowie
-=begin
-US tag cleaning - wait for mailing list reply - switch to relation spam cleaning https://www.openstreetmap.org/note/526072 and boundary=historic
-
-Polskoliterkowe nazwy w Polsce - ekspresowe name:pl
+#Polskoliterkowe nazwy w Polsce - ekspresowe name:pl
 
 instalujemy plugin todo w JOSMie
 
@@ -1189,114 +1161,26 @@ def watch_invalid_wikipedia
 end
 
 =begin
+po 7 maja
+amenity=fuel breaking wikipedia tag rules and copyright
+DWG pinged, search Turkey
+https://www.openstreetmap.org/changeset/46304500#map=6/39.132/35.350
 
-PROPOSED FOR DELETION ON MAILING LIST:
-'massgis:FEE_OWNER',
-'massgis:TOWN_ID',
-'massgis:OWNER_TYPE',
-'massgis:FEESYM',
-'massgis:EOEAINVOLV',
-'massgis:FY_FUNDING',
-'massgis:ATT_DATE',
-'massgis:LEV_PROT',
-'massgis:DEED_ACRES',
-'massgis:OS_DEED_BO',
-'massgis:OS_DEED_PA',
-'massgis:ASSESS_ACR',
-'massgis:SHAPE_AREA',
-'massgis:ACRES',
-'massgis:OS_ID',
-'massgis:OWNER_ABRV',
-'massgis:SOURCE_MAP',
-'massgis:ASSESS_MAP',
-'massgis:ASSESS_LOT',
-'massgis:BASE_MAP',
-
-
-What is the preferred way of chunking edits?
-Single massive edit with tens of thusands objects is not feasible for multiple reasons. What would be preferable - several edits, each changing 500 objects? Separate edit for every object? Some other changeset size?
-
-
-not present in this region
-massgis:cat
-massgis:OldMapNo
-massgis:UseCode
-massgis:StNum
-massgis:LastEdit
-massgis:NAME
-massgis:UNIT_TYPE
-massgis:UNIT_NAME
-massgis:tex
-massgis:GIS_NOTES
-massgis:UNIT_CODE
-massgis:DATE_EDIT
-massgis:PERIMETER
-massgis:NAME1
-massgis:URL
-massgis:STATE
-massgis:AGBUR
-massgis:STATE_FIPS
-massgis:FEATURE1
-massgis:DESCRIZION
-massgis:FEDLANP020
-massgis:OldName
-massgis:ADA_ACCESS
-massgis:BIKING
-massgis:COUNTY
-massgis:TO_
-massgis:ACCT_ID
-massgis:MGMT
-massgis:MGMT_ZIP
-massgis:STATUS
-massgis:NAME01
-massgis:SHAPE_Leng
-massgis:INTERPRETI
-massgis:EQUESTRIAN
-massgis:METHOD
-massgis:MGMT_WEBSI
-massgis:ATV
-massgis:RORT
-massgis:HIKING
-massgis:RAILINE
-massgis:SURFACE
-massgis:UPDATE_
-massgis:MGMT_ADDR
-massgis:MGMT_CITY
-massgis:CROSS_COUN
-massgis:FOUR_WHEEL
-massgis:MGMT_CON_1
-massgis:MGMT_CON_2
-massgis:MGMT_STATE
-massgis:OFF_ROAD_M
-massgis:SNOWMOBILE
-massgis:FROM_
-
-
-
-
-
-Hey all,
-
-I agree with Jason's lists. DEP site numbers are posted physically so those
-should definitely stay (in some form or another). Ref number makes sense in
-case anyone wants to trace back for some reason. The rest has little or no
-value to keep in OSM.
-
-Nick
-
-https://taginfo.openstreetmap.org/tags/boundary=historic#map
+spam fixme rowersa
+https://forum.openstreetmap.org/viewtopic.php?id=62477
 =end
 
-# Talk-us-massachusetts automated edits and massgis tags mail
-
 =begin
-# https://www.openstreetmap.org/way/29690455 z https://www.openstreetmap.org/changeset/735042#map=9/42.0666/-70.8074
+po 7 maja
+usunięcie bazy danych punktów z LIDARa, z nieznanych przyczyn wrzuconą do OSM, utrudniającą normalne edytowanie
 
-#useless tags like facility_type
-#https://www.openstreetmap.org/node/2303161011/history
-
-#again uselss tag:
-#LandPro08:LC
+[out:xml][timeout:725][bbox:{{bbox}}];
+(
+  node["OBJECTID_height_lidar"][height]["source:height"](if:count_tags() == 3)({{bbox}});
+);
+(._;>;);
+out meta;
+=end
 
 # name without name:pl (dla map które pokazują name:pl, potem name:en, potem name:de, potem name - a chcemy by w polsce dalej pokazywały pl)
 # comparative advantage
