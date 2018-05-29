@@ -784,8 +784,8 @@ def suspicious_name_watchlist_entry(name:, language_code_of_name:, description: 
   return returned
 end
 
-def objects_using_this_tag_part(tag, partial_match_wanted_list, description)
-  return [{ list: list_of_objects_with_this_tag_part(tag, partial_match_wanted_list), message: description }]
+def objects_using_this_tag_part(tag, partial_match_wanted_list, description, notes_block_report=true)
+  return [{ list: list_of_objects_with_this_tag_part(tag, partial_match_wanted_list), message: description, notes_block_report: true }]
 end
 
 def watch_descriptive_names(requested_entries)

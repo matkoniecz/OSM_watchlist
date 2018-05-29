@@ -161,7 +161,7 @@ def build_string_describing_tag_appearance_from_changeset_list(changesets_that_c
   return description
 end
 
-def json_string_to_list_of_actionable_elements(json_string, required_tags, include_history_of_tags, reason)
+def json_string_to_list_of_actionable_elements(json_string, required_tags, include_history_of_tags, reason, notes_block_report=true)
   obj = JSON.parse(json_string)
 
   list = []
@@ -186,7 +186,7 @@ def json_string_to_list_of_actionable_elements(json_string, required_tags, inclu
     if is_location_undefined(lat, lon, entry)
       next
     end
-    if not currently_present_note_at(lat, lon, reason + " " + url)
+    if notes_block_report == false or not currently_present_note_at(lat, lon, reason + " " + url)
       history = nil
       if include_history_of_tags
         next if is_element_under_active_discussion(entry['type'], entry['id'], required_tags)
@@ -203,17 +203,17 @@ def json_string_to_list_of_actionable_elements(json_string, required_tags, inclu
   return list
 end
 
-def get_list_from_arbitrary_query(query, required_tags = {}, include_history_of_tags: false, reason: "")
+def get_list_from_arbitrary_query(query, required_tags = {}, include_history_of_tags: false, reason: "", notes_block_report: true)
   begin
     reason = "#{required_tags}" if reason == ""
     explanation = "for watchlist <#{reason}>"
     invalidate_old_cache = false
     json_string = get_data_from_overpass(query, explanation, invalidate_old_cache)
-    list = json_string_to_list_of_actionable_elements(json_string, required_tags, include_history_of_tags, reason)
+    list = json_string_to_list_of_actionable_elements(json_string, required_tags, include_history_of_tags, reason, notes_block_report)
     if list.length > 0
       invalidate_old_cache = true
       json_string = get_data_from_overpass(query, explanation, invalidate_old_cache)
-      list = json_string_to_list_of_actionable_elements(json_string, required_tags, include_history_of_tags, reason)
+      list = json_string_to_list_of_actionable_elements(json_string, required_tags, include_history_of_tags, reason, notes_block_report)
     end
     return list
   rescue NoMethodError => e

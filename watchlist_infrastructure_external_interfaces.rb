@@ -134,7 +134,7 @@ out skel qt;'
   return query
 end
 
-def list_of_objects_with_this_tag_part(tag, partial_match_wanted_list)
+def list_of_objects_with_this_tag_part(tag, partial_match_wanted_list, notes_block_report: true)
   watchlist = []
   query = '[out:json][timeout:250];
   (' + "\n"
@@ -147,5 +147,5 @@ def list_of_objects_with_this_tag_part(tag, partial_match_wanted_list)
   out body;
   >;
   out skel qt;'
-  return get_list_from_arbitrary_query(query, reason: "partial match of <#{tag}> to <#{partial_match_wanted_list}> ")
+  return get_list_from_arbitrary_query(query, reason: "partial match of <#{tag}> to <#{partial_match_wanted_list}> ", notes_block_report: false)
 end
