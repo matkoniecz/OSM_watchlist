@@ -1,43 +1,41 @@
 =begin
 poprawić mojego bota i wyedytowac co już mogę
-założyć wątek na temat spamu fixme rowersa
 założyć strony opisujące edycje mojego bota
-zamówienie: https://wiki.openstreetmap.org/w/index.php?title=Talk:Key:aerodrome:type&curid=201335&diff=1613026&oldid=1612596
+
+geosesissnsns zamówienie
+trwa przetwarzanie
+https://wiki.openstreetmap.org/w/index.php?title=Talk:Key:aerodrome:type&curid=201335&diff=1613026&oldid=1612596
 
 https://taginfo.openstreetmap.org/tags/wikipedia=en%3AMunicipalities_of_Albania
 
-#
 download from taginfo, discard highway=*, waterway, rail=*
 report offenders
 https://taginfo.openstreetmap.org/api/4/key/values?key=wikipedia&filter=all&lang=en&sortname=count&sortorder=desc&page=1&rp=21&qtype=value&format=json_pretty
+=end
 
-po maroku: (DWG pinged, search Turkey) https://www.openstreetmap.org/changeset/46304500#map=6/39.132/35.350 - retag wikidata, wikipedia en masse (if entire import is not revertable)
+=begin
+usunięcie bazy danych punktów z LIDARa, z nieznanych przyczyn wrzuconą do OSM
 
-https://www.openstreetmap.org/node/2703989478 - are there toilets here? then toilets=yes should be added https://wiki.openstreetmap.org/wiki/Key:toilets
-toilets:wheelchair
+[out:xml][timeout:725][bbox:{{bbox}}];
+(
+  node["OBJECTID_height_lidar"][height]["source:height"](if:count_tags() == 3)({{bbox}});
+);
+(._;>;);
+out meta;
+=end
 
-disused:boundary https://taginfo.openstreetmap.org/keys/disused%3Aboundary
-disused:political_division https://taginfo.openstreetmap.org/keys/disused%3Apolitical_division
-other from https://taginfo.openstreetmap.org/keys/end_date#combinations
+=begin
+po 7 maja
+amenity=fuel breaking wikipedia tag rules and copyright
+DWG pinged, search Turkey
+https://www.openstreetmap.org/changeset/46304500#map=6/39.132/35.350
 
-https://wiki.openstreetmap.org/wiki/Tag:amenity%3Dwater
-amenity=water? What is this?
+spam fixme rowersa
+https://forum.openstreetmap.org/viewtopic.php?id=62477
+=end
 
-If it is place with drinking water amenity=drinking_water is typically used.
+=begin
 
-man_made=water_tap may be added if it is a water tap.
-
-man_made=water_tap with drinking_water=no is typically used to indicate tap without drinking water
-
-
-
-covered=no, shelter=yes - it seems contradictory
-So it this bus stop with a shelter providing cover or not?
-
-http://overpass-turbo.eu/s/wT2
-
-after solving that: analyse tactile for covered=no
-floor = x -> add also level = x
 =end
 
 
@@ -47,9 +45,6 @@ floor = x -> add also level = x
 US tag cleaning - wait for mailing list reply - switch to relation spam cleaning https://www.openstreetmap.org/note/526072 and boundary=historic
 
 Polskoliterkowe nazwy w Polsce - ekspresowe name:pl
-https://osm.wikidata.link/candidates/relation/224462
-https://osm.wikidata.link/candidates/relation/130919
-https://osm.wikidata.link/candidates/relation/2597485
 
 instalujemy plugin todo w JOSMie
 
@@ -105,12 +100,7 @@ out meta;
 
 mix of various fixes required:
 
-[out:xml][timeout:725][bbox:{{bbox}}];
-(
-  node["OBJECTID_height_lidar"][height]["source:height"](if:count_tags() == 3)({{bbox}});
-);
-(._;>;);
-out meta;
+
 
 
 [out:xml][timeout:725][bbox:{{bbox}}];
@@ -1465,6 +1455,34 @@ reason wrong/incorrect - please explain what is wrong.
 #(punkt widokowy) w nazwie
 
 =begin
+https://www.openstreetmap.org/node/2703989478 - are there toilets here? then toilets=yes should be added https://wiki.openstreetmap.org/wiki/Key:toilets
+toilets:wheelchair
+
+disused:boundary https://taginfo.openstreetmap.org/keys/disused%3Aboundary
+disused:political_division https://taginfo.openstreetmap.org/keys/disused%3Apolitical_division
+other from https://taginfo.openstreetmap.org/keys/end_date#combinations
+
+https://wiki.openstreetmap.org/wiki/Tag:amenity%3Dwater
+amenity=water? What is this?
+
+If it is place with drinking water amenity=drinking_water is typically used.
+
+man_made=water_tap may be added if it is a water tap.
+
+man_made=water_tap with drinking_water=no is typically used to indicate tap without drinking water
+
+
+
+covered=no, shelter=yes - it seems contradictory
+So it this bus stop with a shelter providing cover or not?
+
+http://overpass-turbo.eu/s/wT2
+
+after solving that: analyse tactile for covered=no
+floor = x -> add also level = x
+=end
+
+=begin
   watchlist += detect_tags_in_region(lat, lon, 5, { 'payment:bitcoin' => {operation: :not_equal_to, value: 'no'} })
   watchlist += detect_tags_in_region(lat, lon, 5, { 'is_in:country' => :any_value })
 
@@ -1473,11 +1491,9 @@ reason wrong/incorrect - please explain what is wrong.
 =end
 
 
-
 # https://www.openstreetmap.org/changeset/49785062#map=8/46.945/18.215
 
-#poprawiać za pomocą "confirm website" bazowaną na add wikidata
-#błedne linki do parafii http://overpass-turbo.eu/s/rpy
+#błędne linki do parafii http://overpass-turbo.eu/s/rpy
 #toilets:wheelchair=yes bez toilets
 
 #(name=Żabka or name=żabka) and shop!=convenience (if generally true submit normalization to https://github.com/osmlab/name-suggestion-index/issues )
@@ -1522,6 +1538,7 @@ reason wrong/incorrect - please explain what is wrong.
 # https://wiki.openstreetmap.org/wiki/Key:seamark:fixme exterminate
 # bother users of unclear undocumented tags from https://github.com/simonpoole/beautified-JOSM-preset/issues/35
 # automatic edit for amenity=shop later process other from https://github.com/simonpoole/beautified-JOSM-preset/issues/35
+
 
 CartoCSSHelper::Configuration.set_path_to_folder_for_cache('/media/mateusz/5bfa9dfc-ed86-4d19-ac36-78df1060707c/OSM-cache')
 run_watchlist
