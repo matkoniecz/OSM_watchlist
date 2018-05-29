@@ -253,7 +253,7 @@ class MatcherForTagRemovalBySpecificUser
     changesets_that_caused_object_to_match = changesets_that_caused_tag_to_disappear_in_history(json_history, @required_tags)
     for changeset_id in changesets_that_caused_object_to_match
       if get_full_changeset_json(changeset_id)[:author_id] == @author_id
-        puts "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']}"
+        puts "https://www.openstreetmap.org/#{entry['type']}/#{entry['id']} removed in https://www.openstreetmap.org/changeset/#{changeset_id}"
         return true
       end
     end
@@ -270,7 +270,6 @@ def geozeisig_mechanical_edit()
   relation["aerodrome"];
 );
 out body;
->;
 out skel qt;'
   geozeisig_mechanical_edit_with_assumed_data(query_deleted_in_2018_up_to_29_may)
 
@@ -284,7 +283,6 @@ out skel qt;'
 );
 // print results
 out body;
->;
 out skel qt;"
   geozeisig_mechanical_edit_with_assumed_data(query_check_promoted_tag)
 end
@@ -295,9 +293,8 @@ def geozeisig_mechanical_edit_with_assumed_data(query_for_data_seeding)
   puts "analysis of changes by #{nick}"
   required_tags = {'aerodrome' => :any_value}
 
-  affected_elements = []
   json_string = get_data_from_overpass(query_for_data_seeding, "#{nick} cleanup")
-  ways_for_tag_removal += list_affected_objects(MatcherForTagRemovalBySpecificUser.new(required_tags, author_id), json_string)
+  affected_elements = list_affected_objects(MatcherForTagRemovalBySpecificUser.new(required_tags, author_id), json_string)
   puts affected_elements
   puts affected_elements.length
 end
