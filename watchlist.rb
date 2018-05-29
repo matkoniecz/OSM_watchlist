@@ -545,7 +545,7 @@ end
 def watch_lifecycle
   watchlist = []
   #after fixing revisit https://github.com/openstreetmap/iD/issues/4501
-  message = "is this object demolished or not? If demolished, it should be deleted (if stil present at least on some aerial images it should be tagged in a better way - for example object with note='demolished on 2017-10' ), if not demolished then it is wrong to tag it as "
+  message = "is this object demolished or not? If demolished, it should be deleted (if still present at least on some aerial images it should be tagged in a better way - for example object with note='demolished on 2017-10' ), if not demolished then it is wrong to tag it as "
   watchlist << { list: get_list({ 'demolished' => 'yes' }), message: message + "demolished=yes"}
   #more at https://taginfo.openstreetmap.org/search?q=demolished%3Dyes
   return watchlist
