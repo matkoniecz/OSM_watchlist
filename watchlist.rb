@@ -1,10 +1,5 @@
 =begin
 poprawić mojego bota i wyedytowac co już mogę
-założyć strony opisujące edycje mojego bota
-
-geosesissnsns zamówienie
-trwa przetwarzanie
-https://wiki.openstreetmap.org/w/index.php?title=Talk:Key:aerodrome:type&curid=201335&diff=1613026&oldid=1612596
 
 https://taginfo.openstreetmap.org/tags/wikipedia=en%3AMunicipalities_of_Albania
 
@@ -418,7 +413,7 @@ def run_watchlist
   puts "(._;>;);"
   puts "out meta;"
 
-  geozeisig_mechanical_edit
+  #geozeisig_mechanical_edit
 end
 
 def watch_beton
@@ -1419,7 +1414,7 @@ floor = x -> add also level = x
 # https://wiki.openstreetmap.org/wiki/Key:seamark:fixme exterminate
 # bother users of unclear undocumented tags from https://github.com/simonpoole/beautified-JOSM-preset/issues/35
 # automatic edit for amenity=shop later process other from https://github.com/simonpoole/beautified-JOSM-preset/issues/35
-
+# visible=false cleaner - https://www.openstreetmap.org/changeset/40133120#map=9/42.2244/25.2403&layers=N
 
 CartoCSSHelper::Configuration.set_path_to_folder_for_cache('/media/mateusz/5bfa9dfc-ed86-4d19-ac36-78df1060707c/OSM-cache')
 run_watchlist
