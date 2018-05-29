@@ -299,24 +299,6 @@ class MatcherForTagRemovalBySpecificUser
   end
 end
 
-def popek_eliminator()
-  # revert damage caused by popek069 - this user was adding guessed maxspeed without any verification whatsoever on a massive scale
-  # only maxspeed values added in changesets by popek069 are deleted, only cases where popek069 was adding default maxspeed values are affected
-  author_id = '6066236'
-  required_tags = {'maxspeed' => '140'}
-  nick = get_full_user_data(author_id)[:current_username]
-  puts "detect #{nick} damage"
-
-  ways_for_tag_removal = []
-  section_size = 150 #170 passed, 172 crashes connection
-  for section_index in 0..(popek_ways_in_query_format().length/section_size - 1)
-    query = popek_motorways_query_part(section_index * section_size, section_size)
-    json_string = get_data_from_overpass(query, "#{nick} cleanup")
-    ways_for_tag_removal += list_affected_objects(MatcherForStilPresentTagsAddedBySpecificUser.new(required_tags, author_id), json_string)
-  end
-  puts ways_for_tag_removal
-end
-
 def geozeisig_mechanical_edit()
   author_id = '66391'
   nick = get_full_user_data(author_id)[:current_username]
@@ -458,7 +440,6 @@ def run_watchlist
   puts "(._;>;);"
   puts "out meta;"
 
-  popek_eliminator
   geozeisig_mechanical_edit
 end
 
