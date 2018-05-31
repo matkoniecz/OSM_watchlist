@@ -927,17 +927,17 @@ def watch_valid_tags_unexpected_in_krakow
 
   watchlist += detect_tags_in_region(lat, lon, 5, { 'fixme' => :any_value }, 'fixmes')
 
-  watchlist = watchlist + watch_for_tags_not_present_in_krakow
-  watchlist = watchlist + watch_for_disliked_tags
-  watchlist = watchlist + watch_for_useless_unknown
-  watchlist = watchlist + watch_trolltags_in_krakow
-  watchlist = watchlist + watch_oneway_in_krakow
-  watchlist = watchlist + watch_track_misuse_in_krakow
-  watchlist = watchlist + watch_is_in_in_krakow
+  watchlist = watchlist + watch_for_tags_not_present_in_krakow(lat, lon)
+  watchlist = watchlist + watch_for_disliked_tags(lat, lon)
+  watchlist = watchlist + watch_for_useless_unknown(lat, lon)
+  watchlist = watchlist + watch_trolltags_in_krakow(lat, lon)
+  watchlist = watchlist + watch_oneway_in_krakow(lat, lon)
+  watchlist = watchlist + watch_track_misuse_in_krakow(lat, lon)
+  watchlist = watchlist + watch_is_in_in_krakow(lat, lon)
   return watchlist
 end
 
-def watch_for_tags_not_present_in_krakow
+def watch_for_tags_not_present_in_krakow(lat, lon)
   watchlist = []
   #TODO: exclude volcano:status   extinct
   #range_in_km = 300
@@ -952,7 +952,7 @@ def watch_for_tags_not_present_in_krakow
   return watchlist
 end
 
-def watch_for_disliked_tags
+def watch_for_disliked_tags(lat, lon)
   watchlist = []
 
   # historic boundaries
@@ -973,7 +973,7 @@ def watch_for_disliked_tags
   return watchlist
 end
 
-def watch_for_useless_unknown
+def watch_for_useless_unknown(lat, lon)
   watchlist = []
   watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:disabled' => 'unknown' })
   watchlist += detect_tags_in_region(lat, lon, 1500, { 'capacity:parent' => 'unknown' })
@@ -981,7 +981,7 @@ def watch_for_useless_unknown
   return watchlist
 end
 
-def watch_trolltags_in_krakow
+def watch_trolltags_in_krakow(lat, lon)
   watchlist = []
   #after fixing revisit https://github.com/openstreetmap/iD/issues/4501
   not_trolltag_filters = [
@@ -997,7 +997,7 @@ def watch_trolltags_in_krakow
   return watchlist
 end
 
-def watch_oneway_in_krakow
+def watch_oneway_in_krakow(lat, lon)
   watchlist = []
   valid_oneway_values = ['yes', 'no']
   filter = [['oneway', :any_value]]
@@ -1008,7 +1008,7 @@ def watch_oneway_in_krakow
   return watchlist
 end
 
-def watch_track_misuse_in_krakow
+def watch_track_misuse_in_krakow(lat, lon)
   watchlist = []
   message = 'highway=track to droga do obsługi pola/lasu, stan drogi oznacza się przy pomocy tagów smoothness i surface'
   proper_track_names = ['Chodnik Malczewskiego', 'Astronomów', 'Tuchowska',
@@ -1024,7 +1024,7 @@ def watch_track_misuse_in_krakow
   return watchlist
 end
 
-def watch_is_in_in_krakow
+def watch_is_in_in_krakow(lat, lon)
   watchlist = []
   watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:country' => :any_value })
   watchlist += detect_tags_in_region(lat, lon, 15, { 'is_in:county' => :any_value })
