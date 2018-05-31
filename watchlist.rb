@@ -320,7 +320,7 @@ def watchlist_entries
   # adapt TODO list JOSM plugin to autoremove descriptive names
   # watchlist += watch_descriptive_names(requested_watchlist_entries - count_entries(watchlist))
   watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_watchlist_entries
-  #watchlist += watch_spam if count_entries(watchlist) < requested_watchlist_entries #TODO - reeenable it, it was causing overpass issues
+  watchlist += watch_spam if count_entries(watchlist) < requested_watchlist_entries #TODO - reeenable it, it was causing overpass issues
   watchlist += watch_lifecycle if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_low_priority if count_entries(watchlist) < requested_watchlist_entries
