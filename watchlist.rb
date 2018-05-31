@@ -283,6 +283,16 @@ out skel qt;"
   geozeisig_mechanical_edit_with_assumed_data(query_check_promoted_tag)
 end
 
+def verify_useless_fixme()
+  query_postcode_fixme_nodes = "[out:json][timeout:250];
+(
+  node['fixme'='Popraw kod pocztowy'];
+);
+out body;
+out skel qt;"
+  geozeisig_mechanical_edit_with_assumed_data(query_postcode_fixme_nodes)
+end
+
 def geozeisig_mechanical_edit_with_assumed_data(query_for_data_seeding)
   author_id = '66391'
   nick = get_full_user_data(author_id)[:current_username]
@@ -417,6 +427,7 @@ def run_watchlist
   puts "out meta;"
 
   #geozeisig_mechanical_edit
+  verify_useless_fixme
 end
 
 def watch_beton
