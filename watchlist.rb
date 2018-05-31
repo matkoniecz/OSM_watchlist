@@ -1,6 +1,8 @@
 =begin
 poprawić mojego bota i wyedytowac co już mogę
 
+https://forum.openstreetmap.org/viewtopic.php?id=62477 fixme="Popraw kod pocztowy" z punktów
+
 https://taginfo.openstreetmap.org/tags/wikipedia=en%3AMunicipalities_of_Albania
 
 download from taginfo, discard highway=*, waterway, rail=*
@@ -179,6 +181,8 @@ https://github.com/osmlab/name-suggestion-index/issues/91
 dodać to info na wiki:
 Bar mleczny w nazwie z amenity=bar - scan
 Dla baru mlecznego pasuje amenity=fast_food, ewentualnie amenity=restaurant
+
+https://github.com/westnordost/StreetComplete/pull/1092#issuecomment-393595096
 =end
 
 require 'json'
@@ -269,14 +273,11 @@ out skel qt;'
   geozeisig_mechanical_edit_with_assumed_data(query_deleted_in_2018_up_to_29_may)
 
   query_check_promoted_tag = "[out:json][timeout:250];
-// gather results
 (
-  // query part for: “aerodrome=*”
   node['aerodrome:type'];
   way['aerodrome:type'];
   relation['aerodrome:type'];
 );
-// print results
 out body;
 out skel qt;"
   geozeisig_mechanical_edit_with_assumed_data(query_check_promoted_tag)
@@ -1089,7 +1090,6 @@ end
 def watch_is_in
   watchlist = []
   query = ComplexQueryBuilder.filter_across_named_region('[is_in=Rybnik]', 'Rybnik')
-  puts query
   watchlist << { list: get_list_from_arbitrary_query(query, {}, reason: "useless is_in=Rybnik", include_history_of_tags: true), message: "useless is_in=Rybnik" }
   return watchlist
 end
@@ -1415,6 +1415,7 @@ floor = x -> add also level = x
 # bother users of unclear undocumented tags from https://github.com/simonpoole/beautified-JOSM-preset/issues/35
 # automatic edit for amenity=shop later process other from https://github.com/simonpoole/beautified-JOSM-preset/issues/35
 # visible=false cleaner - https://www.openstreetmap.org/changeset/40133120#map=9/42.2244/25.2403&layers=N
-
+# https://wiki.openstreetmap.org/wiki/Tag:motorcycle_friendly%3Dcustomary
+# https://wiki.openstreetmap.org/w/index.php?title=Talk:Good_practice&diff=1610412&oldid=1610363
 CartoCSSHelper::Configuration.set_path_to_folder_for_cache('/media/mateusz/5bfa9dfc-ed86-4d19-ac36-78df1060707c/OSM-cache')
 run_watchlist
