@@ -314,11 +314,12 @@ def watchlist_entries
   watchlist += watch_is_in if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_other if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_invalid_wikipedia if count_entries(watchlist) < requested_watchlist_entries
-  if !local_notes_present
-    watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_watchlist_entries
+  if local_notes_present
+    puts "remember about processing local notes!"
   end
+  watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_watchlist_entries
   # adapt TODO list JOSM plugin to autoremove descriptive names
-  # watchlist += watch_descriptive_names(requested_watchlist_entries - count_entries(watchlist))
+  watchlist += watch_descriptive_names(requested_watchlist_entries - count_entries(watchlist))
   watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_spam if count_entries(watchlist) < requested_watchlist_entries #TODO - reeenable it, it was causing overpass issues
   watchlist += watch_lifecycle if count_entries(watchlist) < requested_watchlist_entries
