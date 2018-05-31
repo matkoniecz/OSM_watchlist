@@ -95,6 +95,9 @@ def currently_present_note_at(lat, lon, reason)
   # in case of note present it accepts cache
   # in case of missing note and cache that is not current it checks to be sure
   range = 0.05
+  if (lat-50).abs < 0.5 && (lon-20).abs < 0.5
+    range = 0.001
+  end
   fresh = CartoCSSHelper::NotesDownloader.cache_timestamp(lat, lon, range) == nil
   notes = CartoCSSHelper::NotesDownloader.run_note_query(lat, lon, range).strip
   puts "note download (cache was not present) (note check of #{lat}, #{lon}) for #{reason}" if fresh
