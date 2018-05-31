@@ -332,6 +332,7 @@ def watchlist_entries
 end
 
 def blacklist_english_phrases
+  #TODO - for more see shop=car with descriptions or any long descriptions (so long that got cut-off need fixing anyway)
   return ['Fortune 500', 'Our clients', 'I am confident', 'Family-owned',
     'experienced professionals', 'best quality', 'reach us', 'we come', ' boasts ', 'outstanding',
     'our team', 'we are', 'call us', 'we have', 'we offer', ' our ',
