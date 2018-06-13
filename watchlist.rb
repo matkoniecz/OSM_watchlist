@@ -1,18 +1,98 @@
 =begin
-poprawić mojego bota i wyedytowac co już mogę
+https://wiki.openstreetmap.org/wiki/Default_speed_limits
+
+quest for missing addr:street https://github.com/westnordost/StreetComplete/issues/213
+
+https://www.openstreetmap.org/changeset/59363976 removal ready
+
+next idea: http://overpass-turbo.eu/s/zvd
+
+
+
+
+
+https://www.openstreetmap.org/changeset/34413443
+
+
+
+
+-------
+    While iD design may exclude flooding user with warnings - why its rendering suggests that for example [building=yes; demolished=yes] is a good idea?
+
+I already told you why here:  https://github.com/openstreetmap/iD/issues/4501#issuecomment-393726776
+
+Any feature with any kind of ephemeral tag gets drawn with dashes.
+
+iD also have a special rendering for old style multipolygons, so people can clean them up if they want to. Rendering something with dashes doesn’t mean we are encouraging people to tag a certain way - it just means “hey mapper, pay attention to this thing, there is something interesting about it”.
+
+Please start a separate discussion thread if you want to discuss lifecycle tagging. 
+
+
+-----
+> OK, so we should probably have a conversation about how a tag like this can continue to exist for years
+
+
+Part of the issue is that currently only JOSM considers encouraging users to not use completely
+broken tags as something important.
+
+
+While iD design may exclude flooding user with warnings -
+ why its rendering suggests that for example [building=yes; demolished=yes] is a good idea?
+
+
+
+Current rendering suggests to editors that it is great idea to tag this way - see
+https://upload.wikimedia.org/wikipedia/commons/5/51/Special_rendering_for_demolished%3Dyes_in_iD_editor_of_OSM_data.png <https://upload.wikimedia.org/wikipedia/commons/5/51/Special_rendering_for_demolished%3Dyes_in_iD_editor_of_OSM_data.png>
+
+
+
+I think that editors needs to take responsibility for the tags encouraged not only
+by the presets but also by the map style and automatically generated suggestions.
+
+Removing rendering suggesting that this tag is a proper way to tag that was
+refused in https://github.com/openstreetmap/iD/issues/4501
+
+And there is a direct claim that removing this support for demolished=yes is not helpful
+("Removing demolished from that array is not going to make iD better.").
+
+It was even closed as a special wontfix-ISATIDL (popup after hovering on this label defines
+
+it as "I saw a thing I don't like (but is valid in OpenStreetMap)") and closed to comments as
+
+a bonus.
+
+--------
+
+highway=pedestrian definition na wiki
+
+https://wiki.openstreetmap.org/wiki/OpenCycleMap - report bug
 
 https://forum.openstreetmap.org/viewtopic.php?id=62477 fixme="Popraw kod pocztowy" z punktów
 
 https://taginfo.openstreetmap.org/tags/wikipedia=en%3AMunicipalities_of_Albania
 
+poprawić mojego bota i wyedytowac co już mogę (obsługa przekierowań następnym krokiem - pewnie mode "edytuj za potwierdzeniem" jest potrzebny)
+
+https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account
+
 download from taginfo, discard highway=*, waterway, rail=*
 report offenders
 https://taginfo.openstreetmap.org/api/4/key/values?key=wikipedia&filter=all&lang=en&sortname=count&sortorder=desc&page=1&rp=21&qtype=value&format=json_pretty
+
+(historical) post offices - easy to check with Bing
+
+
+Block deprecated unused tag values fetched from wiki
+https://github.com/openstreetmap/iD/issues/4508
+"The OSM community needs to take responsibility for the tags (...) if sport=football is indeed deprecated, then somebody should make a Maproulette challenge or something to clean them up. iD will stop suggesting the tag when it is no longer in widespread use."
+
+    Since sport=gaelic_football has a wiki page, it gets returned.
+
+So if gaelic_football goes down to zero uses, it will still be returned because it has a wiki page? Even if the wiki page is only there to tell people the tag is deprecated - probably like the rest in this category: 
 =end
 
 
 =begin
-# http://resultmaps.neis-one.org/newestosmfeed.php?lon=19.91674&lat=50.11020&deg=0.15  - nowi edytujący w Krakowie
 #Polskoliterkowe nazwy w Polsce - ekspresowe name:pl
 
 instalujemy plugin todo w JOSMie
@@ -27,6 +107,7 @@ pobieramy automatycznie to co blisko
 =end
 
 =begin
+https://www.openstreetmap.org/changeset/59434668
 
 delete historic data. It is unlikely to be added to OSM by mistake so it is not worth keeping as protection against invalid edits. Also, this historic data should never be added to OSM - OSM is not place to map what existed in past
 
@@ -41,7 +122,7 @@ Provide autofix to remove completely useless area=yes (useless both as a tag and
 
 There is a repeated minor tagging issue - multipolygons with area=yes at inner ways that are not tagged with other tags. Such area=yes ag is utterly useless.
 
-Unlike standalone ways without tags other tahn area=yes this areas are not indicating unfinished edit, in my experience (after processing hundrets cases of such ways) are not useful as indicators of further problems, and may be safely removed automatically.
+Unlike standalone ways without tags other than area=yes this areas are not indicating unfinished edit, in my experience (after processing hundrets cases of such ways) are not useful as indicators of further problems, and may be safely removed automatically.
 
 - it would allow to split "missing tag - incomplete object: only area" warning into two categories - one requiring detailed investigation and one that may be quickly processed
 - in this case this tag is utterly useless and may eb safely removed
@@ -184,6 +265,298 @@ Dla baru mlecznego pasuje amenity=fast_food, ewentualnie amenity=restaurant
 
 https://github.com/westnordost/StreetComplete/pull/1092#issuecomment-393595096
 =end
+# poprawić notki w terenie - potem zwiększyć zasięg w watch_valid_tags_unexpected_in_krakow
+
+=begin
+akwtyne
+spam fixme rowersa
+https://forum.openstreetmap.org/viewtopic.php?id=62477
+=end
+
+=begin
+po 14 maja
+usunięcie punktów o wysokości z przetworzonej bazy danych punktów z LIDARa, utrudniającą normalne edytowanie, która w tej formie nie powinna być wrzucona
+
+[out:xml][timeout:725][date:"2018-01-12T06:55:00Z"];
+(
+  node["OBJECTID_height_lidar"]["height"]["source:height"](if:count_tags() == 3);
+);
+(._;>;);
+out meta;
+=end
+
+
+# name without name:pl (dla map które pokazują name:pl, potem name:en, potem name:de, potem name - a chcemy by w polsce dalej pokazywały pl)
+# comparative advantage
+# mass edit
+
+# http://www.openstreetmap.org/changeset/55169697
+# https://taginfo.openstreetmap.org/tags/construction=yes#combinations
+# noname=no
+# mass scale damaging automatic edit - see http://www.openstreetmap.org/user/Khalil%20Laleh/history#map=6/32.898/52.976
+=begin
+/*
+This has been generated by the overpass-turbo wizard.
+The original search was:
+“lnaduse!=industrial and industrial=* and building!=* in Poland”
+*/
+[out:json][timeout:625];
+// fetch area “Poland” to search in
+{{geocodeArea:Poland}}->.searchArea;
+// gather results
+(
+  // query part for: “lnaduse!=industrial and industrial=* and building!=*”
+  node["lnaduse"!="industrial"]["industrial"]["building"!~".*"](area.searchArea);
+  way["lnaduse"!="industrial"]["industrial"]["building"!~".*"](area.searchArea);
+  relation["lnaduse"!="industrial"]["industrial"]["building"!~".*"](area.searchArea);
+);
+// print results
+out body;
+>;
+out skel qt; 
+=end
+
+=begin
+po 1 lipca
+amenity=fuel breaking wikipedia tag rules and copyright
+DWG pinged, search Turkey
+https://www.openstreetmap.org/changeset/46304500#map=6/39.132/35.350
+=end
+
+=begin
+po 1 lipca
+# visible=false cleaner - https://www.openstreetmap.org/changeset/40133120#map=9/42.2244/25.2403&layers=N
+=end
+
+=begin
+w 2019
+http://overpass-turbo.eu/s/zt1
+int_name=Bicycle parking
+Name=St.miejskie
+https://www.openstreetmap.org/changeset/22664118#map=19/51.11001/17.03171
+=end
+
+
+=begin
+https://www.openstreetmap.org/changeset/57918111#map=17/33.09098/-117.20817
+
+
+# see comments in http://www.openstreetmap.org/changeset/43401704
+
+Lighthouses with missing name, but with seamark:name - http://overpass-turbo.eu/s/u05 (it is likely that name tag is missing)
+
+See http://overpass-turbo.eu/s/u0C listing light_minor objects with seamark:light:range > 10.
+
+Is there really a major navigational light here? I see nothing on aerial images.
+'seamark:light:1:range'=* and man_made != lighthouse and 'seamark:type' = light_major
+seamark:type!=light_minor and seamark:type!='beacon_special_purpose' and seamark:type!=platform and 'seamark:type'!=beacon_lateral
+=end
+
+# http://www.openstreetmap.org/changeset/31009200#map=15/43.8895/-0.5003 fix remaining - see http://overpass-turbo.eu/s/uoy
+
+
+# https://wiki.openstreetmap.org/wiki/SPARQL_examples#Find_.22Featured.22_wiki_articles_with_location.2C_but_without_OSM_connection
+# https://wiki.openstreetmap.org/wiki/User_talk:Yurik - wait for answers
+# https://www.openstreetmap.org/changeset/49958115
+#https://www.openstreetmap.org/changeset/49785062#map=8/46.881/18.215
+#
+#"historic=battlefield to tag niezgodny z zasadami OSM, ale używany i wygląda na tolerowany."
+#To pora przestać go tolerować zanim więcej osób zacznie do OSM wsadzać wydarzenia (lepiej by wykasować to zanim sie zrobi popularne, mniej osób straci wtedy czasu na ich dodawanie)
+# https://www.openstreetmap.org/changeset/51522177#map=13/54.0944/21.6133&layers=N
+# wszystkie nawiasy http://overpass-turbo.eu/s/rpH
+# watchlist for rare landuse, surface values in Kraków
+# more https://github.com/osmlab/name-suggestion-index/blob/master/filter.json https://lists.openstreetmap.org/pipermail/talk/2015-May/072923.html
+#should be highway=path http://overpass-turbo.eu/s/khG 
+#bicycle_road=yes w Krakowie http://overpass-turbo.eu/s/pcO
+#site=parking elimination
+#(planowany) w osm, (w budowie) nie jest lepsze
+#building=bridge w Krakowie - http://overpass-turbo.eu/s/dGR 
+#type=site relation http://overpass-turbo.eu/s/fwU 
+#name=Ogródki działkowe http://overpass-turbo.eu/s/dr3 
+#planowan* - tagowanie pod render http://overpass-turbo.eu/s/dtf 
+# http://www.openstreetmap.org/changeset/39896451#map=7/51.986/19.100
+
+# https://www.openstreetmap.org/way/201259297#map=19/50.08838/19.75612 cudzysłowy w nazwach
+
+#https://www.openstreetmap.org/way/33711547
+#note=taśmociąg na filarach + highway=service
+#to man_made=goods_conveyor
+
+#TODO - private public toilets
+# search "toilet tagging problem" mail (17 I)
+=begin
+12 I - bump
+https://github.com/westnordost/StreetComplete/pull/744#issuecomment-354818367
+
+During reviewing https://github.com/westnordost/StreetComplete/pull/744
+potential data problems were noticed.
+
+It seems to originate from HOT tagging.
+
+As recommended on https://www.hotosm.org/contact-us I send email to
+info@hotosm.org to notify about data issues originating from HOT
+mapping.
+
+From looking at
+https://www.openstreetmap.org/node/3058828370#map=19/-16.51863/35.17363&layers=N
+http://www.openstreetmap.org/way/485854738/history
+http://www.openstreetmap.org/way/485841628/history
+http://www.openstreetmap.org/way/486064588/history it seems that some
+people, as part of HOT OSM editing
+
+- map private toilets as public toilets (using amenity=toilets tag)
+- frequently tag private toilets again as public (toilets:access =
+  permissive)
+- use unusual tags instead of established ones (toilets:access key
+  instead of access)
+
+Is this correct interpretation of the situation?
+
+I recommend to 
+
+- stop mapping private toilets (at least I would consider invasion of
+  my privacy to map my private toilet)
+- if for some reason mapping private toilets is considered as a good
+  idea, please stop misusing amenity=toilets tag and create a separate
+  one that would include private toilets
+- please use toilets:access instead of access key for amenity=toilets
+  objects
+- please amend edits made as part of HOT editing to fix mentioned
+  issues:
+
+- delete private toilets mapped as part of HOT mapping from OSM
+- change toilets:access to access on amenity=toilets object
+- ensure that in future people will not make this kind of mistakes or
+  that such problems will be noticed and fixed
+
+I have limited experience with Africa so I may have some false
+assumptions. If my observations/recommendation/whatever is for some
+reason wrong/incorrect - please explain what is wrong.
+
+-- Mateusz Konieczny
+=end
+
+# search „undiscussed automatic edit (blindly adding maxspeed tags)” mail
+
+# https://ent8r.github.io/NotesReview/expert/?query=StreetComplete&limit=3000&start=true
+# Polacy:
+# CivilEng
+
+# missing military=bunker http://overpass-turbo.eu/s/sAw
+# tourims=attraction + name http://overpass-turbo.eu/s/sAr
+# https://forum.openstreetmap.org/viewtopic.php?pid=666735#p666735
+#complicated to fix
+#http://overpass-turbo.eu/s/rmN - just tourism=attraction
+
+# Sleeping after big run (II) - next run 2017 X
+# wyczyszczone w Polsce na początku 2017 IX
+# access=public eliminator http://overpass-turbo.eu/s/rpF
+
+# Sleeping after big run (I) - next run 2018 IV
+# wyczyszczone is_in:province w jednym z województw na początku 2017 IX
+# http://overpass-turbo.eu/s/r56
+#
+#is in province http://overpass-turbo.eu/s/rkf
+#Eradicate is_in
+#search for other is_in: tags on taginfo
+#(punkt widokowy) w nazwie
+
+=begin
+https://www.openstreetmap.org/node/2703989478 - are there toilets here? then toilets=yes should be added https://wiki.openstreetmap.org/wiki/Key:toilets
+toilets:wheelchair
+
+disused:boundary https://taginfo.openstreetmap.org/keys/disused%3Aboundary
+disused:political_division https://taginfo.openstreetmap.org/keys/disused%3Apolitical_division
+other from https://taginfo.openstreetmap.org/keys/end_date#combinations
+
+https://wiki.openstreetmap.org/wiki/Tag:amenity%3Dwater
+amenity=water? What is this?
+
+If it is place with drinking water amenity=drinking_water is typically used.
+
+man_made=water_tap may be added if it is a water tap.
+
+man_made=water_tap with drinking_water=no is typically used to indicate tap without drinking water
+
+
+
+covered=no, shelter=yes - it seems contradictory
+So it this bus stop with a shelter providing cover or not?
+
+http://overpass-turbo.eu/s/wT2
+
+after solving that: analyse tactile for covered=no
+floor = x -> add also level = x
+=end
+
+=begin
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'payment:bitcoin' => {operation: :not_equal_to, value: 'no'} })
+  watchlist += detect_tags_in_region(lat, lon, 5, { 'is_in:country' => :any_value })
+
+  watchlist << { list: get_list({ 'seasonal' => '*'}, include_history_of_tags: true), message: "What seasonal=* is supposed to mean?"}
+  watchlist << { list: get_list({ 'seasonal' => '*'}), message: ""}
+=end
+
+
+
+#building=damaged
+
+=begin
+building=building
+building=constructie
+building=Residence
+=end
+
+# https://www.openstreetmap.org/changeset/49785062#map=8/46.945/18.215
+
+#błędne linki do parafii http://overpass-turbo.eu/s/rpy
+#toilets:wheelchair=yes bez toilets
+
+#(name=Żabka or name=żabka) and shop!=convenience (if generally true submit normalization to https://github.com/osmlab/name-suggestion-index/issues )
+#detect violations of nixed values in https://github.com/osmlab/name-suggestion-index/issues, consider submitting them to JOSM validator
+#tactile_paving=unknown
+#numbers in names (place=village name=1)
+#TODO: hunt down also other seamarks?
+
+#TODO detect that it is crashing with OOM - currently it crashes silently
+#may affect also other queries
+#watchlist += detect_tags_in_region(lat, lon, 475, {'highway' => 'proposed', 'source' => {operation: :not_equal_to, value: :any_value}})
+#maxspeed on nodes
+# https://www.openstreetmap.org/changeset/21669560#map=6/54.230/28.011 - seems like import. copyright violation?
+# http://www.openstreetmap.org/changeset/52386848#map=6/34.490/51.919 - destruction
+# http://www.openstreetmap.org/changeset/25327911#map=10/34.8206/33.3531 tagging mess
+# http://www.h-renrew.de/h/osm/osmchecks/02_Relationstypen/empty_relations.html - notify, delete
+
+# https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example#Multipolygons_with_inappropiate_member_roles
+# http://www.openstreetmap.org/changeset/21669560 - suspicious import
+# smoothness dla mojego sett/cobblestone
+#https://www.openstreetmap.org/changeset/53689019?node_page=85
+#https://www.openstreetmap.org/changeset/53843529?node_page=3&xhr=1#map=12/17.8731/104.5758
+
+# https://lists.openstreetmap.org/pipermail/tagging/2018-January/034644.html - make edits to wiki
+# TODO: bardzo stare highway=construction
+# https://forum.openstreetmap.org/viewtopic.php?pid=679376#p679376 - wiki zmodyfikowana, poczekać do 20 I
+#https://taginfo.openstreetmap.org/tags/dataset=buildings#map
+# https://forum.openstreetmap.org/viewtopic.php?pid=679671#p679671
+#building=yes + shop=supermarket (70k cases - make app?)
+# document Wikidata copyright status on WIkidata https://www.wikidata.org/w/index.php?title=Wikidata:Project_chat&diff=576668866&oldid=576665752
+# https://stevebennett.me/2017/08/23/openstreetmap-vector-tiles-mixing-and-matching-engines-schemas-and-styles/
+# fixme:action fixme:requires_aerial_image fixme:use_better_tagging_scheme bez fixme
+# https://www.openstreetmap.org/way/158245125 area:size:ha _SITE_CODE_
+# wiki.openstreetmap.org/wiki/Relations/Proposed/Site switch to multipolygons
+# openstreetmap-carto todo +{"power_source"=>"wind", "power"=>"generator"} + wiatrak w Polsce
+#add to JOSM validator and this one http://keepright.ipax.at/report_map.php?zoom=15&lat=50.08336&lon=19.8917&layers=B0T&ch=0%2C30%2C40%2C50%2C70%2C90%2C100%2C110%2C120%2C130%2C150%2C160%2C170%2C180%2C191%2C192%2C193%2C194%2C195%2C196%2C197%2C198%2C201%2C202%2C203%2C204%2C205%2C206%2C207%2C208%2C210%2C220%2C231%2C232%2C270%2C281%2C282%2C283%2C284%2C285%2C291%2C292%2C293%2C294%2C311%2C312%2C313%2C320%2C350%2C370%2C380%2C401%2C402%2C411%2C412%2C413%2C20%2C60%2C300%2C360%2C390&show_ign=0&show_tmpign=0
+#add to JOSM validator and this one http://mapa.abakus.net.pl/raporty/
+#add to JOSM validator and this one http://tools.geofabrik.de/osmi/?view=routing&lon=19.88591&lat=50.07833&zoom=16&opacity=0.69
+#add to JOSM validator and this one https://wiki.openstreetmap.org/wiki/Quality_assurance
+#use_sidepath adding http://overpass-turbo.eu/s/khD 
+#stationary fixme fun http://overpass-turbo.eu/s/fyg 
+# https://wiki.openstreetmap.org/wiki/Key:seamark:fixme exterminate
+# bother users of unclear undocumented tags from https://github.com/simonpoole/beautified-JOSM-preset/issues/35
+# automatic edit for amenity=shop later process other from https://github.com/simonpoole/beautified-JOSM-preset/issues/35
+# https://wiki.openstreetmap.org/wiki/Tag:motorcycle_friendly%3Dcustomary
+# https://wiki.openstreetmap.org/w/index.php?title=Talk:Good_practice&diff=1610412&oldid=1610363
+# http://resultmaps.neis-one.org/newestosmfeed.php?lon=19.91674&lat=50.11020&deg=0.15  - nowi edytujący w Krakowie
 
 require 'json'
 require_relative 'watchlist_infrastructure'
@@ -327,13 +700,13 @@ def watchlist_entries
   if local_notes_present
     puts "remember about processing local notes!"
   end
-  watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_watchlist_entries
+  #watchlist += watch_valid_tags_unexpected_in_krakow if count_entries(watchlist) < requested_watchlist_entries
   # adapt TODO list JOSM plugin to autoremove descriptive names
-  watchlist += watch_descriptive_names(requested_watchlist_entries - count_entries(watchlist))
-  watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_spam if count_entries(watchlist) < requested_watchlist_entries #TODO - reeenable it, it was causing overpass issues
+  #watchlist += watch_descriptive_names(requested_watchlist_entries - count_entries(watchlist))
+  #watchlist += watch_tree_species_in_name if count_entries(watchlist) < requested_watchlist_entries
+  #watchlist += watch_spam if count_entries(watchlist) < requested_watchlist_entries #TODO - reeenable it, it was causing overpass issues
   watchlist += watch_lifecycle if count_entries(watchlist) < requested_watchlist_entries
-  watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_watchlist_entries
+  #watchlist += watch_lifecycle_state_in_the_name if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_low_priority if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_useless_keys if count_entries(watchlist) < requested_watchlist_entries
   watchlist += watch_declared_historical_data if count_entries(watchlist) < requested_watchlist_entries #rely on dev overpass servers
@@ -559,11 +932,21 @@ end
 def watch_lifecycle
   watchlist = []
   #after fixing revisit https://github.com/openstreetmap/iD/issues/4501
-  message = "is this object demolished or not? If demolished, it should be deleted (if still present at least on some aerial images it should be tagged in a better way - for example object with note='demolished on 2017-10' ), if not demolished then it is wrong to tag it as "
+  message = "is this object gone or not? If gone, it should be deleted (if still present at least on some aerial images it should be tagged in a better way - for example object with note='demolished on 2017-10' ), if not demolished then it is wrong to tag it as "
   watchlist << { list: get_list({ 'demolished' => 'yes' }), message: message + "demolished=yes"}
+  watchlist << { list: get_list({ 'destroyed' => 'yes' }), message: message + "destroyed=yes"}
+  watchlist << { list: get_list({ 'dismantled' => 'yes' }), message: message + "dismantled=yes"}
+  watchlist << { list: get_list({ 'razed' => 'yes' }), message: message + "razed=yes"}
+  watchlist << { list: get_list({ 'obliterated' => 'yes' }), message: message + "obliterated=yes"}
   #more at https://taginfo.openstreetmap.org/search?q=demolished%3Dyes
+
+  # - building=collapsed? Is this building really gone? In that case it should be deleted or rategged to demolished:building=yes.
+  # Note that building tag describes purpose of the building - see https://wiki.openstreetmap.org/wiki/Key:building and remains of buildings must not be mapped as buildings
+  # http://overpass-turbo.eu/s/zrE
+  watchlist << { list: get_list({ 'building' => 'collapsed' }), message: message + "building=collapsed"}
   return watchlist
 end
+
 
 def watch_railway_lifecycle
   watchlist = []
@@ -645,7 +1028,7 @@ def watch_other
   watchlist = []
 
   message = 'access=private on what is supposed to be mapped only if public (mapping phones not accessible to public may sometimes make sense but one should use a different tag)...'
-  watchlist << { list: get_list({ 'access' => 'private', 'amenity' => 'telephone' }), message: message }
+  #watchlist << { list: get_list({ 'access' => 'private', 'amenity' => 'telephone' }), message: message } #what about military bases?
   watchlist << { list: get_list({ 'concentration_camp' => 'nazism', 'amenity' => 'prison'}, include_history_of_tags: true), message: "Suspected tagging for renderer"}
 
   return watchlist
@@ -1165,270 +1548,5 @@ def watch_invalid_wikipedia
   return watchlist
 end
 
-=begin
-po 7 maja
-amenity=fuel breaking wikipedia tag rules and copyright
-DWG pinged, search Turkey
-https://www.openstreetmap.org/changeset/46304500#map=6/39.132/35.350
-
-spam fixme rowersa
-https://forum.openstreetmap.org/viewtopic.php?id=62477
-=end
-
-=begin
-po 7 maja
-usunięcie bazy danych punktów z LIDARa, z nieznanych przyczyn wrzuconą do OSM, utrudniającą normalne edytowanie
-
-[out:xml][timeout:725][bbox:{{bbox}}];
-(
-  node["OBJECTID_height_lidar"][height]["source:height"](if:count_tags() == 3)({{bbox}});
-);
-(._;>;);
-out meta;
-=end
-
-# name without name:pl (dla map które pokazują name:pl, potem name:en, potem name:de, potem name - a chcemy by w polsce dalej pokazywały pl)
-# comparative advantage
-# mass edit
-
-# http://www.openstreetmap.org/changeset/55169697
-# https://taginfo.openstreetmap.org/tags/construction=yes#combinations
-# noname=no
-# mass scale damaging automatic edit - see http://www.openstreetmap.org/user/Khalil%20Laleh/history#map=6/32.898/52.976
-=begin
-/*
-This has been generated by the overpass-turbo wizard.
-The original search was:
-“lnaduse!=industrial and industrial=* and building!=* in Poland”
-*/
-[out:json][timeout:625];
-// fetch area “Poland” to search in
-{{geocodeArea:Poland}}->.searchArea;
-// gather results
-(
-  // query part for: “lnaduse!=industrial and industrial=* and building!=*”
-  node["lnaduse"!="industrial"]["industrial"]["building"!~".*"](area.searchArea);
-  way["lnaduse"!="industrial"]["industrial"]["building"!~".*"](area.searchArea);
-  relation["lnaduse"!="industrial"]["industrial"]["building"!~".*"](area.searchArea);
-);
-// print results
-out body;
->;
-out skel qt; 
-=end
-
-# poprawić notki w terenie - potem zwiększyć zasięg w watch_valid_tags_unexpected_in_krakow
-
-=begin
-https://www.openstreetmap.org/changeset/57918111#map=17/33.09098/-117.20817
-
-
-# see comments in http://www.openstreetmap.org/changeset/43401704
-
-Lighthouses with missing name, but with seamark:name - http://overpass-turbo.eu/s/u05 (it is likely that name tag is missing)
-
-See http://overpass-turbo.eu/s/u0C listing light_minor objects with seamark:light:range > 10.
-
-Is there really a major navigational light here? I see nothing on aerial images.
-'seamark:light:1:range'=* and man_made != lighthouse and 'seamark:type' = light_major
-seamark:type!=light_minor and seamark:type!='beacon_special_purpose' and seamark:type!=platform and 'seamark:type'!=beacon_lateral
-=end
-
-# http://www.openstreetmap.org/changeset/31009200#map=15/43.8895/-0.5003 fix remaining - see http://overpass-turbo.eu/s/uoy
-
-
-# https://wiki.openstreetmap.org/wiki/SPARQL_examples#Find_.22Featured.22_wiki_articles_with_location.2C_but_without_OSM_connection
-# https://wiki.openstreetmap.org/wiki/User_talk:Yurik - wait for answers
-# https://www.openstreetmap.org/changeset/49958115
-#https://www.openstreetmap.org/changeset/49785062#map=8/46.881/18.215
-#
-#"historic=battlefield to tag niezgodny z zasadami OSM, ale używany i wygląda na tolerowany."
-#To pora przestać go tolerować zanim więcej osób zacznie do OSM wsadzać wydarzenia (lepiej by wykasować to zanim sie zrobi popularne, mniej osób straci wtedy czasu na ich dodawanie)
-# https://www.openstreetmap.org/changeset/51522177#map=13/54.0944/21.6133&layers=N
-# wszystkie nawiasy http://overpass-turbo.eu/s/rpH
-# watchlist for rare landuse, surface values in Kraków
-# more https://github.com/osmlab/name-suggestion-index/blob/master/filter.json https://lists.openstreetmap.org/pipermail/talk/2015-May/072923.html
-#should be highway=path http://overpass-turbo.eu/s/khG 
-#bicycle_road=yes w Krakowie http://overpass-turbo.eu/s/pcO
-#site=parking elimination
-#(planowany) w osm, (w budowie) nie jest lepsze
-#building=bridge w Krakowie - http://overpass-turbo.eu/s/dGR 
-#type=site relation http://overpass-turbo.eu/s/fwU 
-#name=Ogródki działkowe http://overpass-turbo.eu/s/dr3 
-#planowan* - tagowanie pod render http://overpass-turbo.eu/s/dtf 
-# http://www.openstreetmap.org/changeset/39896451#map=7/51.986/19.100
-
-# https://www.openstreetmap.org/way/201259297#map=19/50.08838/19.75612 cudzysłowy w nazwach
-
-#https://www.openstreetmap.org/way/33711547
-#note=taśmociąg na filarach + highway=service
-#to man_made=goods_conveyor
-
-#TODO - private public toilets
-# search "toilet tagging problem" mail (17 I)
-=begin
-12 I - bump
-https://github.com/westnordost/StreetComplete/pull/744#issuecomment-354818367
-
-During reviewing https://github.com/westnordost/StreetComplete/pull/744
-potential data problems were noticed.
-
-It seems to originate from HOT tagging.
-
-As recommended on https://www.hotosm.org/contact-us I send email to
-info@hotosm.org to notify about data issues originating from HOT
-mapping.
-
-From looking at
-https://www.openstreetmap.org/node/3058828370#map=19/-16.51863/35.17363&layers=N
-http://www.openstreetmap.org/way/485854738/history
-http://www.openstreetmap.org/way/485841628/history
-http://www.openstreetmap.org/way/486064588/history it seems that some
-people, as part of HOT OSM editing
-
-- map private toilets as public toilets (using amenity=toilets tag)
-- frequently tag private toilets again as public (toilets:access =
-  permissive)
-- use unusual tags instead of established ones (toilets:access key
-  instead of access)
-
-Is this correct interpretation of the situation?
-
-I recommend to 
-
-- stop mapping private toilets (at least I would consider invasion of
-  my privacy to map my private toilet)
-- if for some reason mapping private toilets is considered as a good
-  idea, please stop misusing amenity=toilets tag and create a separate
-  one that would include private toilets
-- please use toilets:access instead of access key for amenity=toilets
-  objects
-- please amend edits made as part of HOT editing to fix mentioned
-  issues:
-
-- delete private toilets mapped as part of HOT mapping from OSM
-- change toilets:access to access on amenity=toilets object
-- ensure that in future people will not make this kind of mistakes or
-  that such problems will be noticed and fixed
-
-I have limited experience with Africa so I may have some false
-assumptions. If my observations/recommendation/whatever is for some
-reason wrong/incorrect - please explain what is wrong.
-
--- Mateusz Konieczny
-=end
-
-# search „undiscussed automatic edit (blindly adding maxspeed tags)” mail
-
-# https://ent8r.github.io/NotesReview/expert/?query=StreetComplete&limit=3000&start=true
-# Polacy:
-# CivilEng
-
-# missing military=bunker http://overpass-turbo.eu/s/sAw
-# tourims=attraction + name http://overpass-turbo.eu/s/sAr
-# https://forum.openstreetmap.org/viewtopic.php?pid=666735#p666735
-#complicated to fix
-#http://overpass-turbo.eu/s/rmN - just tourism=attraction
-
-# Sleeping after big run (II) - next run 2017 X
-# wyczyszczone w Polsce na początku 2017 IX
-# access=public eliminator http://overpass-turbo.eu/s/rpF
-
-# Sleeping after big run (I) - next run 2018 IV
-# wyczyszczone is_in:province w jednym z województw na początku 2017 IX
-# http://overpass-turbo.eu/s/r56
-#
-#is in province http://overpass-turbo.eu/s/rkf
-#Eradicate is_in
-#search for other is_in: tags on taginfo
-#(punkt widokowy) w nazwie
-
-=begin
-https://www.openstreetmap.org/node/2703989478 - are there toilets here? then toilets=yes should be added https://wiki.openstreetmap.org/wiki/Key:toilets
-toilets:wheelchair
-
-disused:boundary https://taginfo.openstreetmap.org/keys/disused%3Aboundary
-disused:political_division https://taginfo.openstreetmap.org/keys/disused%3Apolitical_division
-other from https://taginfo.openstreetmap.org/keys/end_date#combinations
-
-https://wiki.openstreetmap.org/wiki/Tag:amenity%3Dwater
-amenity=water? What is this?
-
-If it is place with drinking water amenity=drinking_water is typically used.
-
-man_made=water_tap may be added if it is a water tap.
-
-man_made=water_tap with drinking_water=no is typically used to indicate tap without drinking water
-
-
-
-covered=no, shelter=yes - it seems contradictory
-So it this bus stop with a shelter providing cover or not?
-
-http://overpass-turbo.eu/s/wT2
-
-after solving that: analyse tactile for covered=no
-floor = x -> add also level = x
-=end
-
-=begin
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'payment:bitcoin' => {operation: :not_equal_to, value: 'no'} })
-  watchlist += detect_tags_in_region(lat, lon, 5, { 'is_in:country' => :any_value })
-
-  watchlist << { list: get_list({ 'seasonal' => '*'}, include_history_of_tags: true), message: "What seasonal=* is supposed to mean?"}
-  watchlist << { list: get_list({ 'seasonal' => '*'}), message: ""}
-=end
-
-
-# https://www.openstreetmap.org/changeset/49785062#map=8/46.945/18.215
-
-#błędne linki do parafii http://overpass-turbo.eu/s/rpy
-#toilets:wheelchair=yes bez toilets
-
-#(name=Żabka or name=żabka) and shop!=convenience (if generally true submit normalization to https://github.com/osmlab/name-suggestion-index/issues )
-#detect violations of nixed values in https://github.com/osmlab/name-suggestion-index/issues, consider submitting them to JOSM validator
-#tactile_paving=unknown
-#numbers in names (place=village name=1)
-#TODO: hunt down also other seamarks?
-
-#TODO detect that it is crashing with OOM - currently it crashes silently
-#may affect also other queries
-#watchlist += detect_tags_in_region(lat, lon, 475, {'highway' => 'proposed', 'source' => {operation: :not_equal_to, value: :any_value}})
-#maxspeed on nodes
-# https://www.openstreetmap.org/changeset/21669560#map=6/54.230/28.011 - seems like import. copyright violation?
-# http://www.openstreetmap.org/changeset/52386848#map=6/34.490/51.919 - destruction
-# http://www.openstreetmap.org/changeset/25327911#map=10/34.8206/33.3531 tagging mess
-# http://www.h-renrew.de/h/osm/osmchecks/02_Relationstypen/empty_relations.html - notify, delete
-
-# https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_API_by_Example#Multipolygons_with_inappropiate_member_roles
-# http://www.openstreetmap.org/changeset/21669560 - suspicious import
-# smoothness dla mojego sett/cobblestone
-#https://www.openstreetmap.org/changeset/53689019?node_page=85
-#https://www.openstreetmap.org/changeset/53843529?node_page=3&xhr=1#map=12/17.8731/104.5758
-
-# https://lists.openstreetmap.org/pipermail/tagging/2018-January/034644.html - make edits to wiki
-# TODO: bardzo stare highway=construction
-# https://forum.openstreetmap.org/viewtopic.php?pid=679376#p679376 - wiki zmodyfikowana, poczekać do 20 I
-#https://taginfo.openstreetmap.org/tags/dataset=buildings#map
-# https://forum.openstreetmap.org/viewtopic.php?pid=679671#p679671
-#building=yes + shop=supermarket (70k cases - make app?)
-# document Wikidata copyright status on WIkidata https://www.wikidata.org/w/index.php?title=Wikidata:Project_chat&diff=576668866&oldid=576665752
-# https://stevebennett.me/2017/08/23/openstreetmap-vector-tiles-mixing-and-matching-engines-schemas-and-styles/
-# fixme:action fixme:requires_aerial_image fixme:use_better_tagging_scheme bez fixme
-# https://www.openstreetmap.org/way/158245125 area:size:ha _SITE_CODE_
-# wiki.openstreetmap.org/wiki/Relations/Proposed/Site switch to multipolygons
-# openstreetmap-carto todo +{"power_source"=>"wind", "power"=>"generator"} + wiatrak w Polsce
-#add to JOSM validator and this one http://keepright.ipax.at/report_map.php?zoom=15&lat=50.08336&lon=19.8917&layers=B0T&ch=0%2C30%2C40%2C50%2C70%2C90%2C100%2C110%2C120%2C130%2C150%2C160%2C170%2C180%2C191%2C192%2C193%2C194%2C195%2C196%2C197%2C198%2C201%2C202%2C203%2C204%2C205%2C206%2C207%2C208%2C210%2C220%2C231%2C232%2C270%2C281%2C282%2C283%2C284%2C285%2C291%2C292%2C293%2C294%2C311%2C312%2C313%2C320%2C350%2C370%2C380%2C401%2C402%2C411%2C412%2C413%2C20%2C60%2C300%2C360%2C390&show_ign=0&show_tmpign=0
-#add to JOSM validator and this one http://mapa.abakus.net.pl/raporty/
-#add to JOSM validator and this one http://tools.geofabrik.de/osmi/?view=routing&lon=19.88591&lat=50.07833&zoom=16&opacity=0.69
-#add to JOSM validator and this one https://wiki.openstreetmap.org/wiki/Quality_assurance
-#use_sidepath adding http://overpass-turbo.eu/s/khD 
-#stationary fixme fun http://overpass-turbo.eu/s/fyg 
-# https://wiki.openstreetmap.org/wiki/Key:seamark:fixme exterminate
-# bother users of unclear undocumented tags from https://github.com/simonpoole/beautified-JOSM-preset/issues/35
-# automatic edit for amenity=shop later process other from https://github.com/simonpoole/beautified-JOSM-preset/issues/35
-# visible=false cleaner - https://www.openstreetmap.org/changeset/40133120#map=9/42.2244/25.2403&layers=N
-# https://wiki.openstreetmap.org/wiki/Tag:motorcycle_friendly%3Dcustomary
-# https://wiki.openstreetmap.org/w/index.php?title=Talk:Good_practice&diff=1610412&oldid=1610363
 CartoCSSHelper::Configuration.set_path_to_folder_for_cache('/media/mateusz/5bfa9dfc-ed86-4d19-ac36-78df1060707c/OSM-cache')
 run_watchlist
