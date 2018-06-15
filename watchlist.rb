@@ -1,4 +1,32 @@
 =begin
+Block deprecated unused tag values fetched from wiki - find examples
+https://github.com/openstreetmap/iD/issues/4508
+"The OSM community needs to take responsibility for the tags (...) if sport=football is indeed deprecated, then somebody should make a Maproulette challenge or something to clean them up. iD will stop suggesting the tag when it is no longer in widespread use."
+
+    Since sport=gaelic_football has a wiki page, it gets returned.
+
+So if gaelic_football goes down to zero uses, it will still be returned because it has a wiki page? Even if the wiki page is only there to tell people the tag is deprecated - probably like the rest in this category: 
+
+
+
+
+
+
+
+https://wiki.openstreetmap.org/wiki/OpenCycleMap - report bug
+
+https://forum.openstreetmap.org/viewtopic.php?id=62477 fixme="Popraw kod pocztowy" z punktów
+
+https://taginfo.openstreetmap.org/tags/wikipedia=en%3AMunicipalities_of_Albania
+
+poprawić mojego bota i wyedytowac co już mogę (obsługa przekierowań następnym krokiem - pewnie mode "edytuj za potwierdzeniem" jest potrzebny)
+
+https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account
+
+
+
+
+
 https://wiki.openstreetmap.org/wiki/Default_speed_limits
 
 quest for missing addr:street https://github.com/westnordost/StreetComplete/issues/213
@@ -9,7 +37,36 @@ next idea: http://overpass-turbo.eu/s/zvd
 
 
 
+=begin
+usunięcie punktów o wysokości z przetworzonej bazy danych punktów z LIDARa, utrudniającą normalne edytowanie, która w tej formie nie powinna być wrzucona
 
+[out:xml][timeout:725][date:"2018-01-12T06:55:00Z"];
+(
+  node["OBJECTID_height_lidar"]["height"]["source:height"](if:count_tags() == 3);
+);
+(._;>;);
+out meta;
+
+comment
+Usunięcie przybliżonych danych o wysokości budynków dodanych w niestatndardowym formacie, o jakości która nie pozwala na ich połączenie z budynkami. Dane usuwane ze względu na to że w tej formie nigdy nie powinny do OSM trafić.
+
+source
+desire to edit data normally, not blocked by poorly imported processed LIDAR that should not be dumped into OSM database
+
+
+
+data_download_location
+https://wiki.openstreetmap.org/wiki/WikiProject_Poland/Wroc%C5%82aw#Przybli.C5.BCone_dane_o_wysoko.C5.9Bci_budynk.C3.B3w
+
+data_download_query
+Query w edytorze overpass umożliwiające ich pobranie jeśli ktoś potrzebuje tych danych: http://overpass-turbo.eu/s/zzx
+
+see_also
+discussion in https://www.openstreetmap.org/changeset/59363976
+
+=end
+
+=begin
 
 https://www.openstreetmap.org/changeset/34413443
 
@@ -65,15 +122,6 @@ a bonus.
 
 highway=pedestrian definition na wiki
 
-https://wiki.openstreetmap.org/wiki/OpenCycleMap - report bug
-
-https://forum.openstreetmap.org/viewtopic.php?id=62477 fixme="Popraw kod pocztowy" z punktów
-
-https://taginfo.openstreetmap.org/tags/wikipedia=en%3AMunicipalities_of_Albania
-
-poprawić mojego bota i wyedytowac co już mogę (obsługa przekierowań następnym krokiem - pewnie mode "edytuj za potwierdzeniem" jest potrzebny)
-
-https://wiki.openstreetmap.org/wiki/Mechanical_Edits/Mateusz_Konieczny_-_bot_account
 
 download from taginfo, discard highway=*, waterway, rail=*
 report offenders
@@ -82,13 +130,6 @@ https://taginfo.openstreetmap.org/api/4/key/values?key=wikipedia&filter=all&lang
 (historical) post offices - easy to check with Bing
 
 
-Block deprecated unused tag values fetched from wiki
-https://github.com/openstreetmap/iD/issues/4508
-"The OSM community needs to take responsibility for the tags (...) if sport=football is indeed deprecated, then somebody should make a Maproulette challenge or something to clean them up. iD will stop suggesting the tag when it is no longer in widespread use."
-
-    Since sport=gaelic_football has a wiki page, it gets returned.
-
-So if gaelic_football goes down to zero uses, it will still be returned because it has a wiki page? Even if the wiki page is only there to tell people the tag is deprecated - probably like the rest in this category: 
 =end
 
 
@@ -273,17 +314,6 @@ spam fixme rowersa
 https://forum.openstreetmap.org/viewtopic.php?id=62477
 =end
 
-=begin
-po 14 maja
-usunięcie punktów o wysokości z przetworzonej bazy danych punktów z LIDARa, utrudniającą normalne edytowanie, która w tej formie nie powinna być wrzucona
-
-[out:xml][timeout:725][date:"2018-01-12T06:55:00Z"];
-(
-  node["OBJECTID_height_lidar"]["height"]["source:height"](if:count_tags() == 3);
-);
-(._;>;);
-out meta;
-=end
 
 
 # name without name:pl (dla map które pokazują name:pl, potem name:en, potem name:de, potem name - a chcemy by w polsce dalej pokazywały pl)
