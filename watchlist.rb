@@ -1,4 +1,6 @@
 =begin
+tag access on gates (document on wiki) https://www.openstreetmap.org/node/2052099767#map=18/50.03560/19.92011
+
 Block deprecated unused tag values fetched from wiki - find examples
 https://github.com/openstreetmap/iD/issues/4508
 "The OSM community needs to take responsibility for the tags (...) if sport=football is indeed deprecated, then somebody should make a Maproulette challenge or something to clean them up. iD will stop suggesting the tag when it is no longer in widespread use."
