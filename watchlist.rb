@@ -589,7 +589,7 @@ building=Residence
 # https://wiki.openstreetmap.org/wiki/Tag:motorcycle_friendly%3Dcustomary
 # https://wiki.openstreetmap.org/w/index.php?title=Talk:Good_practice&diff=1610412&oldid=1610363
 # http://resultmaps.neis-one.org/newestosmfeed.php?lon=19.91674&lat=50.11020&deg=0.15  - nowi edytujący w Krakowie
-
+# https://www.openstreetmap.org/note/1409862 - zasady na wykrywanie kontrapasów
 require 'json'
 require_relative 'watchlist_infrastructure'
 require 'overhelper.rb'
@@ -1275,6 +1275,7 @@ def descriptive_names_entries
     {name: 'free parking', language: 'en', complaint: 'free parking tagged using name rather than fee tag', matching_tags: [{'amenity' => 'parking'}]},
     {name: 'supervised parking', language: 'en', complaint: 'supervised parking tagged using name rather than proper tag', matching_tags: [{'amenity' => 'parking'}]},
     {name: 'śmietnik', language: 'pl', complaint: 'OSM data sometimes makes clear that <amenity = waste_disposal> is missing', matching_tags: [{'amenity' => 'waste_disposal'}], overpass: 'http://overpass-turbo.eu/s/qZh'},
+    {name: 'śmietnik', language: 'pl', complaint: 'mistagged?', matching_tags: [{'amenity' => 'recycling'}], overpass: 'http://overpass-turbo.eu/s/qZh'},
     {name: 'dojazd do przedszkola', language: 'pl'},
     {name: 'droga poboczna', language: 'pl'},
     {name: 'ścieżka', language: 'pl'},
