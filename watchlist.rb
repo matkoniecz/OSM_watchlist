@@ -1,6 +1,19 @@
 =begin
 tag access on gates (document on wiki) https://www.openstreetmap.org/node/2052099767#map=18/50.03560/19.92011
 
+
+see example image in the folder above
+
+https://wiki.openstreetmap.org/wiki/Tag:highway%3Dunsurfaced
+https://wiki.openstreetmap.org/wiki/Tag:landuse%3Dwood
+https://wiki.openstreetmap.org/wiki/Tag:amenity%3Deducation
+https://wiki.openstreetmap.org/wiki/Tag:highway%3Dabandoned
+https://wiki.openstreetmap.org/wiki/Tag:amenity%3Dproposed
+https://wiki.openstreetmap.org/wiki/Tag:amenity%3Ddisused
+https://wiki.openstreetmap.org/wiki/Tag:shop%3Dfish
+https://wiki.openstreetmap.org/wiki/Tag:highway%3Dbyway
+https://wiki.openstreetmap.org/wiki/Tag:amenity%3Dhotel
+
 Block deprecated unused tag values fetched from wiki - find examples
 https://github.com/openstreetmap/iD/issues/4508
 "The OSM community needs to take responsibility for the tags (...) if sport=football is indeed deprecated, then somebody should make a Maproulette challenge or something to clean them up. iD will stop suggesting the tag when it is no longer in widespread use."
@@ -33,10 +46,6 @@ https://wiki.openstreetmap.org/wiki/Default_speed_limits
 
 quest for missing addr:street https://github.com/westnordost/StreetComplete/issues/213
 
-https://www.openstreetmap.org/changeset/59363976 removal ready
-
-next idea: http://overpass-turbo.eu/s/zvd
-
 =end
 
 
@@ -46,6 +55,10 @@ https://www.openstreetmap.org/changeset/34413443
 
 
 -----
+
+better vehicle tag page (describe its usage, reason etc)
+
+if significant changes lets it sason and ferment a bit
 
 iD - show access based on vehicle tag
 
