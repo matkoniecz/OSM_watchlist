@@ -37,7 +37,7 @@ https://www.openstreetmap.org/changeset/59363976 removal ready
 
 next idea: http://overpass-turbo.eu/s/zvd
 
-
+=end
 
 =begin
 usunięcie punktów o wysokości z przetworzonej bazy danych punktów z LIDARa, utrudniającą normalne edytowanie, która w tej formie nie powinna być wrzucona
@@ -73,7 +73,18 @@ discussion in https://www.openstreetmap.org/changeset/59363976
 https://www.openstreetmap.org/changeset/34413443
 
 
+-----
 
+iD - show access based on vehicle tag
+
+mention statistics that it is worth supporting
+
+Motor Vehicles
+Bicycles
+
+is bicycle considered as subset of vehicle? Is it depending on a country?
+
+it would fix part of open-ended #3945
 
 -------
     While iD design may exclude flooding user with warnings - why its rendering suggests that for example [building=yes; demolished=yes] is a good idea?
