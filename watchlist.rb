@@ -39,34 +39,6 @@ next idea: http://overpass-turbo.eu/s/zvd
 
 =end
 
-=begin
-usunięcie punktów o wysokości z przetworzonej bazy danych punktów z LIDARa, utrudniającą normalne edytowanie, która w tej formie nie powinna być wrzucona
-
-[out:xml][timeout:725][date:"2018-01-12T06:55:00Z"];
-(
-  node["OBJECTID_height_lidar"]["height"]["source:height"](if:count_tags() == 3);
-);
-(._;>;);
-out meta;
-
-comment
-Usunięcie przybliżonych danych o wysokości budynków dodanych w niestatndardowym formacie, o jakości która nie pozwala na ich połączenie z budynkami. Dane usuwane ze względu na to że w tej formie nigdy nie powinny do OSM trafić.
-
-source
-desire to edit data normally, not blocked by poorly imported processed LIDAR that should not be dumped into OSM database
-
-
-
-data_download_location
-https://wiki.openstreetmap.org/wiki/WikiProject_Poland/Wroc%C5%82aw#Przybli.C5.BCone_dane_o_wysoko.C5.9Bci_budynk.C3.B3w
-
-data_download_query
-Query w edytorze overpass umożliwiające ich pobranie jeśli ktoś potrzebuje tych danych: http://overpass-turbo.eu/s/zzx
-
-see_also
-discussion in https://www.openstreetmap.org/changeset/59363976
-
-=end
 
 =begin
 
